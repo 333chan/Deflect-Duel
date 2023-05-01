@@ -23,7 +23,7 @@ void Stage::Update()
 
 void Stage::Draw()
 {
-	DrawBox(0,600,2000,700,0xff0000,true);
+	DrawBox(0,700,2000,900,0xff0000,true);
 }
 
 void Stage::Release()

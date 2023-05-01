@@ -2,7 +2,7 @@
 #include <memory>	//ゆにーくポインタに必要
 #include "../../common/Geometry.h"
 #include "../Object.h"
-
+#include "../../tmx/TmxObj.h"
 
 
 class Controller;
@@ -32,10 +32,21 @@ private:
     std::unique_ptr<Controller> controller_;
 
     //座標
-    Vector2Int pos_; 
+    Vector2 pos_; 
+    Vector2 linepos_; 
+    Vector2 linepos2_; 
+    Vector2 size_;
 
     float gravity_;
 
+    bool IsHit();
+
+    Line stageLine_;
+
+    
+
 protected:
+    //tmx
+    TmxObj tmxObj_;
 };
 

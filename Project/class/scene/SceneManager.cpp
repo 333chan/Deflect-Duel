@@ -6,8 +6,8 @@
 
 
 //画面サイズ(フルスクリーン予定)
-constexpr int SCREENSIZE_X = 1500;
-constexpr int SCREENSIZE_Y = 780;
+constexpr int SCREENSIZE_X = 1280;
+constexpr int SCREENSIZE_Y = 720;
 
 bool SceneManager::SystemInit(void)
 {

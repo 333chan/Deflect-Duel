@@ -115,9 +115,9 @@ Vector3 operator-(const Vector3& va, const Vector3 vb);
 
 struct Line
 {
-	Vector3 p;		//始点
-	Vector3 end;	//終点
-	Vector3 vec();
+	Vector2 p;		//始点
+	Vector2 end;	//終点
+	Vector2 vec();
 };
 
 //内積を返す

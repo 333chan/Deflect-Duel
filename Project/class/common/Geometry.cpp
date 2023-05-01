@@ -263,7 +263,7 @@ bool Vector2Int::operator>(const Vector2Int& vec) const
 	return  (x > vec.x && y > vec.y);
 }
 
-Vector3 Line::vec()
+Vector2 Line::vec()
 {
 	return end - p;
 }
