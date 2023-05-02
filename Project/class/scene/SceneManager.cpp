@@ -2,17 +2,18 @@
 #include "TitelScene.h"
 #include "GameScene.h"
 #include "SceneManager.h"
+#include "../../_debug/_DebugDispOut.h"
 
 
 
 //画面サイズ(フルスクリーン予定)
-constexpr int SCREENSIZE_X = 1280;
-constexpr int SCREENSIZE_Y = 720;
+constexpr int SCREEN_SIZE_X = 1280;
+constexpr int SCREEN_SIZE_Y = 720;
 
 bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
-	SetGraphMode(static_cast<int>(SCREENSIZE_X), static_cast<int>(SCREENSIZE_Y), 32);
+	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
 	ChangeWindowMode(true);
 	// SetWindowIconID(ICON_1); // アイコン変更
 	SetWindowText("2016019_田中矯");
@@ -21,6 +22,9 @@ bool SceneManager::SystemInit(void)
 	{
 		return false;
 	}
+
+	_dbgSetup(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 255);
+
 	return true;
 }
 
@@ -73,6 +77,7 @@ void SceneManager::Draw(void)
 	SetDrawScreen(DX_SCREEN_BACK);
 	ClsDrawScreen();
 	scene_->Draw();
+	_dbgDraw();
 }
 
 void SceneManager::Relese(void)

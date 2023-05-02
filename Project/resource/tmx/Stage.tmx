@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="4">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="11">
  <objectgroup id="2" name="stage">
-  <object id="1" name="stage" x="0" y="560" width="1280" height="160"/>
+  <object id="1" name="stage" x="16" y="48" width="1232" height="640"/>
  </objectgroup>
 </map>

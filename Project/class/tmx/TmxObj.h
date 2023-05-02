@@ -37,18 +37,8 @@ public:
 	const int GetMapData(std::string layer, Vector2Int pos);	//posÇÕç¿ïW
 	const int GetMapData(std::string layer, int x, int y);	//x,yÇÕè°ñ⁄
 	
-	CollisionNameList& GetAllCollList(void);
-	CollisionNameList& GetTitleCollList(void);
-	CollisionNameList& GetInventoryCollList(void);
-	CollisionNameList& GetOptionCollList(void);
-	CollisionNameList& GetGameoverCollList(void);
-	CollisionNameList& GetResultCollList(void);
-	CollisionNameList& GetTipsCollList(void);
-	CollisionNameList& GetCameraCollList(void);
-	CollisionNameList& GetSelectCollList(void);
-	CollisionNameList& GetConnectedCollList(void);
-	CollisionNameList& GetOpeningCollList(void);
-	CollisionNameList& GetExitCollList(void);
+
+	CollList& GetStageCollList(void);
 
 private:
 	bool CheckTiledVersion(rapidxml::xml_node<>* node);
@@ -67,17 +57,6 @@ private:
 	rapidxml::xml_document<> tsxDoc_;
 
 	//ìñÇΩÇËîªíË
-	CollisionNameList collListAll_;
-	CollisionNameList titleCollList_;
-	CollisionNameList inventoryCollList_;
-	CollisionNameList optionCollList_;
-	CollisionNameList gameoverCollList_;
-	CollisionNameList resultCollList_;
-	CollisionNameList tipsCollList_;
-	CollisionNameList cameraCollList_;
-	CollisionNameList SelectCollList_;
-	CollisionNameList ConnectedCollList_;
-	CollisionNameList OpeningCollList_;
-	CollisionNameList ExitCollList_;
+	CollList stageCollList_;
 };
 

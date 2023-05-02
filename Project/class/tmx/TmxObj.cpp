@@ -238,11 +238,10 @@ bool TmxObj::SetMap(void)
 			
 			if (collName == "stage")
 			{
-				titleCollList_.push_back(
+				stageCollList_.push_back(
 					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
+						{ CollX,CollY},
+						{CollW,CollH}
 					}
 				);
 			}
@@ -431,60 +430,12 @@ const int TmxObj::GetMapData(std::string layer, int x, int y)
 	}
 }
 
-CollisionNameList& TmxObj::GetAllCollList(void)
+
+CollList& TmxObj::GetStageCollList(void)
 {
-	return collListAll_;
+	return stageCollList_;
 }
 
-CollisionNameList& TmxObj::GetTitleCollList(void)
-{
-	return titleCollList_;
-}
-
-CollisionNameList& TmxObj::GetInventoryCollList(void)
-{
-	return inventoryCollList_;
-}
-
-CollisionNameList& TmxObj::GetOptionCollList(void)
-{
-	return optionCollList_;
-}
-
-CollisionNameList& TmxObj::GetGameoverCollList(void)
-{
-	return gameoverCollList_;
-}
-
-CollisionNameList& TmxObj::GetResultCollList(void)
-{
-	return resultCollList_;
-}
-
-CollisionNameList& TmxObj::GetTipsCollList(void)
-{
-	return tipsCollList_;
-}
-CollisionNameList& TmxObj::GetCameraCollList(void)
-{
-	return cameraCollList_;
-}
-CollisionNameList& TmxObj::GetSelectCollList(void)
-{
-	return SelectCollList_;
-}
-CollisionNameList& TmxObj::GetConnectedCollList(void)
-{
-	return ConnectedCollList_;
-}
-CollisionNameList& TmxObj::GetOpeningCollList(void)
-{
-	return OpeningCollList_;
-}
-CollisionNameList& TmxObj::GetExitCollList(void)
-{
-	return ExitCollList_;
-}
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)
 {
 	if (node == nullptr)

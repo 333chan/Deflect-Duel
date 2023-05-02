@@ -3,10 +3,21 @@
 #include "../../common/Geometry.h"
 #include "../Object.h"
 #include "../../tmx/TmxObj.h"
+#include "../../common/Raycast.h"
 
 
 class Controller;
 enum class ControllerType;
+
+enum  Dir
+{
+    None,
+    Up,
+    Down,
+    Right,
+    Left,
+    Max
+};
 
 class Player :
     public Object
@@ -31,19 +42,30 @@ private:
     //コントローラー
     std::unique_ptr<Controller> controller_;
 
+    //色
+    int color ;
+
     //座標
     Vector2 pos_; 
-    Vector2 linepos_; 
-    Vector2 linepos2_; 
+    
+    //大きさ
     Vector2 size_;
 
+    //重力
     float gravity_;
 
-    bool IsHit();
+    //補正差分
+    float offset_;
 
+    //始点、終点
     Line stageLine_;
+    Line playerLine_;
 
-    
+    //判定
+    Raycast raycast_;
+
+    //あたり判定処理
+    bool IsHit(void);
 
 protected:
     //tmx

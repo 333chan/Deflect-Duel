@@ -161,6 +161,9 @@
     <ClCompile Include="class\object\player\Player.cpp" />
     <ClCompile Include="class\input\PadInput.cpp" />
     <ClCompile Include="class\tmx\TmxObj.cpp" />
+    <ClCompile Include="class\common\Raycast.cpp" />
+    <ClCompile Include="_debug\_DebugConOut.cpp" />
+    <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="class\common\Collision2D.h" />
@@ -183,6 +186,9 @@
     <ClInclude Include="class\input\KeyInput.h" />
     <ClInclude Include="class\input\PadInput.h" />
     <ClInclude Include="class\tmx\TmxObj.h" />
+    <ClInclude Include="class\common\Raycast.h" />
+    <ClInclude Include="_debug\_DebugConOut.h" />
+    <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
