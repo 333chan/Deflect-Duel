@@ -1,15 +1,9 @@
 #include "Raycast.h"
+#include "../object/player/Player.h"
 #include"../../_debug/_DebugDispOut.h"
 
-/// <summary>
-/// 線分の判定
-/// </summary>
-/// <param name="pos">座標</param>
-/// <param name="size">大きさ</param>
-/// <param name="stagepos">ステージの座標</param>
-/// <param name="offset">差分</param>
-/// <returns></returns>
-bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos ,float& offset,int color)
+
+bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, Dir dir_, Vector2& offset, int color)
 {
 	Line ray[4] =
 	{
@@ -23,7 +17,7 @@ bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos ,floa
 	{
 
 		{stagepos.first,{stagepos.second.x,stagepos.first.y} },			//上
-		{{stagepos.first.x,stagepos.second.y},stagepos.second},	//下
+		{{stagepos.first.x,stagepos.second.y},stagepos.second},			//下
 		{stagepos.first,{stagepos.first.x,stagepos.second.y} },			//左
 		{{stagepos.second.x ,stagepos.first.y},stagepos.second},		//右
 	};
@@ -31,17 +25,44 @@ bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos ,floa
 	for (const auto& rs : stageray)
 	{
 		_dbgDrawLine(rs.p.x, rs.p.y, rs.end.x, rs.end.y, color);
+	}
+
+	//判定用レイ
+	Line collray;
+	if (dir_ == Dir::Up)
+	{
+		collray = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x / 2,pos.y} };
+	}
+	else if(dir_ == Dir::Down)
+	{
+		collray = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x / 2,pos.y + size.y} };
 
 	}
+	else if (dir_ == Dir::Left)
+	{
+		collray = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x,pos.y + size.y / 2} };
+
+	}
+	else if (dir_ == Dir::Right)
+	{
+		collray = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x,pos.y + size.y / 2} };
+
+	}
+
+	DrawLine(collray.p.x, collray.p.y,collray.end.x, collray.end.y,0xff0000,true);
 	
+
 	for (const auto& r : ray)
 	{
 		for (const auto& rs : stageray)
 		{
-			if (CheckLine(r, rs, offset))
+
+			if (CheckLine(r, rs, dir_, offset, collray))
 			{
 				//Hitしたら
 				DrawString(100, 0, "Hit", 0xffffff);
+				
+				
 				color = GetColor(255, 0, 0);
 				return true;
 			}
@@ -54,19 +75,14 @@ bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos ,floa
 
 
 
+
 	//当たってない
 	DrawString(100, 0, "はずれ", 0xffffff);
 	return false;
 }
 
-/// <summary>
-/// 判定処理
-/// </summary>
-/// <param name="playerLine">プレイヤーのLine</param>
-/// <param name="stageLine">stageのLine</param>
-/// <param name="offset">差分</param>
-/// <returns></returns>
-bool Raycast::CheckLine(Line playerLine, Line stageLine,float& offset)
+
+bool Raycast::CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offset,Line collRay)
 {
 
 	//３グループのベクトルを作成
@@ -88,6 +104,7 @@ bool Raycast::CheckLine(Line playerLine, Line stageLine,float& offset)
 	float cross_04 = (c_to_d.x * c_to_b.y) - (c_to_b.x * c_to_d.y);
 
 
+
 	if (cross_01 * cross_02 > 0.0f)
 	{
 		return false;
@@ -98,9 +115,38 @@ bool Raycast::CheckLine(Line playerLine, Line stageLine,float& offset)
 		return false;
 	}
 
+
 	{
+
 		//Hit
-		offset = abs(stageLine.p.y - playerLine.end.y);
+		offset = { 0.0f,0.0f };
+
+		if (dir_ == Dir::Right&& collRay.end.x > stageLine.end.x)
+		{
+			offset.x = abs(stageLine.end.x - playerLine.end.x);//右
+			DrawString(400, 0, "右判定", 0xffffff, true);
+			return true;
+		}
+		else if (dir_ == Dir::Left&& collRay.end.x < stageLine.p.x)
+		{
+			offset.x = -abs(stageLine.p.x - playerLine.p.x);//左
+			DrawString(450, 0, "左判定", 0xffffff, true);
+			return true;
+		}
+		else if (dir_ == Dir::Up&& collRay.end.y < stageLine.p.y)
+		{
+			offset.y = -abs(stageLine.p.y - playerLine.p.y);//上
+			DrawString(300, 0, "上判定", 0xffffff, true);
+			return true;
+		}
+		else if (dir_ == Dir::Down&& stageLine.p.y - playerLine.end.y)
+		{
+			offset.y = abs(stageLine.p.y - playerLine.end.y);//下
+			DrawString(350, 0, "下判定", 0xffffff, true);
+			return true;
+		}
+
+		
 		return true;
 	}
 }

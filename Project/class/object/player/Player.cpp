@@ -35,18 +35,20 @@ void Player::Init()
 	pos_ = {100,100};
 
 	//プレイヤーサイズ
-	size_ = {100,300};
+	size_ = {50,100};
+
+	//方向
+	dir_ = Dir::Max;
 
 	//重力
 	gravity_ = 0.1;
 
 	//補正差分
-	offset_ = 0.0f;
+	offset_ = { 0.0f ,0.0f };
 
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx",false);
 
-	Dir::None;
 }
 
 void Player::Update(void)
@@ -58,37 +60,42 @@ void Player::Update(void)
 	{
 		//当たってなかったら
 		pos_.y += (FALL_SPEED + gravity_);
-		//gravity_ += FALL_ACCEL;
+		gravity_ += FALL_ACCEL;
 	}
 
 	if(IsHit())
 	{
-		//当たってたら
-		pos_.y -= offset_;
+		//当たってたら補正
+		pos_ -= offset_;	
 		gravity_ = 0;
 	}
 
+	dir_ = Dir::Max;
 
 	//プレイヤー移動
 	if (controller_->ChaeckLongInputKey(KeyID::Up))
 	{
 		pos_.y -= MOVE_SPEED;
-		
+		dir_ = Dir::Up;
 	}
 	if (controller_->ChaeckLongInputKey(KeyID::Down))
 	{
 		pos_.y += MOVE_SPEED;
+		dir_ = Dir::Down;
 		
 	}
 	if (controller_->ChaeckLongInputKey(KeyID::Left))
 	{
 		pos_.x -= MOVE_SPEED;
+		dir_ = Dir::Left;
 	}
 	if (controller_->ChaeckLongInputKey(KeyID::Right))
 	{
 		pos_.x += MOVE_SPEED;
+		dir_ = Dir::Right;
 	}
 	
+
 }
 
 void Player::Draw(void)
@@ -97,7 +104,7 @@ void Player::Draw(void)
 	color = GetColor(0, 255, 0);
 
 	//プレイヤー描画
-	DrawBox(pos_.x, pos_.y, pos_.x+100, pos_.y+300,0xffffff,true);
+	DrawBox(pos_.x, pos_.y, pos_.x+ size_.x, pos_.y+ size_.y,0xffffff,true);
 
 	
 	if (IsHit())
@@ -112,7 +119,26 @@ void Player::Draw(void)
 
 	//プレイヤ
 	DrawLine(playerLine_.p.x, playerLine_.p.y, playerLine_.end.x, playerLine_.end.y, color, true);
-	DrawBox(stageLine_.p.x, stageLine_.p.y, stageLine_.end.x, stageLine_.end.y, color, true);
+
+	switch (dir_)
+	{
+	case Dir::Up:
+		DrawFormatString(200, 0, 0xffffff, "Up");
+		break;
+	case Dir::Down:
+		DrawFormatString(200, 0, 0xffffff, "Down");
+		DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y/2, 0xffff00, true);
+		break;
+	case Dir::Left:
+		DrawFormatString(200, 0, 0xffffff, "Left");
+		break;
+	case Dir::Right:
+		DrawFormatString(200, 0, 0xffffff, "Right");
+		break;
+	default:
+		break;
+	}
+
 
 	//DrawLine(stageLine_.p.x, stageLine_.p.y, stageLine_.end.x, stageLine_.end.y, color, true);
 }
@@ -138,7 +164,7 @@ bool Player::IsHit()
 		//Lineの作成
 		stageLine_ = { stagePos,stageEnd };
 		
-		if (raycast_.CheckCollision(pos_, size_, coll, offset_, color))
+		if (raycast_.CheckCollision(pos_, size_, coll, dir_, offset_,color))
 		{
 			return true;
 		}

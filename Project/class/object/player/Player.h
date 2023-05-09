@@ -9,9 +9,9 @@
 class Controller;
 enum class ControllerType;
 
-enum  Dir
+//向き
+enum class Dir
 {
-    None,
     Up,
     Down,
     Right,
@@ -51,11 +51,14 @@ private:
     //大きさ
     Vector2 size_;
 
+    //向いている方向
+    Dir dir_;
+
     //重力
     float gravity_;
 
     //補正差分
-    float offset_;
+    Vector2 offset_;
 
     //始点、終点
     Line stageLine_;
