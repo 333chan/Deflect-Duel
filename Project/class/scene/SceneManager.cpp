@@ -41,6 +41,8 @@ SceneManager::~SceneManager()
 void SceneManager::Init(void)
 {
 	scene_ = std::make_unique<GameScene>();
+	deltaTime_ = 0.0f;
+	tickCount_ = std::chrono::system_clock::now();
 }
 
 void SceneManager::Run(void)
@@ -70,6 +72,16 @@ void SceneManager::Update()
 {
 	//更新
 	scene_ = scene_->Update(std::move(scene_));
+
+	//デルタタイムの作成
+	auto tick = std::chrono::system_clock::now();
+	deltaTime_ = std::chrono::duration_cast<std::chrono::microseconds>(tick - tickCount_).count() / 1000000.0f;
+	tickCount_ = tick;
+}
+
+double SceneManager::GetDeltaTime(void)
+{
+	return deltaTime_;
 }
 
 void SceneManager::Draw(void)

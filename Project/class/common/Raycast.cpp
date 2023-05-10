@@ -121,27 +121,27 @@ bool Raycast::CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offs
 		//Hit
 		offset = { 0.0f,0.0f };
 
-		if (dir_ == Dir::Right&& collRay.end.x > stageLine.end.x)
-		{
-			offset.x = abs(stageLine.end.x - playerLine.end.x);//右
-			DrawString(400, 0, "右判定", 0xffffff, true);
-			return true;
-		}
-		else if (dir_ == Dir::Left&& collRay.end.x < stageLine.p.x)
+		if (dir_ == Dir::Left && collRay.end.x < stageLine.p.x)
 		{
 			offset.x = -abs(stageLine.p.x - playerLine.p.x);//左
 			DrawString(450, 0, "左判定", 0xffffff, true);
 			return true;
 		}
-		else if (dir_ == Dir::Up&& collRay.end.y < stageLine.p.y)
+		else if (dir_ == Dir::Right && collRay.end.x > stageLine.end.x)
+		{
+			offset.x = abs(stageLine.end.x - playerLine.end.x);//右
+			DrawString(400, 0, "右判定", 0xffffff, true);
+			return true;
+		}
+		else if (dir_ == Dir::Up && collRay.end.y < stageLine.p.y)
 		{
 			offset.y = -abs(stageLine.p.y - playerLine.p.y);//上
 			DrawString(300, 0, "上判定", 0xffffff, true);
 			return true;
 		}
-		else if (dir_ == Dir::Down&& stageLine.p.y - playerLine.end.y)
+		else if (dir_ == Dir::Down && stageLine.end.y < playerLine.end.y)
 		{
-			offset.y = abs(stageLine.p.y - playerLine.end.y);//下
+			offset.y = abs(stageLine.end.y - playerLine.end.y);//下
 			DrawString(350, 0, "下判定", 0xffffff, true);
 			return true;
 		}

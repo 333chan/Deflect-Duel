@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <chrono>
 #include"../common/Geometry.h"
 #include"BaseScene.h"
 
@@ -19,6 +20,9 @@ public:
 	//更新
 	void Run(void);
 
+	//デルタタイム取得
+	double GetDeltaTime(void);
+
 private:
 	//システムの初期化処理
 	bool SystemInit(void);
@@ -28,6 +32,12 @@ private:
 	void Update(void);
 	void Draw(void);
 	void Relese(void);
+
+	//経過時間
+	std::chrono::system_clock::time_point tickCount_;
+
+	//デルタタイム
+	double deltaTime_;
 
 	//シーン情報
 	UniqueScene scene_;

@@ -5,7 +5,8 @@
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
-constexpr int MOVE_SPEED = 10;		// 移動速度
+constexpr int MOVE_SPEED = 10.0f;		// 移動速度
+constexpr int JUMP_POW = 0.001f;		// ジャンプ力
 constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
 
@@ -55,32 +56,19 @@ void Player::Update(void)
 {
 	controller_->Update();
 
-	//簡易的な重力計算
-	if (!IsHit())
-	{
-		//当たってなかったら
-		pos_.y += (FALL_SPEED + gravity_);
-		gravity_ += FALL_ACCEL;
-	}
 
-	if(IsHit())
-	{
-		//当たってたら補正
-		pos_ -= offset_;	
-		gravity_ = 0;
-	}
 
 	dir_ = Dir::Max;
 
 	//プレイヤー移動
-	if (controller_->ChaeckLongInputKey(KeyID::Up))
+	if (controller_->ChaeckInputKey(KeyID::Up))
 	{
-		pos_.y -= MOVE_SPEED;
+		pos_.y = JUMP_POW * IpSceneMng.GetDeltaTime() +0.5*(gravity_ * (IpSceneMng.GetDeltaTime() * IpSceneMng.GetDeltaTime()));
 		dir_ = Dir::Up;
 	}
 	if (controller_->ChaeckLongInputKey(KeyID::Down))
 	{
-		pos_.y += MOVE_SPEED;
+		//pos_.y += MOVE_SPEED;
 		dir_ = Dir::Down;
 		
 	}
@@ -89,12 +77,26 @@ void Player::Update(void)
 		pos_.x -= MOVE_SPEED;
 		dir_ = Dir::Left;
 	}
-	if (controller_->ChaeckLongInputKey(KeyID::Right))
+	else if (controller_->ChaeckLongInputKey(KeyID::Right))
 	{
 		pos_.x += MOVE_SPEED;
 		dir_ = Dir::Right;
 	}
-	
+
+	//簡易的な重力計算
+	if (!IsHit())
+	{
+		//当たってなかったら
+		pos_.y += (FALL_SPEED + gravity_);
+		gravity_ += FALL_ACCEL;
+	}
+
+	if (IsHit())
+	{
+		//当たってたら補正
+		pos_ -= offset_;
+		gravity_ = 0;
+	}
 
 }
 
@@ -106,19 +108,10 @@ void Player::Draw(void)
 	//プレイヤー描画
 	DrawBox(pos_.x, pos_.y, pos_.x+ size_.x, pos_.y+ size_.y,0xffffff,true);
 
-	
-	if (IsHit())
-	{
-		//当たったら赤色に変更
-		color = GetColor(255,0,0);
-	}
-	else
-	{
-		color = GetColor(000, 255, 000);
-	}
-
 	//プレイヤ
 	DrawLine(playerLine_.p.x, playerLine_.p.y, playerLine_.end.x, playerLine_.end.y, color, true);
+
+	//DrawFormatString(800, 0, 0xffffff, "%p",IpSceneMng.GetDeltaTime());
 
 	switch (dir_)
 	{
@@ -139,7 +132,15 @@ void Player::Draw(void)
 		break;
 	}
 
-
+	if (IsHit())
+	{
+		//当たったら赤色に変更
+		color = GetColor(255, 0, 0);
+	}
+	else
+	{
+		color = GetColor(000, 255, 000);
+	}
 	//DrawLine(stageLine_.p.x, stageLine_.p.y, stageLine_.end.x, stageLine_.end.y, color, true);
 }
 
