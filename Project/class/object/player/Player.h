@@ -9,13 +9,16 @@
 class Controller;
 enum class ControllerType;
 
-//向き
-enum class Dir
+//状態
+enum class State
 {
-    Up,
-    Down,
-    Right,
-    Left,
+    Idel,       //立つ
+    JumpUp,     //ジャンプ上昇
+    Fall,       //下降
+    MoveLeft,   //左移動
+    MoveRight,  //右移動
+    Crouching,  //しゃがみ
+    Attack,     //攻撃
     Max
 };
 
@@ -51,8 +54,7 @@ private:
     //大きさ
     Vector2 size_;
 
-    //向いている方向
-    Dir dir_;
+    State state_;
 
     //重力
     float gravity_;
@@ -69,6 +71,9 @@ private:
 
     //あたり判定処理
     bool IsHit(void);
+
+    //経過時間
+    double jumpDeltaTime_;
 
 protected:
     //tmx

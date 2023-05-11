@@ -3,6 +3,7 @@
 #include "Collision2D.h"
 
 enum class Dir;
+enum class State;
 
 class Raycast
 {
@@ -13,10 +14,10 @@ public:
 	/// <param name="pos">座標</param>
 	/// <param name="size">大きさ</param>
 	/// <param name="stagepos">ステージの座標</param>
-	/// <param name="dir">方向</param>
+	/// <param name="state">状態</param>
 	/// <param name="offset">差分</param>
 	/// <returns></returns>
-	bool CheckCollision(Vector2 pos, Vector2 size, Collision stagepos,Dir dir_, Vector2& offset, int color);
+	[[nodiscard]] bool CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, State state, Vector2& offset, int color);
 
 
 private:
@@ -26,10 +27,10 @@ private:
 	/// </summary>
 	/// <param name="playerLine">プレイヤーのLine</param>
 	/// <param name="stageLine">stageのLine</param>
-	/// <param name="Dir">方向</param>
+	/// <param name="state">状態</param>
 	/// <param name="offset">差分</param>
 	/// <returns></returns>
-	bool CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offset,Line collRay);
+	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, State state, Vector2& offset,Line collRay);
 
 };
 
