@@ -22,6 +22,16 @@ enum class State
     Max
 };
 
+//•ûŒü
+enum class Dir
+{
+    Up,     //ã
+    Down,   //‰º
+    Right,  //‰E
+    Left,   //¶   
+    Max
+};
+
 class Player :
     public Object
 {
@@ -54,7 +64,11 @@ private:
     //‘å‚«‚³
     Vector2 size_;
 
+    //ó‘Ô
     State state_;
+
+    //•ûŒü
+    Dir dir_;
 
     //d—Í
     float gravity_;
@@ -71,6 +85,10 @@ private:
 
     //‚ ‚½‚è”»’èˆ—
     bool IsHit(void);
+
+    bool fallFlg_;
+
+    float YVel;
 
     //Œo‰ßŠÔ
     double jumpDeltaTime_;

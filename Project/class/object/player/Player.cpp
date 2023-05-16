@@ -5,10 +5,10 @@
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
-constexpr int MOVE_SPEED = 10.0f;		// 移動速度
+constexpr int MOVE_SPEED = 20.0f;		// 移動速度
 constexpr int JUMP_POW = 10.0f;		// ジャンプ力
-constexpr float FALL_SPEED = 1.0f;	// 落下速度
-constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
+//constexpr float FALL_SPEED = 1.0f;	// 落下速度
+constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
 Player::Player(ControllerType type)
 {
@@ -33,13 +33,16 @@ Player::~Player()
 void Player::Init()
 {
 	//プレイヤー座標
-	pos_ = {100,100};
+	pos_ = {100,200};
 
 	//プレイヤーサイズ
 	size_ = {50,100};
 
 	//状態
 	state_ = State::Idel;
+
+	//方向
+	dir_ = Dir::Max;
 
 	//重力
 	gravity_ = 0.1;
@@ -52,6 +55,9 @@ void Player::Init()
 
 	jumpDeltaTime_ = 0.0;
 
+	fallFlg_ = true;
+
+	YVel = 0.0f;
 
 }
 
@@ -61,23 +67,14 @@ void Player::Update(void)
 	auto jmupVel = JUMP_POW * jumpDeltaTime_ - (0.5 * (gravity_ * jumpDeltaTime_));
 
 	controller_->Update();
-	//state_ = State::Idel;
-	if (IsHit())
-	{
-		//当たってたら補正
-		//pos_ -= offset_;
-		//gravity_ = 0;
-	}
 
-	
 	switch (state_)
 	{
 	case State::Idel:
 	{
-		//auto jmupVel = JUMP_POW * jumpDeltaTime_ - (0.5 * (gravity_ * jumpDeltaTime_));
-		if (jmupVel < 0)
+		if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
 		{
-			//state_ = State::Fall;
+			dir_ = Dir::Max;
 		}
 
 		//プレイヤー移動
@@ -88,51 +85,79 @@ void Player::Update(void)
 			jumpDeltaTime_ = 0.0;
 			//ジャンプ
 			state_ = State::JumpUp;
+			dir_ = Dir::Up;
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Down))
 		{
 			//しゃがみ
-			state_ = State::Crouching;
-
+			//state_ = State::Crouching;
+			dir_ = Dir::Down;
+		}
+		if (!IsHit())
+		{
+			jumpDeltaTime_ = 1.29959;
+			gravity_ = 7.79999;
+			state_ = State::Fall;
+			
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
 			state_ = State::MoveLeft;
+			dir_ = Dir::Left;
 		}
 		else if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右移動
 			state_ = State::MoveRight;
-		}
-	}
-		break;
-	case State::JumpUp:
-	{
-		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
-
-		auto YVel = -JUMP_POW* jumpDeltaTime_ + (0.5 * gravity_* std::pow(jumpDeltaTime_, 2.0));
-		pos_.y += YVel;
-		gravity_ += FALL_ACCEL;
-
-		if (YVel > 0)
-		{
-			DrawBox(300, 300, 600, 600, 0xf0f0f, true);
-			//state_ = State::Fall;
+			dir_ = Dir::Right;
 		}
 	}
 	break;
+	case State::JumpUp:
+	{
+		fallFlg_ = true;
 
-	case State::Fall:
-
-		jumpDeltaTime_ = 0.0;
+		gravity_ += FALL_ACCEL;
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 
-		pos_.y += 0.5 * (gravity_ * jumpDeltaTime_);
+		YVel = -JUMP_POW*1.5 + (2 * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		pos_.y += YVel;
 
-		pos_.y += (FALL_SPEED + gravity_);
+		if (YVel > 0)
+		{
+			fallFlg_ = false;
+			//DrawBox(300, 300, 600, 600, 0xf0f0f, true);
+			state_ = State::Fall;
+		}
+
+		if (controller_->ChaeckLongInputKey(KeyID::Right))
+		{
+			//右移動
+			//pos_.x += MOVE_SPEED;
+			//state_ = State::MoveRight;
+		}
+		if (controller_->ChaeckLongInputKey(KeyID::Left))
+		{
+			//右移動
+			//pos_.x -= MOVE_SPEED;
+			//state_ = State::MoveLeft;
+		}
+	}
+	break;
+	case State::Fall:
+	{
+		dir_ = Dir::Down;
+		fallFlg_ = true;
+
+		//jumpDeltaTime_ = 0.0;
+		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
+		YVel = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		pos_.y += YVel;
+
+		//pos_.y += (FALL_SPEED + gravity_);
 
 		if (IsHit())
 		{
@@ -140,55 +165,81 @@ void Player::Update(void)
 			pos_ -= offset_;
 			gravity_ = 0;
 			state_ = State::Idel;
+			fallFlg_ = false;
 		}
 
-		break;
-	case State::MoveLeft:
+		if (controller_->ChaeckLongInputKey(KeyID::Right))
+		{
+			//右移動
+			//pos_.x += MOVE_SPEED;
+			//state_ = State::MoveRight;
+		}
+		if (controller_->ChaeckLongInputKey(KeyID::Left))
+		{
+			//右移動
+			//pos_.x -= MOVE_SPEED;
+			//state_ = State::MoveLeft;
+		}
 
+
+	}
+	break;
+	case State::MoveLeft:
+	{
 		//左
 		pos_.x -= MOVE_SPEED;
+
+		if (controller_->ChaeckInputKey(KeyID::Up))
+		{
+			//ジャンプ
+			state_ = State::JumpUp;
+		}
+
+
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			state_ = State::Idel;
 		}
 
-		if (jmupVel < 0)
-		{
-			state_ = State::Fall;
-		}
-		else 
-		{
-
-		}
-
+	}
 		break;
 	case State::MoveRight:
+	{
 		//右
 		pos_.x += MOVE_SPEED;
+		if (controller_->ChaeckInputKey(KeyID::Up))
+		{
+			//ジャンプ
+			state_ = State::JumpUp;
+		}
+
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			state_ = State::Idel;
 		}
+	}
 		break;
 	case State::Crouching:
+		if (!controller_->ChaeckLongInputKey(KeyID::Down))
+		{
+			state_ = State::Idel;
+		}
 		break;
 	case State::Attack:
 		break;
 	case State::Max:
+		state_ = State::Idel;
 		break;
 	[[likery]]default:
 		break;
 	}
 
-	//簡易的な重力計算
-	if (!IsHit())
+	if (IsHit())
 	{
-		//当たってなかったら
-		pos_.y += (FALL_SPEED + gravity_);
-		gravity_ += FALL_ACCEL;
+		//当たってたら補正
+		pos_ -= offset_;
+		//gravity_ = 0;
 	}
-
-
 
 }
 
@@ -202,10 +253,6 @@ void Player::Draw(void)
 
 	//プレイヤ
 	DrawLine(playerLine_.p.x, playerLine_.p.y, playerLine_.end.x, playerLine_.end.y, color, true);
-
-	DrawFormatString(100,20,0xffffff,"",state_, true);
-
-
 
 	switch (state_)
 	{
@@ -231,6 +278,27 @@ void Player::Draw(void)
 		DrawFormatString(300, 30, 0xffffff, "State:Attack");
 		break;
 	case State::Max:
+		break;
+	default:
+		break;
+	}
+
+	switch (dir_)
+	{
+	case Dir::Up:
+		DrawFormatString(450, 30, 0xffffff, "Dir:Up");
+		break;
+	case Dir::Down:
+		DrawFormatString(450, 30, 0xffffff, "Dir:Down");
+		break;
+	case Dir::Right:
+		DrawFormatString(450, 30, 0xffffff, "Dir:Right");
+		break;
+	case Dir::Left:
+		DrawFormatString(450, 30, 0xffffff, "Dir:Left");
+		break;
+	case Dir::Max:
+		DrawFormatString(450, 30, 0xffffff, "Dir:MAX");
 		break;
 	default:
 		break;
@@ -269,13 +337,13 @@ bool Player::IsHit()
 		//Lineの作成
 		stageLine_ = { stagePos,stageEnd };
 		
-		if (raycast_.CheckCollision(pos_, size_, coll, state_, offset_,color))
+		if (raycast_.CheckCollision(pos_, size_, coll, dir_, fallFlg_, offset_,color))
 		{
 			return true;
 		}
 	}
 
 	return false;
-
-
 }
+
+

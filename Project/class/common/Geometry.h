@@ -118,6 +118,8 @@ struct Line
 	Vector2 p;		//始点
 	Vector2 end;	//終点
 	Vector2 vec();
+
+	bool operator == (const Line& line)const;
 };
 
 //内積を返す
