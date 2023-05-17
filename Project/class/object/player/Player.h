@@ -84,11 +84,9 @@ private:
     Raycast raycast_;
 
     //‚ ‚½‚è”»’èˆ—
-    bool IsHit(void);
+    bool IsHit(Line collRay);
 
     bool fallFlg_;
-
-    float YVel;
 
     //Œo‰ßŠÔ
     double jumpDeltaTime_;

@@ -17,7 +17,7 @@ public:
 	/// <param name="state">ó‘Ô</param>
 	/// <param name="offset">·•ª</param>
 	/// <returns></returns>
-	[[nodiscard]] bool CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, Dir dir_, bool flg, Vector2& offset, int color);
+	[[nodiscard]] bool CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, Dir dir_, Line collRay, Vector2& offset, int color);
 
 
 private:
@@ -30,7 +30,7 @@ private:
 	/// <param name="state">ó‘Ô</param>
 	/// <param name="offset">·•ª</param>
 	/// <returns></returns>
-	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offset, Line collRay);
+	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offset);
 	std::vector<Line> stageray;
 };
 
