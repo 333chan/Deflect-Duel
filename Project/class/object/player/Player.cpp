@@ -6,7 +6,7 @@
 #include"../../../_debug/_DebugDispOut.h"
 
 constexpr int MOVE_SPEED = 20.0f;		// 移動速度
-constexpr int JUMP_POW = 14.0f;		// ジャンプ力
+constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 //constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
@@ -21,6 +21,7 @@ Player::Player(ControllerType type)
 	{
 		controller_ = std::make_unique<KeyInput>();
 	}
+	
 
 	Init();
 }
@@ -32,11 +33,13 @@ Player::~Player()
 
 void Player::Init()
 {
+
+
 	//プレイヤー座標
 	pos_ = {100,300};
 
 	//プレイヤーサイズ
-	size_ = {50,100};
+	size_ = {80,100};
 
 	//状態
 	state_ = State::Idel;
@@ -53,17 +56,13 @@ void Player::Init()
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx",false);
 
+	playerImage_ = LoadGraph("resource/image/character/player.png", true);
+
 	jumpDeltaTime_ = 0.0;
-
-	fallFlg_ = false;
-
 }
 
 void Player::Update(void)
 {
-
-	auto jmupVel = JUMP_POW * jumpDeltaTime_ - (0.5 * (gravity_ * jumpDeltaTime_));
-
 	controller_->Update();
 
 	switch (state_)
@@ -72,10 +71,10 @@ void Player::Update(void)
 	{
 		gravity_ = 0;
 
-		//if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
-		//{
-		//	dir_ = Dir::Max;
-		//}
+		if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
+		{
+			dir_ = Dir::Max;
+		}
 
 		//プレイヤー移動
 		if (controller_->ChaeckInputKey(KeyID::Up))
@@ -86,6 +85,14 @@ void Player::Update(void)
 			//ジャンプ
 			state_ = State::JumpUp;
 			dir_ = Dir::Up;
+
+			break;
+		}
+		if (!IsHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		{
+			jumpDeltaTime_ = 1.3;
+			gravity_ = 7.8;
+			state_ = State::Fall;
 			break;
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Down))
@@ -94,12 +101,7 @@ void Player::Update(void)
 			//state_ = State::Crouching;
 			dir_ = Dir::Down;
 		}
-		if (!IsHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
-		{
-			jumpDeltaTime_ = 1.29959;
-			gravity_ = 7.79999;
-			state_ = State::Fall;
-		}
+
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
@@ -116,18 +118,23 @@ void Player::Update(void)
 	break;
 	case State::JumpUp:
 	{
+		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		if (YVel > 0)
+		{
+			state_ = State::Idel;
+
+		}
 
 		gravity_ += FALL_ACCEL;
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 		
-		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+
 		pos_.y += YVel;
 
-		if (YVel > 0)
+		if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y })))
 		{
-			fallFlg_ = false;
-			//DrawBox(300, 300, 600, 600, 0xf0f0f, true);
-			state_ = State::Fall;
+			//当たってたら補正
+			pos_ -= offset_;
 		}
 
 
@@ -165,14 +172,11 @@ void Player::Update(void)
 	{
 		dir_ = Dir::Down;
 
-		//jumpDeltaTime_ = 0.0;
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
 		auto YVel = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
 		pos_.y += YVel;
-
-		//pos_.y += (FALL_SPEED + gravity_);
 
 		if (IsHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
 		{
@@ -180,7 +184,6 @@ void Player::Update(void)
 			pos_ -= offset_;
 			
 			state_ = State::Idel;
-			fallFlg_ = false;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
@@ -188,7 +191,6 @@ void Player::Update(void)
 			//右移動
 			pos_.x += MOVE_SPEED;
 			dir_ = Dir::Right;
-			//state_ = State::MoveRight;
 			if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 			{
 				//当たってたら補正
@@ -200,8 +202,6 @@ void Player::Update(void)
 			//左移動
 			pos_.x -= MOVE_SPEED;
 			dir_ = Dir::Left;
-
-			//state_ = State::MoveLeft;
 			if (IsHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 			{
 				//当たってたら補正
@@ -214,12 +214,8 @@ void Player::Update(void)
 	break;
 	case State::MoveLeft:
 	{
-
-
-		//左
+		//左移動
 		pos_.x -= MOVE_SPEED;
-
-
 
 		if (controller_->ChaeckInputKey(KeyID::Up))
 		{
@@ -228,6 +224,7 @@ void Player::Update(void)
 			jumpDeltaTime_ = 0.0;
 			state_ = State::JumpUp;
 		}
+
 		if (IsHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 		{
 			//当たってたら補正
@@ -237,17 +234,16 @@ void Player::Update(void)
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
+			//移動キーを放したらIdel
 			state_ = State::Idel;
 		}
-
-
-
 	}
 		break;
 	case State::MoveRight:
 	{
-		//右
+		//右移動
 		pos_.x += MOVE_SPEED;
+
 		if (controller_->ChaeckInputKey(KeyID::Up))
 		{
 			//ジャンプ
@@ -264,47 +260,37 @@ void Player::Update(void)
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
 		{
+			//移動キーを放したらIdel
 			state_ = State::Idel;
 		}
 	}
 		break;
+
 	case State::Crouching:
+
 		if (!controller_->ChaeckLongInputKey(KeyID::Down))
 		{
-			//state_ = State::Idel;
+			state_ = State::Idel;
 		}
 		break;
+
 	case State::Attack:
 		break;
 	case State::Max:
-		//state_ = State::Idel;
 		break;
 	[[likery]]default:
 		break;
 	}
-
-	//if (IsHit())
-	//{
-	//	//当たってたら補正
-	//	pos_ -= offset_;
-	//	//gravity_ = 0;
-	//}
-
 }
 
 void Player::Draw(void)
 {
-	//色
-	color = GetColor(0, 255, 0);
-
 	//プレイヤー描画
-	DrawBox(pos_.x, pos_.y, pos_.x+ size_.x, pos_.y+ size_.y,0xffffff,true);
+	//DrawBox(pos_.x, pos_.y, pos_.x+ size_.x, pos_.y+ size_.y,0xffffff,true);
 
-	//プレイヤ
-	DrawLine(playerLine_.p.x, playerLine_.p.y, playerLine_.end.x, playerLine_.end.y, color, true);
+	DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
 
-
-
+#ifdef _DEBUG	//デバック時のみ
 	switch (state_)
 	{
 	case State::Idel:
@@ -354,7 +340,8 @@ void Player::Draw(void)
 	default:
 		break;
 	}
-	//DrawLine(stageLine_.p.x, stageLine_.p.y, stageLine_.end.x, stageLine_.end.y, color, true);
+
+#endif // _DEBUG
 }
 
 void Player::Release(void)
@@ -363,23 +350,13 @@ void Player::Release(void)
 
 bool Player::IsHit(Line collRay)
 {
-	Vector2 stagePos;		//始点
-	Vector2 stagePosEnd;	//終点
+	//レイのデバック表示
 	_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
-	{
-		stagePos = coll.first;
-		stagePosEnd = stagePos + coll.second;
-
-		//右上の終点
-		Vector2 stageEnd = Vector2{ stagePosEnd.x,stagePos.y };
-
-		//Lineの作成
-		stageLine_ = { stagePos,stageEnd };
-		
-		if (raycast_.CheckCollision(pos_, size_, coll, dir_, collRay, offset_,color))
+	{	
+		if (raycast_.CheckCollision(coll, dir_, collRay, offset_))
 		{
 			return true;
 		}

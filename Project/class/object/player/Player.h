@@ -86,10 +86,10 @@ private:
     //‚ ‚½‚è”»’èˆ—
     bool IsHit(Line collRay);
 
-    bool fallFlg_;
-
     //Œo‰ßŠÔ
     double jumpDeltaTime_;
+
+    int playerImage_;
 
 protected:
     //tmx

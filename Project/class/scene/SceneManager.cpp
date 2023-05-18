@@ -7,16 +7,14 @@
 
 
 //画面サイズ(フルスクリーン予定)
-constexpr int SCREEN_SIZE_X = 1280;
+constexpr int SCREEN_SIZE_X =1280;
 constexpr int SCREEN_SIZE_Y = 720;
-
 bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
 	ChangeWindowMode(true);
-	// SetWindowIconID(ICON_1); // アイコン変更
-	SetWindowText("2016019_田中矯");
+	SetWindowText("Bouncer");
 
 	if (DxLib_Init() == -1)
 	{
@@ -40,7 +38,10 @@ SceneManager::~SceneManager()
 
 void SceneManager::Init(void)
 {
+	//起動時シーン設定
 	scene_ = std::make_unique<GameScene>();
+
+	//デルタタイム系の初期化
 	deltaTime_ = 0.0f;
 	tickCount_ = std::chrono::system_clock::now();
 }
@@ -57,8 +58,13 @@ void SceneManager::Run(void)
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
 		
 		
+		//デバック開始
+		_dbgStartDraw();
+
 		// 更新
 		Update();
+
+		//描画
 		Draw();
 
 		ScreenFlip();

@@ -38,7 +38,11 @@ public:
 	const int GetMapData(std::string layer, int x, int y);	//x,yは升目
 	
 
+	//ステージの判定
 	CollList& GetStageCollList(void);
+
+	//ステージの画像
+	CollList& GetStageimageList(void);
 
 private:
 	bool CheckTiledVersion(rapidxml::xml_node<>* node);
@@ -58,5 +62,8 @@ private:
 
 	//当たり判定
 	CollList stageCollList_;
+
+	//ステージ画像の大きさ
+	CollList stageimageList_;
 };
 

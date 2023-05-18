@@ -3,19 +3,11 @@
 #include"../../_debug/_DebugDispOut.h"
 
 
-bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, Dir dir,Line collRay, Vector2& offset, int color)
+bool Raycast::CheckCollision(Collision stagepos, Dir dir,Line collRay, Vector2& offset)
 {
-	Line ray[4] =
-	{
-		{pos,{pos.x+size.x,pos.y} },			//上
-		{{pos.x,pos.y + size.y},pos + size },	//下
-		{pos,{pos.x,pos.y+size.y} },			//左
-		{{pos.x+size.x,pos.y},pos + size },		//右
-	};
-
+	//ステージ判定用レイの作成
 	stageray =
 	{
-
 		{stagepos.first,{stagepos.second.x,stagepos.first.y} },			//上
 		{{stagepos.first.x,stagepos.second.y},stagepos.second},			//下
 		{stagepos.first,{stagepos.first.x,stagepos.second.y} },			//左
@@ -24,57 +16,23 @@ bool Raycast::CheckCollision(Vector2 pos, Vector2 size, Collision stagepos, Dir 
 
 	for (const auto& rs : stageray)
 	{
-		_dbgDrawLine(rs.p.x, rs.p.y, rs.end.x, rs.end.y, color);
+		//デバック用判定ライン
+		_dbgDrawLine(rs.p.x, rs.p.y, rs.end.x, rs.end.y,0xffffff);
+
 	}
-
-	//判定用レイ
-	//if (dir == Dir::Up)
-	//{
-	//	collRay = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x / 2,pos.y} };
-	//}
-	//if (dir == Dir::Down)
-	//{
-	//	collRay = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x / 2,pos.y + size.y} };
-
-	//}
-	//if (dir == Dir::Left)
-	//{
-	//	collRay = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x,pos.y + size.y / 2} };
-
-	//}
-	//if (dir == Dir::Right)
-	//{
-	//	collRay = { {pos.x + size.x / 2,pos.y + size.y / 2},{pos.x + size.x ,pos.y + size.y / 2 }  };
-
-	//}
-
-	//DrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y,0xff0000,true);
 	
-
-	//PlayerRay
-	//for (const auto& r : ray)
+	//ステージレイ分チェック
+	for (const auto& rs : stageray)
 	{
-		//ステージレイ
-		for (const auto& rs : stageray)
+		if (CheckLine(collRay, rs, dir, offset))
 		{
-
-			if (CheckLine(collRay, rs, dir, offset))
-			{
-				//Hitしたら
-				DrawString(100, 0, "Hit", 0xffffff);
-				
-				
-				color = GetColor(255, 0, 0);
-				return true;
-			}
-			else
-			{
-				color = GetColor(255, 255, 0);
-			}
+			//Hitしたら
+			_dbgDrawFormatString(100, 0, 0xfffffff, "Hit");
+			return true;
 		}
 	}
 	//当たってない
-	DrawString(100, 0, "はずれ", 0xffffff);
+	_dbgDrawFormatString(100, 30, 0xffffff, "はずれ");
 	return false;
 }
 
@@ -101,12 +59,12 @@ bool Raycast::CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offs
 	float cross_04 = (c_to_d.x * c_to_b.y) - (c_to_b.x * c_to_d.y);
 
 
-
+	//交差していない
 	if (cross_01 * cross_02 > 0.0f)
 	{
 		return false;
 	}
-
+	//交差していない
 	if (cross_03 * cross_04 > 0.0f)
 	{
 		return false;
@@ -115,31 +73,31 @@ bool Raycast::CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offs
 
 	{
 
-		//Hit時
+		//交差している
 		offset = { 0.0f,0.0f };
 
-		if (dir_ == Dir::Left /*&& collRay.end.x < stageLine.p.x*/ && stageray[2] == stageLine)
+		if (dir_ == Dir::Left && stageray[2] == stageLine)
 		{
 			offset.x = -abs(stageLine.p.x - playerLine.end.x);//左
-			DrawString(450, 0, "左判定", 0xffffff, true);
+			_dbgDrawFormatString(450, 0, 0xffffff, "左判定", true);
 			return true;
 		}
-		if (dir_ == Dir::Right /*&& collRay.end.x > stageLine.end.x*/ && stageray[3] == stageLine)
+		if (dir_ == Dir::Right&& stageray[3] == stageLine)
 		{
 			offset.x = abs(stageLine.end.x - playerLine.end.x);//右
-			DrawString(400, 0, "右判定", 0xffffff, true);
+			_dbgDrawFormatString(450, 0, 0xffffff, "右判定", true);
 			return true;
 		}
-		if (dir_ == Dir::Up/*&& stageLine.p.y < collRay.end.y*/ && stageray[0] == stageLine)
+		if (dir_ == Dir::Up&& stageray[0] == stageLine)
 		{
 			offset.y = -abs(stageLine.p.y - playerLine.p.y);//上
-			DrawString(300, 0, "上判定", 0xffffff, true);
+			_dbgDrawFormatString(450, 0, 0xffffff, "上判定", true);
 			return true;
 		}
-		if (dir_ == Dir::Down /*&& stageLine.end.y < playerLine.end.y*/ && stageray[1] == stageLine)
+		if (dir_ == Dir::Down&& stageray[1] == stageLine)
 		{
 			offset.y = abs(stageLine.end.y - playerLine.end.y);//下
-			DrawString(350, 0, "下判定", 0xffffff, true);
+			_dbgDrawFormatString(450, 0, 0xffffff, "下判定", true);
 			return true;
 		}
 

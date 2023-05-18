@@ -246,6 +246,16 @@ bool TmxObj::SetMap(void)
 				);
 			}
 
+			if (collName == "stageimage")
+			{
+				stageimageList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
+
 			/*if (collName == "titleColl")
 			{
 				titleCollList_.push_back(
@@ -434,6 +444,11 @@ const int TmxObj::GetMapData(std::string layer, int x, int y)
 CollList& TmxObj::GetStageCollList(void)
 {
 	return stageCollList_;
+}
+
+CollList& TmxObj::GetStageimageList(void)
+{
+	return stageimageList_;
 }
 
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)

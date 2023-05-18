@@ -1,6 +1,7 @@
 #pragma once
 #include "../../common/Geometry.h"
 #include "../Object.h"
+#include "../../tmx/TmxObj.h"
 
 class Stage :
     public Object
@@ -19,6 +20,15 @@ public:
     void Release() override;
 
 private:
+
+    Vector2 stagePos;		//始点
+    Vector2 stagePosEnd;	//終点
+
+    int stageImage_;
+
+protected:
+    //tmx
+    TmxObj tmxObj_;
 
 };
 
