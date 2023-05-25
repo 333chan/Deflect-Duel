@@ -14,7 +14,7 @@ KeyInput::KeyInput()
 
 		{KeyID::Decide,		KEY_INPUT_RETURN},
 		{KeyID::Canacel,	KEY_INPUT_ESCAPE},
-		{KeyID::Attack,		KEY_INPUT_RSHIFT},
+		{KeyID::Attack,		KEY_INPUT_SPACE},
 		{KeyID::Jump,		KEY_INPUT_SPACE}
 	};
 

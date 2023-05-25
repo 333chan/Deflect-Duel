@@ -6,6 +6,7 @@
 #include "../input/PadInput.h"
 #include "../object/player/Player.h"
 #include "../object/stage/Stage.h"
+#include "../object/ball/Ball.h"
 #include "GameScene.h"
 
 GameScene::GameScene()
@@ -35,6 +36,7 @@ void GameScene::Init(void)
 	//インスタンスの生成
 	player_ = std::make_unique<Player>(controller_->GetControllerType());
 	stage_ = std::make_unique<Stage>();
+	ball_ = std::make_unique<Ball>();
 }
 
 UniqueScene GameScene::Update(UniqueScene scene)
@@ -44,6 +46,9 @@ UniqueScene GameScene::Update(UniqueScene scene)
 
 	//ステージ
 	stage_->Update();
+
+	//ボール
+	ball_->Update();
 
 	DrawScreen();
 	return UpdateScene(scene);
@@ -59,6 +64,9 @@ void GameScene::DrawScreen(void)
 
 	//プレイヤー
 	player_->Draw();
+
+	//ボール
+	ball_->Draw();
 
 	DrawFormatString(0,0,0xffffff,"GameScene");
 }

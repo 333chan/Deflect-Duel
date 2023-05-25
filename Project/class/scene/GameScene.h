@@ -5,6 +5,7 @@
 
 class Controller;
 class Player;
+class Ball;
 class Stage;
 
 class GameScene :
@@ -44,5 +45,8 @@ private:
 
     //ステージ情報
     std::unique_ptr<Stage> stage_;
+
+    //ボール情報
+    std::unique_ptr<Ball> ball_;
 };
 

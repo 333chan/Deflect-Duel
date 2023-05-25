@@ -64,6 +64,9 @@ private:
     //大きさ
     Vector2 size_;
 
+    //攻撃時の画像の大きさ
+    Vector2 attacksize_;
+
     //状態
     State state_;
 
@@ -83,13 +86,20 @@ private:
     //判定
     Raycast raycast_;
 
-    //あたり判定処理
-    bool IsHit(Line collRay);
+    //ステージとの判定処理
+    bool IsStageHit(Line collRay);
+
+    bool IsBallHit();
 
     //経過時間
     double jumpDeltaTime_;
 
     int playerImage_;
+    int playerImage2_;
+    int playerImage3_;
+    int playerImage4_;
+    int playerImage5_;
+    int playerImage6_;
 
 protected:
     //tmx

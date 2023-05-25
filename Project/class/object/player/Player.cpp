@@ -39,7 +39,8 @@ void Player::Init()
 	pos_ = {100,300};
 
 	//プレイヤーサイズ
-	size_ = {80,100};
+	size_ = {48,96};
+	attacksize_ = {96,96};
 
 	//状態
 	state_ = State::Idel;
@@ -53,12 +54,19 @@ void Player::Init()
 	//補正差分
 	offset_ = { 0.0f ,0.0f };
 
-	//tmxの読み込み
-	tmxObj_.LoadTmx("resource/tmx/Stage.tmx",false);
-
-	playerImage_ = LoadGraph("resource/image/character/player.png", true);
-
 	jumpDeltaTime_ = 0.0;
+
+	//Idel
+	playerImage_ = LoadGraph("resource/image/character/player_idle.png", true);
+	playerImage2_ = LoadGraph("resource/image/character/player_move.png", true);
+	playerImage3_ = LoadGraph("resource/image/character/Player_Crouch.png", true);
+	playerImage4_ = LoadGraph("resource/image/character/player_up.png", true);
+	playerImage5_ = LoadGraph("resource/image/character/player_down.png", true);
+	playerImage6_ = LoadGraph("resource/image/character/player_attack.png", true);
+
+	//tmxの読み込み
+	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
+
 }
 
 void Player::Update(void)
@@ -88,7 +96,7 @@ void Player::Update(void)
 
 			break;
 		}
-		if (!IsHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		if (!IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
 		{
 			jumpDeltaTime_ = 1.3;
 			gravity_ = 7.8;
@@ -114,6 +122,10 @@ void Player::Update(void)
 			state_ = State::MoveRight;
 			dir_ = Dir::Right;
 		}
+		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			state_ = State::Attack;
+		}
 	}
 	break;
 	case State::JumpUp:
@@ -131,7 +143,7 @@ void Player::Update(void)
 
 		pos_.y += YVel;
 
-		if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y })))
+		if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -146,7 +158,7 @@ void Player::Update(void)
 			//右移動
 			pos_.x += MOVE_SPEED;
 			//state_ = State::MoveRight;
-			if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -160,7 +172,7 @@ void Player::Update(void)
 			//右移動
 			pos_.x -= MOVE_SPEED;
 			//state_ = State::MoveLeft;
-			if (IsHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -178,7 +190,7 @@ void Player::Update(void)
 		auto YVel = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
 		pos_.y += YVel;
 
-		if (IsHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		if (IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -191,7 +203,7 @@ void Player::Update(void)
 			//右移動
 			pos_.x += MOVE_SPEED;
 			dir_ = Dir::Right;
-			if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -202,7 +214,7 @@ void Player::Update(void)
 			//左移動
 			pos_.x -= MOVE_SPEED;
 			dir_ = Dir::Left;
-			if (IsHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -225,7 +237,7 @@ void Player::Update(void)
 			state_ = State::JumpUp;
 		}
 
-		if (IsHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+		if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -252,7 +264,7 @@ void Player::Update(void)
 			state_ = State::JumpUp;
 		}
 
-		if (IsHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+		if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -275,6 +287,10 @@ void Player::Update(void)
 		break;
 
 	case State::Attack:
+		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			state_ = State::Idel;
+		}
 		break;
 	case State::Max:
 		break;
@@ -286,33 +302,35 @@ void Player::Update(void)
 void Player::Draw(void)
 {
 	//プレイヤー描画
-	//DrawBox(pos_.x, pos_.y, pos_.x+ size_.x, pos_.y+ size_.y,0xffffff,true);
-
-	DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
-
 #ifdef _DEBUG	//デバック時のみ
 	switch (state_)
 	{
 	case State::Idel:
 		DrawFormatString(300, 30, 0xffffff, "State:Idel");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
 		break;
 	case State::JumpUp:
 		DrawFormatString(300, 30, 0xffffff, "State:JumpUp");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage4_, true);
 		break;
 	case State::Fall:
 		DrawFormatString(300, 30, 0xffffff, "State:Fall");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage5_, true);
 		break;
 	case State::MoveLeft:
-		DrawFormatString(300, 30, 0xffffff, "State:Move");
+		DrawFormatString(300, 30, 0xffffff, "State:Left");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x - size_.x, pos_.y + size_.y, playerImage2_, true);
 		break;
 	case State::MoveRight:
-		DrawFormatString(300, 30, 0xffffff, "State:Move");
+		DrawFormatString(300, 30, 0xffffff, "State:Right");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage2_, true);
 		break;
 	case State::Crouching:
 		DrawFormatString(300, 30, 0xffffff, "State:Crouching");
 		break;
 	case State::Attack:
 		DrawFormatString(300, 30, 0xffffff, "State:Attack");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage6_, true);
 		break;
 	case State::Max:
 		break;
@@ -341,6 +359,8 @@ void Player::Draw(void)
 		break;
 	}
 
+	//判定
+	DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
 #endif // _DEBUG
 }
 
@@ -348,7 +368,8 @@ void Player::Release(void)
 {
 }
 
-bool Player::IsHit(Line collRay)
+//ステージとのあたり判定
+bool Player::IsStageHit(Line collRay)
 {
 	//レイのデバック表示
 	_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
@@ -364,5 +385,13 @@ bool Player::IsHit(Line collRay)
 
 	return false;
 }
+
+//ボールとのあたり判定
+bool Player::IsBallHit()
+{
+	return false;
+}
+
+
 
 
