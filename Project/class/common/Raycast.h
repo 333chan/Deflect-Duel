@@ -19,12 +19,10 @@ public:
 	/// <param name="offset">差分</param>
 	/// <returns></returns>
 	/// nodiscard:関数の戻り値を全て必ず使用すること
-	[[nodiscard]] bool CheckCollision(Collision stagepos, Dir dir_, Line collRay, Vector2& offset);
+	[[nodiscard]] bool CheckCollision(Collision stagepos,  Vector2& offset);
 
-	[[nodiscard]] bool CheckStagetoBallCollision(Collision stagepos, Vector2& ballpos, Vector2& size_, Vector2& offset);
-
-	[[nodiscard]] bool CheckStagetoBallCollision(Line collRay, Vector2& ballpos, Vector2& size_, Vector2& offset);
-
+	void setBallRay(Vector2 pos, Vector2 size);
+	void setPlayerRay(Line ray);
 
 private:
 
@@ -37,13 +35,17 @@ private:
 	/// <param name="offset">差分</param>
 	/// <returns></returns>
 	/// nodiscard:関数の戻り値を全て必ず使用すること
-	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, Dir dir_, Vector2& offset);
-	[[nodiscard]] bool ChecBallLine(Line ballLine, Line stageLine, Vector2& offset);
+	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, Vector2& offset);
+
+	void setStageRay(Collision stagepos);
+
 
 	//ステージレイ
-	std::vector<Line> stageray;
+	std::vector<Line> stageray_;
 
-	std::vector<Line> ballray;
+	std::vector<Line> ballray_;
+
+	Line playerray_;
 
 };
 

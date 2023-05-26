@@ -4,6 +4,7 @@
 #include "../Object.h"
 #include "../../tmx/TmxObj.h"
 #include "../../common/Raycast.h"
+#include "../../object/ball/Ball.h"
 
 
 class Controller;
@@ -86,6 +87,8 @@ private:
     //判定
     Raycast raycast_;
 
+    Ball ball_;
+
     //ステージとの判定処理
     bool IsStageHit(Line collRay);
 
@@ -100,6 +103,9 @@ private:
     int playerImage4_;
     int playerImage5_;
     int playerImage6_;
+
+    Vector2 ballpos_;
+    Vector2 ballsize_;
 
 protected:
     //tmx

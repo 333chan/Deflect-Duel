@@ -42,6 +42,9 @@ void Player::Init()
 	size_ = {48,96};
 	attacksize_ = {96,96};
 
+	ballpos_ = {0,0};
+	ballsize_ = { 0,0 };
+
 	//状態
 	state_ = State::Idel;
 
@@ -169,7 +172,7 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			dir_ = Dir::Left;
-			//右移動
+			//左移動
 			pos_.x -= MOVE_SPEED;
 			//state_ = State::MoveLeft;
 			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
@@ -297,6 +300,10 @@ void Player::Update(void)
 	[[likery]]default:
 		break;
 	}
+
+
+
+	
 }
 
 void Player::Draw(void)
@@ -319,7 +326,7 @@ void Player::Draw(void)
 		break;
 	case State::MoveLeft:
 		DrawFormatString(300, 30, 0xffffff, "State:Left");
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x - size_.x, pos_.y + size_.y, playerImage2_, true);
+		DrawExtendGraph(pos_.x +size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage2_, true);
 		break;
 	case State::MoveRight:
 		DrawFormatString(300, 30, 0xffffff, "State:Right");
@@ -360,7 +367,10 @@ void Player::Draw(void)
 	}
 
 	//判定
-	DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
+	//DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
+
+	//DrawBox(ball_.pos_.x, ball_.pos_.y, ball_.pos_.x + ball_.size_.x, ball_.pos_.y + ball_.size_.y, 0xffff00, false);
+
 #endif // _DEBUG
 }
 
@@ -372,12 +382,14 @@ void Player::Release(void)
 bool Player::IsStageHit(Line collRay)
 {
 	//レイのデバック表示
-	_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
+	//_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
+	raycast_.setPlayerRay(collRay);
+	raycast_.setBallRay(ball_.pos_, ball_.size_);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{	
-		if (raycast_.CheckCollision(coll, dir_, collRay, offset_))
+		if (raycast_.CheckCollision(coll, offset_))
 		{
 			return true;
 		}

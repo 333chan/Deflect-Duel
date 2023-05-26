@@ -2,14 +2,12 @@
 #include "../../scene/SceneManager.h"
 #include "../../tmx/TmxObj.h"
 #include "Ball.h"
-#include "../../object/player/Player.h"
 
 constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
 
 Ball::Ball()
 {
-
 	Init();
 }
 
@@ -25,7 +23,7 @@ void Ball::Init()
 	pos_ = {200,200};
 
 	//大きさ
-	size_ = { 0,0 };
+	size_ = { 128,128 };
 
 	//重力
 	gravity_ = 0.1;
@@ -37,29 +35,30 @@ void Ball::Init()
 
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
-
-	GetGraphSizeF(ballImage_, &size_.x, &size_.y);
-
-
 }
 
 void Ball::Update()
 {
-	
-	if (IsStageHit())
-	{
-		gravity_ = 0;
-	}
-	else
+	if (!IsStageHit())
 	{
 		gravity_ += FALL_ACCEL;
 		pos_.y += gravity_;
-
+	
 	}
+	else
+	{
+
+		gravity_ = 0;
+		pos_ -= offset_;
+	}
+
+	
+
 }
 
 void Ball::Draw()
 {
+	
 	//DrawBox(pos_.x, pos_.y, pos_.x+size_.x, pos_.y + size_.y, 0xffffff, false);
 	DrawExtendGraph(pos_.x, pos_.y, pos_ .x+size_.x, pos_.y + size_.y,ballImage_,true);
 }
@@ -68,12 +67,22 @@ void Ball::Release()
 {
 }
 
+void Ball::SetBallform(Vector2& pos, Vector2& size)
+{
+	pos = pos_;
+	size = size_;
+}
+
 bool Ball::IsStageHit()
 {
+	SetBallform(pos_, size_);
+
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{
-		if (raycast_.CheckStagetoBallCollision(coll, pos_, size_, offset_))
+		raycast_.setBallRay(pos_, size_);
+
+		if (raycast_.CheckCollision(coll, offset_))
 		{
 			return true;
 		}

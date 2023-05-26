@@ -22,20 +22,20 @@ public:
     //‰ğ•ú
     void Release() override;
 
+    void SetBallform(Vector2& pos,Vector2&size);
 
-
-    
-private:
-    int ballImage_;
-
-    //d—Í
-    float gravity_;
 
     //À•W
     Vector2 pos_;
 
     //‘å‚«‚³
     Vector2 size_;
+    
+private:
+    int ballImage_;
+
+    //d—Í
+    float gravity_;
 
     Vector2 offset_;
 
@@ -46,7 +46,5 @@ private:
     TmxObj tmxObj_;
 
     Raycast raycast_;
-
-
 };
 
