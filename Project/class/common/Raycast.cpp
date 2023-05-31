@@ -150,8 +150,6 @@ void Raycast::setBallRay(Vector2 pos, Vector2 size)
 		{{pos.x,pos.y},{pos.x,pos.y + size.y}},							//ç∂
 		{{pos.x + size.x,pos.y},{pos.x + size.x,pos.y + size.y}},		//âE
 	};
-
-	DrawBox(pos.x, pos.y, pos.x + size.x, pos.y + size.y, 0xff0000, false);
 }
 
 void Raycast::setPlayerRay(Line ray)

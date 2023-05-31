@@ -39,6 +39,8 @@ void Ball::Init()
 
 void Ball::Update()
 {
+	SetBallform(pos_, size_);
+
 	if (!IsStageHit())
 	{
 		gravity_ += FALL_ACCEL;
