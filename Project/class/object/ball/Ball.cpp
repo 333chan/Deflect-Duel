@@ -20,13 +20,13 @@ void Ball::Init()
 {
 
 	//ç¿ïW
-	pos_ = {200,200};
+	pos_ = {200,400};
 
 	//ëÂÇ´Ç≥
 	size_ = { 128,128 };
 
 	//èdóÕ
-	gravity_ = 0.1;
+	gravity_ = 0.0;
 
 	//ï‚ê≥
 	offset_ = { 0,0 };
@@ -54,8 +54,6 @@ void Ball::Update()
 		pos_ -= offset_;
 	}
 
-	
-
 }
 
 void Ball::Draw()
@@ -77,14 +75,13 @@ void Ball::SetBallform(Vector2& pos, Vector2& size)
 
 bool Ball::IsStageHit()
 {
-	SetBallform(pos_, size_);
 
 	//tmxÇÃCollLisetéÊìæ
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{
 		raycast_.setBallRay(pos_, size_);
 
-		if (raycast_.CheckCollision(coll, offset_))
+		if (raycast_.StageToBallColl(coll, offset_))
 		{
 			return true;
 		}

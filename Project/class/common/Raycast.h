@@ -21,9 +21,11 @@ public:
 	/// nodiscard:関数の戻り値を全て必ず使用すること
 	[[nodiscard]] bool CheckCollision(Collision stagepos,  Vector2& offset);
 
+	bool PlayerToBallColl(Vector2& offset);
+	bool StageToBallColl(Collision stagepos, Vector2& offset);
+
 	void setBallRay(Vector2 pos, Vector2 size);
 	void setPlayerRay(Line ray);
-
 private:
 
 	/// <summary>

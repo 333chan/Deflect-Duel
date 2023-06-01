@@ -37,7 +37,7 @@ class Player :
     public Object
 {
 public:
-    Player(ControllerType type);
+    Player(ControllerType type, std::shared_ptr<Ball>& ball);
     ~Player();
 
     //初期化
@@ -87,16 +87,16 @@ private:
     //判定
     Raycast raycast_;
 
-    Ball ball_;
+    //ボール
+    std::shared_ptr<Ball> ball_;
 
     //ステージとの判定処理
     bool IsStageHit(Line collRay);
 
-    bool IsBallHit();
-
     //経過時間
     double jumpDeltaTime_;
 
+    //無理やりプレイヤー画像切り替え
     int playerImage_;
     int playerImage2_;
     int playerImage3_;
@@ -104,6 +104,7 @@ private:
     int playerImage5_;
     int playerImage6_;
 
+    //ボールの座標と大きさ
     Vector2 ballpos_;
     Vector2 ballsize_;
 

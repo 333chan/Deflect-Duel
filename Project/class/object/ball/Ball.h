@@ -1,8 +1,9 @@
 #pragma once
 #include "../Object.h"
+#include "../../common/Raycast.h"
 #include "../../common/Geometry.h"
 #include "../../tmx/TmxObj.h"
-#include "../../common/Raycast.h"
+
 
 enum class Dir;
 
@@ -32,6 +33,7 @@ public:
     Vector2 size_;
     
 private:
+    //ボール画像
     int ballImage_;
 
     //重力
@@ -45,6 +47,7 @@ private:
     //ステージ
     TmxObj tmxObj_;
 
+    //判定
     Raycast raycast_;
 };
 

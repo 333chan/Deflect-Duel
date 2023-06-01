@@ -10,7 +10,7 @@ constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 //constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
-Player::Player(ControllerType type)
+Player::Player(ControllerType type, std::shared_ptr<Ball>& ball)
 {
 	//コントローラーの生成
 	if (type == ControllerType::Pad)
@@ -22,8 +22,10 @@ Player::Player(ControllerType type)
 		controller_ = std::make_unique<KeyInput>();
 	}
 	
+	ball_ = ball;
 
 	Init();
+
 }
 
 Player::~Player()
@@ -384,23 +386,22 @@ bool Player::IsStageHit(Line collRay)
 	//レイのデバック表示
 	//_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
 	raycast_.setPlayerRay(collRay);
-	raycast_.setBallRay(ball_.pos_, ball_.size_);
+	raycast_.setBallRay(ball_->pos_, ball_->size_);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{	
+		if (raycast_.PlayerToBallColl(offset_))
+		{
+			return true;
+		}
 		if (raycast_.CheckCollision(coll, offset_))
 		{
+
 			return true;
 		}
 	}
 
-	return false;
-}
-
-//ボールとのあたり判定
-bool Player::IsBallHit()
-{
 	return false;
 }
 

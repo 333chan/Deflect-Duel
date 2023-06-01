@@ -1,5 +1,6 @@
 #include "Raycast.h"
 #include "../object/player/Player.h"
+#include "../object/ball/Ball.h"
 #include"../../_debug/_DebugDispOut.h"
 
 
@@ -32,20 +33,15 @@ bool Raycast::CheckCollision(Collision stagepos, Vector2& offset)
 			_dbgDrawFormatString(800, 0, 0xfffffff, "プレイヤーがステージにHit");
 			return true;
 		}
-
-		
-		for (const auto& rb : ballray_)
-		{
-			//ステージとボール
-			if (CheckLine(rb, rs, offset))
-			{
-				//Hitしたら
-				_dbgDrawFormatString(800, 20, 0xfffffff, "ボールがステージにHit");
-				return true;
-			}
-			
-		}
 	}
+	//当たってない
+	_dbgDrawFormatString(800, 40, 0xffffff, "はずれ");
+	return false;
+}
+
+bool Raycast::PlayerToBallColl(Vector2& offset)
+{
+
 	for (const auto& rb : ballray_)
 	{
 		//プレイヤーとボール
@@ -56,9 +52,29 @@ bool Raycast::CheckCollision(Collision stagepos, Vector2& offset)
 			return true;
 		}
 	}
-
-	//当たってない
 	_dbgDrawFormatString(800, 40, 0xffffff, "はずれ");
+	return false;
+}
+
+bool Raycast::StageToBallColl(Collision stagepos, Vector2& offset)
+{
+	//ステージ判定用レイの作成
+	setStageRay(stagepos);
+
+	for (const auto& rs : stageray_)
+	{
+		for (const auto& rb : ballray_)
+		{
+			//ステージとボール
+			if (CheckLine(rb, rs, offset))
+			{
+				//Hitしたら
+				_dbgDrawFormatString(800, 20, 0xfffffff, "ボールがステージにHit");
+				return true;
+			}
+
+		}
+	}
 	return false;
 }
 
@@ -141,6 +157,8 @@ void Raycast::setStageRay(Collision stagepos)
 	};
 }
 
+
+
 void Raycast::setBallRay(Vector2 pos, Vector2 size)
 {
 	ballray_ =
@@ -160,4 +178,5 @@ void Raycast::setPlayerRay(Line ray)
 	_dbgDrawLine(ray.p.x, ray.p.y,ray.end.x, ray.end.y, 0xff0000);
 
 }
+
 

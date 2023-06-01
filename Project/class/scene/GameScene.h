@@ -47,6 +47,6 @@ private:
     std::unique_ptr<Stage> stage_;
 
     //ƒ{[ƒ‹î•ñ
-    std::unique_ptr<Ball> ball_;
+    std::shared_ptr<Ball> ball_;
 };
 

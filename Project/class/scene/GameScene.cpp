@@ -34,9 +34,10 @@ void GameScene::Init(void)
 	}
 
 	//インスタンスの生成
-	player_ = std::make_unique<Player>(controller_->GetControllerType());
+	ball_ = std::make_shared<Ball>();	//ユニークだと所有権ごと渡してしまうため
+	player_ = std::make_unique<Player>(controller_->GetControllerType(), ball_);
 	stage_ = std::make_unique<Stage>();
-	ball_ = std::make_unique<Ball>();
+	
 }
 
 UniqueScene GameScene::Update(UniqueScene scene)
