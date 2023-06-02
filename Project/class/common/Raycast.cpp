@@ -4,7 +4,7 @@
 #include"../../_debug/_DebugDispOut.h"
 
 
-bool Raycast::CheckCollision(Collision stagepos, Vector2& offset)
+bool Raycast::StageToPlayerCheckColl(Collision stagepos, Vector2& offset)
 {
 	//ステージ判定用レイの作成
 	setStageRay(stagepos);
@@ -26,8 +26,8 @@ bool Raycast::CheckCollision(Collision stagepos, Vector2& offset)
 	//ステージレイ分チェック
 	for (const auto& rs : stageray_)
 	{
-		//プレイヤーとステージ
-		if (CheckLine(playerray_, rs, offset))
+		//ステージとプレイヤー
+		if (StageToPlayerChackLine(playerray_, rs, offset))
 		{
 			//Hitしたら
 			_dbgDrawFormatString(800, 0, 0xfffffff, "プレイヤーがステージにHit");
@@ -35,24 +35,24 @@ bool Raycast::CheckCollision(Collision stagepos, Vector2& offset)
 		}
 	}
 	//当たってない
-	_dbgDrawFormatString(800, 40, 0xffffff, "はずれ");
+	_dbgDrawFormatString(800, 40, 0xffffff, "プレイヤーがステージに当たってない");
 	return false;
 }
 
-bool Raycast::PlayerToBallColl(Vector2& offset)
+bool Raycast::PlayerToBallChackColl(Vector2& offset)
 {
 
 	for (const auto& rb : ballray_)
 	{
 		//プレイヤーとボール
-		if (CheckLine(playerray_, rb, offset))
+		if (BallToPlayerChackLine(playerray_, rb, offset))
 		{
 			//Hitしたら
 			_dbgDrawFormatString(1000, 30, 0xfffffff, "プレイヤーがボールにHit");
 			return true;
 		}
 	}
-	_dbgDrawFormatString(800, 40, 0xffffff, "はずれ");
+	_dbgDrawFormatString(800, 80, 0xffffff, "プレイヤーがボールに当たらず");
 	return false;
 }
 
@@ -65,8 +65,8 @@ bool Raycast::StageToBallColl(Collision stagepos, Vector2& offset)
 	{
 		for (const auto& rb : ballray_)
 		{
-			//ステージとボール
-			if (CheckLine(rb, rs, offset))
+			//ボールとステージ
+			if (BallToStageChackLine(rb, rs, offset))
 			{
 				//Hitしたら
 				_dbgDrawFormatString(800, 20, 0xfffffff, "ボールがステージにHit");
@@ -75,75 +75,168 @@ bool Raycast::StageToBallColl(Collision stagepos, Vector2& offset)
 
 		}
 	}
+	_dbgDrawFormatString(800, 40, 0xffffff, "ボールがステージに当たらず");
 	return false;
 }
 
-bool Raycast::CheckLine(Line playerLine, Line stageLine, Vector2& offset)
+void Raycast::ChackLine(Line playerLine, Line stageLine)
 {
-
 	//３グループのベクトルを作成
-	Vector2 a_to_b = playerLine.vec();
-	Vector2 a_to_c = stageLine.p - playerLine.p;
-	Vector2 a_to_d = stageLine.end - playerLine.p;
+	a_to_b = playerLine.vec();
+	a_to_c = stageLine.p - playerLine.p;
+	a_to_d = stageLine.end - playerLine.p;
 
-	Vector2 c_to_d = stageLine.vec();
-	Vector2 c_to_a = playerLine.p - stageLine.p;
-	Vector2 c_to_b = playerLine.end - stageLine.p;
+	c_to_d = stageLine.vec();
+	c_to_a = playerLine.p - stageLine.p;
+	c_to_b = playerLine.end - stageLine.p;
 
 
 	//外積で計算a_to系
-	float cross_01 = (a_to_b.x * a_to_c.y) - (a_to_c.x * a_to_b.y);
-	float cross_02 = (a_to_b.x * a_to_d.y) - (a_to_d.x * a_to_b.y);
+	cross_01 = (a_to_b.x * a_to_c.y) - (a_to_c.x * a_to_b.y);
+	cross_02 = (a_to_b.x * a_to_d.y) - (a_to_d.x * a_to_b.y);
 
 	//外積で計算c_to系
-	float cross_03 = (c_to_d.x * c_to_a.y) - (c_to_a.x * c_to_d.y);
-	float cross_04 = (c_to_d.x * c_to_b.y) - (c_to_b.x * c_to_d.y);
+	cross_03 = (c_to_d.x * c_to_a.y) - (c_to_a.x * c_to_d.y);
+	cross_04 = (c_to_d.x * c_to_b.y) - (c_to_b.x * c_to_d.y);
+}
 
+bool Raycast::StageToPlayerChackLine(Line playerLine, Line stageLine, Vector2& offset)
+{
+	ChackLine(playerLine,stageLine);
 
 	//交差していない
 	if (cross_01 * cross_02 > 0.0f)
 	{
 		return false;
 	}
-	//交差していない
 	if (cross_03 * cross_04 > 0.0f)
 	{
 		return false;
 	}
 
+	//交差している
+	offset = { 0.0f,0.0f };
 
+	//ステージとプレイヤー
+	if (stageray_[2] == stageLine)
 	{
-
-		//交差している
-		offset = { 0.0f,0.0f };
-
-		if (stageray_[2] == stageLine)
-		{
-			offset.x = -abs(stageLine.p.x - playerLine.end.x);//左
-			_dbgDrawFormatString(450, 0, 0xffffff, "左判定", true);
-			return true;
-		}
-		if (stageray_[3] == stageLine)
-		{
-			offset.x = abs(stageLine.end.x - playerLine.end.x);//右
-			_dbgDrawFormatString(450, 0, 0xffffff, "右判定", true);
-			return true;
-		}
-		if (stageray_[0] == stageLine)
-		{
-			offset.y = -abs(stageLine.p.y - playerLine.p.y);//上
-			_dbgDrawFormatString(450, 0, 0xffffff, "上判定", true);
-			return true;
-		}
-		if (stageray_[1] == stageLine)
-		{
-			offset.y = abs(stageLine.end.y - playerLine.end.y);//下
-			_dbgDrawFormatString(450, 0, 0xffffff, "下判定", true);
-			return true;
-		}
-
+		offset.x = -abs(stageLine.p.x - playerLine.end.x);//左
+		_dbgDrawFormatString(450, 0, 0xffffff, "左判定", true);
 		return true;
 	}
+	if (stageray_[3] == stageLine)
+	{
+		offset.x = abs(stageLine.end.x - playerLine.end.x);//右
+		_dbgDrawFormatString(450, 0, 0xffffff, "右判定", true);
+		return true;
+	}
+	if (stageray_[0] == stageLine)
+	{
+		offset.y = -abs(stageLine.p.y - playerLine.p.y);//上
+		_dbgDrawFormatString(450, 0, 0xffffff, "上判定", true);
+		return true;
+	}
+	if (stageray_[1] == stageLine)
+	{
+		offset.y = abs(stageLine.end.y - playerLine.end.y);//下
+		_dbgDrawFormatString(450, 0, 0xffffff, "下判定", true);
+		return true;
+	}
+
+	return true;
+}
+
+bool Raycast::BallToPlayerChackLine(Line playerLine, Line ballLine, Vector2& bound)
+{
+	ChackLine(playerLine, ballLine);
+
+	//交差していない
+	if (cross_01 * cross_02 > 0.0f)
+	{
+		return false;
+	}
+	if (cross_03 * cross_04 > 0.0f)
+	{
+		return false;
+	}
+
+	//交差している
+	bound = { 0.0f,0.0f };
+
+	//ボールとプレイヤー
+	if (ballray_[3] == ballLine)
+	{
+		//bound.x = -abs(playerLine.p.x - ballLine.end.x);//左
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左", true);
+		return true;
+	}
+	if (ballray_[2] == ballLine)
+	{
+		//bound.x = abs(playerLine.end.x - ballLine.p.x);//右
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右", true);
+		return true;
+	}
+	if (ballray_[1] == ballLine)
+	{
+		//bound.y = -abs(playerLine.p.y - ballLine.p.y);//上
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上", true);
+		return true;
+	}
+	if (ballray_[0] == ballLine)
+	{
+		//bound.y = abs(playerLine.end.y - ballLine.end.y);//下
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下", true);
+		return true;
+	}
+
+	return true;
+}
+
+bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offset)
+{
+	ChackLine(ballLine, stageLine);
+
+	//交差していない
+	if (cross_01 * cross_02 > 0.0f)
+	{
+		return false;
+	}
+	if (cross_03 * cross_04 > 0.0f)
+	{
+		return false;
+	}
+
+	//交差している
+	offset = { 0.0f,0.0f };
+
+	//ステージとボール
+	if (stageray_[3] == stageLine)
+	{
+		offset.x = -abs(stageLine.p.x - ballLine.end.x);//左
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左判定", true);
+		return true;
+	}
+	if (stageray_[2] == stageLine)
+	{
+		offset.x = abs(stageLine.end.x - ballLine.end.x);//右
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右判定", true);
+		return true;
+	}
+	if (stageray_[0] == stageLine)
+	{
+		offset.y = -abs(stageLine.p.y - ballLine.p.y);//上
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上判定", true);
+		return true;
+	}
+	if (stageray_[1] == stageLine)
+	{
+		offset.y = abs(stageLine.end.y - ballLine.end.y);//下
+		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下判定", true);
+		return true;
+	}
+
+	return true;
+
 }
 
 void Raycast::setStageRay(Collision stagepos)

@@ -391,11 +391,11 @@ bool Player::IsStageHit(Line collRay)
 	//tmx‚ÌCollLisetŽæ“¾
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{	
-		if (raycast_.PlayerToBallColl(offset_))
+		if (raycast_.PlayerToBallChackColl(offset_))
 		{
 			return true;
 		}
-		if (raycast_.CheckCollision(coll, offset_))
+		if (raycast_.StageToPlayerCheckColl(coll, offset_))
 		{
 
 			return true;

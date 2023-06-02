@@ -25,6 +25,8 @@ void Ball::Init()
 	//ëÂÇ´Ç≥
 	size_ = { 128,128 };
 
+	rad_ = 60;
+
 	//èdóÕ
 	gravity_ = 0.0;
 
@@ -49,7 +51,6 @@ void Ball::Update()
 	}
 	else
 	{
-
 		gravity_ = 0;
 		pos_ -= offset_;
 	}
@@ -58,9 +59,9 @@ void Ball::Update()
 
 void Ball::Draw()
 {
-	
-	//DrawBox(pos_.x, pos_.y, pos_.x+size_.x, pos_.y + size_.y, 0xffffff, false);
 	DrawExtendGraph(pos_.x, pos_.y, pos_ .x+size_.x, pos_.y + size_.y,ballImage_,true);
+
+	//DrawCircle(pos_.x + size_.x / 2, pos_.y + size_.y / 2, rad_, 0xffff00, true);
 }
 
 void Ball::Release()
@@ -75,12 +76,10 @@ void Ball::SetBallform(Vector2& pos, Vector2& size)
 
 bool Ball::IsStageHit()
 {
-
+	raycast_.setBallRay(pos_, size_);
 	//tmxÇÃCollLisetéÊìæ
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{
-		raycast_.setBallRay(pos_, size_);
-
 		if (raycast_.StageToBallColl(coll, offset_))
 		{
 			return true;

@@ -31,6 +31,8 @@ public:
 
     //‘å‚«‚³
     Vector2 size_;
+
+    int rad_;
     
 private:
     //ƒ{[ƒ‹‰æ‘œ

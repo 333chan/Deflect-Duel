@@ -10,34 +10,21 @@ class Raycast
 {
 public:
 
-	/// <summary>
-	/// プレイヤーとステージの線分の作成
-	/// </summary>
-	/// <param name="stagepos">ステージの座標</param>
-	/// <param name="dir_">向いている方向</param>
-	/// <param name="collRay">とばしたレイ</param>
-	/// <param name="offset">差分</param>
-	/// <returns></returns>
-	/// nodiscard:関数の戻り値を全て必ず使用すること
-	[[nodiscard]] bool CheckCollision(Collision stagepos,  Vector2& offset);
+	[[nodiscard]] bool StageToPlayerCheckColl(Collision stagepos,  Vector2& offset);
 
-	bool PlayerToBallColl(Vector2& offset);
+	bool PlayerToBallChackColl(Vector2& offset);
 	bool StageToBallColl(Collision stagepos, Vector2& offset);
 
 	void setBallRay(Vector2 pos, Vector2 size);
 	void setPlayerRay(Line ray);
 private:
 
-	/// <summary>
-	/// 判定計算と補正分計算
-	/// </summary>
-	/// <param name="playerLine">プレイヤーのレイ</param>
-	/// <param name="stageLine">ステージのレイ</param>
-	/// <param name="dir_">向いている方向</param>
-	/// <param name="offset">差分</param>
-	/// <returns></returns>
-	/// nodiscard:関数の戻り値を全て必ず使用すること
-	[[nodiscard]] bool CheckLine(Line playerLine, Line stageLine, Vector2& offset);
+	[[nodiscard]] bool StageToPlayerChackLine(Line playerLine, Line stageLine, Vector2& offset);
+	[[nodiscard]] void ChackLine(Line playerLine, Line stageLine);
+
+	[[nodiscard]] bool BallToPlayerChackLine(Line playerLine, Line ballLine, Vector2& bound);
+
+	[[nodiscard]] bool BallToStageChackLine(Line playerLine, Line ballLine, Vector2& bound);
 
 	void setStageRay(Collision stagepos);
 
@@ -48,6 +35,26 @@ private:
 	std::vector<Line> ballray_;
 
 	Line playerray_;
+
+
+
+	//３グループのベクトルを作成
+	Vector2 a_to_b;
+	Vector2 a_to_c;
+	Vector2 a_to_d;
+
+	Vector2 c_to_d;
+	Vector2 c_to_a;
+	Vector2 c_to_b;
+
+
+	//外積で計算a_to系
+	float cross_01;
+	float cross_02;
+
+	//外積で計算c_to系
+	float cross_03;
+	float cross_04;
 
 };
 
