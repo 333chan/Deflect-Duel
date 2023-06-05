@@ -42,11 +42,11 @@ void GameScene::Init(void)
 
 UniqueScene GameScene::Update(UniqueScene scene)
 {
-	//プレイヤー
-	player_->Update();
-
 	//ステージ
 	stage_->Update();
+
+	//プレイヤー
+	player_->Update();
 
 	//ボール
 	ball_->Update();

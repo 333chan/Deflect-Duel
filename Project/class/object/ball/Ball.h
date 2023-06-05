@@ -33,6 +33,10 @@ public:
     Vector2 size_;
 
     int rad_;
+
+    bool flg;
+
+    Vector2 movepow;
     
 private:
     //ƒ{[ƒ‹‰æ‘œ

@@ -92,6 +92,8 @@ private:
 
     //ステージとの判定処理
     bool IsStageHit(Line collRay);
+    bool IsBallHit();
+    bool IsAttackHit();
 
     //経過時間
     double jumpDeltaTime_;

@@ -15,8 +15,11 @@ public:
 	bool PlayerToBallChackColl(Vector2& offset);
 	bool StageToBallColl(Collision stagepos, Vector2& offset);
 
-	void setBallRay(Vector2 pos, Vector2 size);
+	void setBallRay(Vector2 pos, Vector2 size, Vector2 movepow);
+	
 	void setPlayerRay(Line ray);
+
+	void setPlayerSquareRay(Vector2 pos, Vector2 size);
 private:
 
 	[[nodiscard]] bool StageToPlayerChackLine(Line playerLine, Line stageLine, Vector2& offset);
@@ -30,11 +33,14 @@ private:
 
 
 	//ステージレイ
-	std::vector<Line> stageray_;
+	std::vector<Line> stageRay_;
 
-	std::vector<Line> ballray_;
+	std::vector<Line> ballRay_;
 
-	Line playerray_;
+	Line playerRay_;
+
+	std::vector<Line> playerSquareRay_;
+
 
 
 

@@ -76,6 +76,8 @@ void Player::Init()
 
 void Player::Update(void)
 {
+
+
 	controller_->Update();
 
 	switch (state_)
@@ -154,6 +156,11 @@ void Player::Update(void)
 			pos_ -= offset_;
 		}
 
+		if (IsBallHit())
+		{
+			DrawFormatString(0,200,0xffffff,"ボールにヒット",true);
+		}
+
 
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
@@ -201,6 +208,11 @@ void Player::Update(void)
 			pos_ -= offset_;
 			
 			state_ = State::Idel;
+		}
+
+		if (IsBallHit())
+		{
+			DrawFormatString(0, 200, 0xffffff, "ボールにヒット", true);
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
@@ -292,6 +304,8 @@ void Player::Update(void)
 		break;
 
 	case State::Attack:
+		
+
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			state_ = State::Idel;
@@ -303,9 +317,11 @@ void Player::Update(void)
 		break;
 	}
 
+	if (IsBallHit())
+	{
+		DrawFormatString(0, 200, 0xffffff, "ボールにヒット", true);
+	}
 
-
-	
 }
 
 void Player::Draw(void)
@@ -386,20 +402,42 @@ bool Player::IsStageHit(Line collRay)
 	//レイのデバック表示
 	//_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
 	raycast_.setPlayerRay(collRay);
-	raycast_.setBallRay(ball_->pos_, ball_->size_);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{	
-		if (raycast_.PlayerToBallChackColl(offset_))
-		{
-			return true;
-		}
 		if (raycast_.StageToPlayerCheckColl(coll, offset_))
 		{
-
 			return true;
-		}
+		}	
+	}
+
+
+
+	return false;
+}
+
+bool Player::IsBallHit()
+{
+	raycast_.setPlayerSquareRay(pos_, size_);
+	raycast_.setBallRay(ball_->pos_, ball_->size_,ball_->movepow);
+
+	if (raycast_.PlayerToBallChackColl(offset_))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool Player::IsAttackHit()
+{
+	raycast_.setPlayerSquareRay(pos_, size_);
+	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movepow);
+
+	if (raycast_.PlayerToBallChackColl(offset_))
+	{
+		return true;
 	}
 
 	return false;
