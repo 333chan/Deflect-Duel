@@ -93,7 +93,7 @@ bool Ball::IsStageHit()
 	//tmx‚ÌCollLisetŽæ“¾
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{
-		if (raycast_.StageToBallColl(coll, offset_))
+		if (raycast_.StageToBallCheckColl(coll, offset_))
 		{
 			return true;
 		}

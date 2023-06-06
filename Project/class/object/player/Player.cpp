@@ -59,6 +59,8 @@ void Player::Init()
 	//•â³·•ª
 	offset_ = { 0.0f ,0.0f };
 
+	reflectPow_ = { 0.0f ,0.0f };
+
 	jumpDeltaTime_ = 0.0;
 
 	//Idel
@@ -129,7 +131,7 @@ void Player::Update(void)
 			state_ = State::MoveRight;
 			dir_ = Dir::Right;
 		}
-		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			state_ = State::Attack;
 		}
@@ -306,10 +308,13 @@ void Player::Update(void)
 	case State::Attack:
 		
 
+		IsAttackHit();
+
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			state_ = State::Idel;
 		}
+
 		break;
 	case State::Max:
 		break;
@@ -432,12 +437,12 @@ bool Player::IsBallHit()
 
 bool Player::IsAttackHit()
 {
-	raycast_.setPlayerSquareRay(pos_, size_);
+	raycast_.setPlayerAttackRay(pos_, attacksize_);
 	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movepow);
 
-	if (raycast_.PlayerToBallChackColl(offset_))
+	if (raycast_.AttackToBallCheckColl(reflectPow_))
 	{
-		return true;
+   		return true;
 	}
 
 	return false;

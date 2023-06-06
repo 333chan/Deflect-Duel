@@ -54,7 +54,7 @@ bool Raycast::PlayerToBallChackColl(Vector2& offset)
 	return false;
 }
 
-bool Raycast::StageToBallColl(Collision stagepos, Vector2& offset)
+bool Raycast::StageToBallCheckColl(Collision stagepos, Vector2& offset)
 {
 	//ステージ判定用レイの作成
 	setStageRay(stagepos);
@@ -81,6 +81,29 @@ bool Raycast::StageToBallColl(Collision stagepos, Vector2& offset)
 	}
 
 	_dbgDrawFormatString(800, 40, 0xffffff, "ボールがステージに当たらず");
+	return false;
+}
+
+bool Raycast::AttackToBallCheckColl(Vector2& pow)
+{
+
+	for (const auto& rpa : playerAttackRay_)
+	{
+		for (const auto& rb : ballRay_)
+		{
+			//プレイヤーとボール
+			if (BallToPlayerChackLine(rpa, rb, pow))
+			{
+				//Hitしたら
+				_dbgDrawFormatString(1000, 100, 0xfffffff, "攻撃にボールがHit");
+				return true;
+			}
+		}
+		//デバック用判定ライン
+		_dbgDrawLine(rpa.p.x, rpa.p.y, rpa.end.x, rpa.end.y, 0xff0000);
+	}
+
+	_dbgDrawFormatString(800, 100, 0xffffff, "攻撃にボールが当たらず");
 	return false;
 }
 
@@ -244,6 +267,11 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 
 }
 
+bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& pow)
+{
+	return false;
+}
+
 void Raycast::setStageRay(Collision stagepos)
 {
 	stageRay_ =
@@ -287,6 +315,17 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size)
 		{{pos.x + size.x ,pos.y },{pos.x + size.x,pos.y + size.y }},		//右
 	};
 
+}
+
+void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size)
+{
+	playerAttackRay_ =
+	{
+		{{pos.x ,pos.y },{pos.x + size.x,pos.y } },						//上
+		{{pos.x ,pos.y + size.y } ,{pos.x + size.x ,pos.y + size.y}},		//下
+		{{pos.x ,pos.y },{pos.x ,pos.y + size.y }},							//左
+		{{pos.x + size.x ,pos.y },{pos.x + size.x,pos.y + size.y }},		//右
+	};
 }
 
 
