@@ -39,6 +39,7 @@ void Player::Init()
 
 	//プレイヤー座標
 	pos_ = {100,300};
+	attackpos_ = {0,0};
 
 	//プレイヤーサイズ
 	size_ = {48,96};
@@ -326,7 +327,7 @@ void Player::Update(void)
 	{
 		DrawFormatString(0, 200, 0xffffff, "ボールにヒット", true);
 	}
-
+	attackpos_ = { pos_.x + size_.x,pos_.y };
 }
 
 void Player::Draw(void)
@@ -437,7 +438,7 @@ bool Player::IsBallHit()
 
 bool Player::IsAttackHit()
 {
-	raycast_.setPlayerAttackRay(pos_, attacksize_);
+	raycast_.setPlayerAttackRay(attackpos_, size_);
 	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movepow);
 
 	if (raycast_.AttackToBallCheckColl(reflectPow_))

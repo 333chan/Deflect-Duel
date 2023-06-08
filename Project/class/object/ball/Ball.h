@@ -53,6 +53,8 @@ private:
     //ステージ
     TmxObj tmxObj_;
 
+    Vector2 refPow;
+    Vector2 refDir;
     //判定
     Raycast raycast_;
 };

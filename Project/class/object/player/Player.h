@@ -67,6 +67,7 @@ private:
 
     //UŒ‚‚Ì‰æ‘œ‚Ì‘å‚«‚³
     Vector2 attacksize_;
+    Vector2 attackpos_;
 
     Vector2 reflectPow_;
 
