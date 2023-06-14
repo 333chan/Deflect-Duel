@@ -65,11 +65,14 @@ private:
     //大きさ
     Vector2 size_;
 
+    Vector2 movePos_;
+
     //攻撃時の画像の大きさ
     Vector2 attacksize_;
     Vector2 attackpos_;
 
-    Vector2 reflectPow_;
+
+    Vector2 refDir_;
 
     //状態
     State state_;
@@ -93,7 +96,7 @@ private:
     //ボール
     std::shared_ptr<Ball> ball_;
 
-    //ステージとの判定処理
+    //判定処理
     bool IsStageHit(Line collRay);
     bool IsBallHit();
     bool IsAttackHit();

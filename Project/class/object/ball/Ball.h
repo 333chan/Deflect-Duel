@@ -4,7 +4,7 @@
 #include "../../common/Geometry.h"
 #include "../../tmx/TmxObj.h"
 
-
+class Player;
 enum class Dir;
 
 class Ball :
@@ -25,6 +25,8 @@ public:
 
     void SetBallform(Vector2& pos,Vector2&size);
 
+    void SetAttackRef(Vector2& refDir);
+
 
     //座標
     Vector2 pos_;
@@ -35,8 +37,12 @@ public:
     int rad_;
 
     bool flg;
+    bool attackHit_;
 
     Vector2 movepow;
+
+    Vector2 movePos_;
+    Vector2 attackPos_;
     
 private:
     //ボール画像
@@ -53,9 +59,18 @@ private:
     //ステージ
     TmxObj tmxObj_;
 
-    Vector2 refPow;
-    Vector2 refDir;
+    Vector2 refPow_;
+    Vector2 refDir_;
+
+    Vector2 attackRefPow_;
+    Vector2 attackRefDir_;
+
+
+
     //判定
     Raycast raycast_;
+
+
+
 };
 

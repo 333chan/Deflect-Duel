@@ -39,7 +39,6 @@ void Player::Init()
 
 	//プレイヤー座標
 	pos_ = {100,300};
-	attackpos_ = {0,0};
 
 	//プレイヤーサイズ
 	size_ = {48,96};
@@ -60,7 +59,7 @@ void Player::Init()
 	//補正差分
 	offset_ = { 0.0f ,0.0f };
 
-	reflectPow_ = { 0.0f ,0.0f };
+	refDir_ = { 0.0f ,0.0f };
 
 	jumpDeltaTime_ = 0.0;
 
@@ -74,6 +73,7 @@ void Player::Init()
 
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
+	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
 }
 
@@ -159,13 +159,6 @@ void Player::Update(void)
 			pos_ -= offset_;
 		}
 
-		if (IsBallHit())
-		{
-			DrawFormatString(0,200,0xffffff,"ボールにヒット",true);
-		}
-
-
-
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			dir_ = Dir::Right;
@@ -211,11 +204,6 @@ void Player::Update(void)
 			pos_ -= offset_;
 			
 			state_ = State::Idel;
-		}
-
-		if (IsBallHit())
-		{
-			DrawFormatString(0, 200, 0xffffff, "ボールにヒット", true);
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
@@ -309,7 +297,10 @@ void Player::Update(void)
 	case State::Attack:
 		
 
-		IsAttackHit();
+		if(IsAttackHit())
+		{
+			ball_->SetAttackRef(refDir_);
+		}
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
@@ -325,9 +316,11 @@ void Player::Update(void)
 
 	if (IsBallHit())
 	{
-		DrawFormatString(0, 200, 0xffffff, "ボールにヒット", true);
+		DrawFormatString(0, 200, 0xff0000, "死", true);
 	}
+
 	attackpos_ = { pos_.x + size_.x,pos_.y };
+
 }
 
 void Player::Draw(void)
@@ -390,12 +383,17 @@ void Player::Draw(void)
 		break;
 	}
 
+	DrawFormatString(48, 600, 0xffff00, "playerPosX%f,playerPosY%f", pos_.x, pos_.y);
+	DrawFormatString(pos_.x + size_.x / 2 - 40, pos_.y - 20, 0xffff00, "プレイヤー", true);
+
+
 	//判定
 	//DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
 
 	//DrawBox(ball_.pos_.x, ball_.pos_.y, ball_.pos_.x + ball_.size_.x, ball_.pos_.y + ball_.size_.y, 0xffff00, false);
 
-#endif // _DEBUG
+#endif //_DEBUG
+
 }
 
 void Player::Release(void)
@@ -417,16 +415,13 @@ bool Player::IsStageHit(Line collRay)
 			return true;
 		}	
 	}
-
-
-
 	return false;
 }
 
 bool Player::IsBallHit()
 {
-	raycast_.setPlayerSquareRay(pos_, size_);
-	raycast_.setBallRay(ball_->pos_, ball_->size_,ball_->movepow);
+	raycast_.setPlayerSquareRay(pos_, size_, movePos_);
+	raycast_.setBallRay(ball_->pos_, ball_->size_,ball_->movePos_, ball_->attackPos_);
 
 	if (raycast_.PlayerToBallChackColl(offset_))
 	{
@@ -439,9 +434,9 @@ bool Player::IsBallHit()
 bool Player::IsAttackHit()
 {
 	raycast_.setPlayerAttackRay(attackpos_, size_);
-	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movepow);
+	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movePos_,ball_->attackPos_);
 
-	if (raycast_.AttackToBallCheckColl(reflectPow_))
+	if (raycast_.AttackToBallCheckColl(refDir_))
 	{
    		return true;
 	}

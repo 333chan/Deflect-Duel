@@ -40,31 +40,49 @@ void Ball::Init()
 
 	//デバック用
 	flg = false;
+
+	attackHit_ = false;
+
 	movepow = {0,0};
 
-	refPow={20,20};
+	refPow_={20,20};
+
+	attackRefPow_ ={20,20};
 }
 
 void Ball::Update()
 {
+
 	if (!flg)
 	{
 		gravity_ += FALL_ACCEL;
-		pos_.y += gravity_;
+		pos_.x += gravity_;
 	}
 
 
+
+	//ステージ判定
 	if (!IsStageHit())
 	{
+		//攻撃判定ヒット時
+		if (attackHit_)
+		{
+			pos_ += attackRefPow_ * attackRefDir_;
+		}
 
-		refPow = refPow * refDir;
-		pos_ += refPow;
+		//攻撃判定フラグがfalseなら
+		if (!attackHit_)
+		{
+			pos_ += refPow_ * refDir_;
+		}
 	}
 	else
 	{
+		//ステージに当たったら
 		gravity_ = 0;
-		pos_ += offset_;
+		pos_ += refPow_ * refDir_;
 		flg = true;
+		attackHit_ = false;
 	}
 
 	SetBallform(pos_, size_);
@@ -74,9 +92,13 @@ void Ball::Draw()
 {
 	DrawExtendGraph(pos_.x, pos_.y, pos_ .x+size_.x, pos_.y + size_.y,ballImage_,true);
 
-	DrawFormatString(600,600,0xffffff,"%f,%f", refPow.x* refDir.x, refPow.y* refDir.y);
+	DrawFormatString(600,600,0xffffff,"%f,%f", refPow_.x* refDir_.x, refPow_.y* refDir_.y);
+	DrawFormatString(600,620,0xffffff,"%f,%f", refPow_.x* attackRefDir_.x, refPow_.y* attackRefDir_.y);
 
 	DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y,0xffff00, false);
+
+	DrawFormatString(pos_.x + size_.x / 2 - 20, pos_.y - 20, 0xff0000, "ボール", true);
+	DrawFormatString(48, 630, 0xff0000, "BallPosX%f,BallPosY%f", pos_.x, pos_.y);
 
 	//DrawCircle(pos_.x + size_.x / 2, pos_.y + size_.y / 2, rad_, 0xffff00, true);
 }
@@ -93,17 +115,26 @@ void Ball::SetBallform(Vector2& pos, Vector2& size)
 
 bool Ball::IsStageHit()
 {
-	Vector2 refPos = { refPow * refDir };
+	attackPos_ = { attackRefPow_ * attackRefPow_ };
+	movePos_ = { refPow_ * refDir_ };
 
-	raycast_.setBallRay(pos_, size_, refPos);
+	//ボールの判定レイを設定
+	raycast_.setBallRay(pos_, size_, movePos_,attackPos_);
+
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
 	{
-		if (raycast_.StageToBallCheckColl(coll, offset_, refDir))
+		if (raycast_.StageToBallCheckColl(coll, offset_, refDir_))
 		{
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void Ball::SetAttackRef(Vector2& refDir)
+{
+	attackRefDir_ = refDir;
+	attackHit_ = true;
 }
