@@ -37,7 +37,7 @@ public:
     int rad_;
 
     bool flg;
-    bool attackHit_;
+    bool attackHitFlg_;
 
     Vector2 movepow;
 
@@ -64,8 +64,6 @@ private:
 
     Vector2 attackRefPow_;
     Vector2 attackRefDir_;
-
-
 
     //”»’è
     Raycast raycast_;

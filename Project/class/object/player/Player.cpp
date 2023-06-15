@@ -434,7 +434,7 @@ bool Player::IsBallHit()
 bool Player::IsAttackHit()
 {
 	raycast_.setPlayerAttackRay(attackpos_, size_);
-	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movePos_,ball_->attackPos_);
+	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movePos_, ball_->attackPos_);
 
 	if (raycast_.AttackToBallCheckColl(refDir_))
 	{

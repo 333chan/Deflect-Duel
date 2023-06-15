@@ -116,6 +116,8 @@ private:
     Vector2 ballpos_;
     Vector2 ballsize_;
 
+    Vector2 bpos_;
+
 protected:
     //tmx
     TmxObj tmxObj_;

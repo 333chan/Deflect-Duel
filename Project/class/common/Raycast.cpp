@@ -307,13 +307,13 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 	}
 	if (playerAttackRay_[0] == playerLine)
 	{
-		refDir.y = -1;//è„
+		refDir.x = -1;//è„
 		_dbgDrawFormatString(600, 0, 0xffffff, "è„Ç…ï‘Ç∑", true);
 		return true;
 	}
 	if (playerAttackRay_[1] == playerLine)
 	{
-		refDir.y = 1;//â∫
+		refDir.x = 1;//â∫
 		_dbgDrawFormatString(600, 0, 0xffffff, "â∫Ç…ï‘Ç∑", true);
 		return true;
 	}
@@ -335,14 +335,14 @@ void Raycast::setStageRay(Collision stagepos)
 
 
 
-void Raycast::setBallRay(Vector2 pos, Vector2 size,Vector2 movepow,Vector2 attackpos)
+void Raycast::setBallRay(Vector2 pos, Vector2 size,Vector2 movepos,Vector2 attackpos)
 {
 	ballRay_ =
 	{
-		{{pos.x + movepow.x+ attackpos.x,pos.y + movepow.y + attackpos.y},{pos.x + movepow.x + attackpos.x + size.x,pos.y+ movepow.y + attackpos.y} },						//è„
-		{{pos.x + movepow.x + attackpos.x,pos.y + size.y + movepow.y + attackpos.y} ,{pos.x + size.x + movepow.x + attackpos.x,pos.y + size.y + movepow.y + attackpos.y}},		//â∫
-		{{pos.x + movepow.x + attackpos.x,pos.y + movepow.y + attackpos.y},{pos.x + movepow.x + attackpos.x,pos.y + size.y + movepow.y + attackpos.y}},							//ç∂
-		{{pos.x + size.x + movepow.x + attackpos.x,pos.y + movepow.y + attackpos.y},{pos.x + size.x + movepow.x + attackpos.x,pos.y + size.y + movepow.y + attackpos.y}},		//âE
+		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y},{pos.x + movepos.x - attackpos.x + size.x,pos.y + movepos.y - attackpos.y} },						//è„
+		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y + size.y} ,{pos.x + size.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},		//â∫
+		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y},{pos.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},							//ç∂
+		{{pos.x + movepos.x + attackpos.x + size.x,pos.y + movepos.y - attackpos.y},{pos.x + size.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},		//âE
 	};
 }
 

@@ -41,9 +41,7 @@ void Ball::Init()
 	//デバック用
 	flg = false;
 
-	attackHit_ = false;
-
-	movepow = {0,0};
+	attackHitFlg_ = false;
 
 	refPow_={20,20};
 
@@ -52,26 +50,24 @@ void Ball::Init()
 
 void Ball::Update()
 {
-
 	if (!flg)
 	{
 		gravity_ += FALL_ACCEL;
 		pos_.x += gravity_;
 	}
 
+	//攻撃判定ヒット時
+	if (attackHitFlg_)
+	{
+		pos_ += attackRefPow_ * attackRefDir_;
+	}
 
 
 	//ステージ判定
 	if (!IsStageHit())
 	{
-		//攻撃判定ヒット時
-		if (attackHit_)
-		{
-			pos_ += attackRefPow_ * attackRefDir_;
-		}
-
 		//攻撃判定フラグがfalseなら
-		if (!attackHit_)
+		if (!attackHitFlg_)
 		{
 			pos_ += refPow_ * refDir_;
 		}
@@ -82,8 +78,10 @@ void Ball::Update()
 		gravity_ = 0;
 		pos_ += refPow_ * refDir_;
 		flg = true;
-		attackHit_ = false;
+		attackHitFlg_ = false;
 	}
+
+	attackPos_ = movePos_;
 
 	SetBallform(pos_, size_);
 }
@@ -100,6 +98,10 @@ void Ball::Draw()
 	DrawFormatString(pos_.x + size_.x / 2 - 20, pos_.y - 20, 0xff0000, "ボール", true);
 	DrawFormatString(48, 630, 0xff0000, "BallPosX%f,BallPosY%f", pos_.x, pos_.y);
 
+	DrawFormatString(0, 100, 0xff0000, "%f", movePos_.x);
+	DrawFormatString(0, 200, 0xff0000, "%d",attackHitFlg_);
+
+
 	//DrawCircle(pos_.x + size_.x / 2, pos_.y + size_.y / 2, rad_, 0xffff00, true);
 }
 
@@ -115,11 +117,15 @@ void Ball::SetBallform(Vector2& pos, Vector2& size)
 
 bool Ball::IsStageHit()
 {
-	attackPos_ = { attackRefPow_ * attackRefPow_ };
 	movePos_ = { refPow_ * refDir_ };
 
+	if (attackHitFlg_)
+	{
+		
+	}
+	
 	//ボールの判定レイを設定
-	raycast_.setBallRay(pos_, size_, movePos_,attackPos_);
+   	raycast_.setBallRay(pos_, size_, movePos_, attackPos_*0);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
@@ -136,5 +142,5 @@ bool Ball::IsStageHit()
 void Ball::SetAttackRef(Vector2& refDir)
 {
 	attackRefDir_ = refDir;
-	attackHit_ = true;
+	attackHitFlg_ = true;
 }
