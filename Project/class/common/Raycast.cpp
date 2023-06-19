@@ -238,19 +238,19 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 	refDir = { 0.0f,0.0f };
 
 	//ステージとボール
-	if (stageRay_[3] == stageLine)
+	if (stageRay_[3] >= stageLine&& stageRay_[2] >= stageLine)
 	{
 		offset.x = -abs(stageLine.p.x - ballLine.end.x);//左
 		//offset.x = 20;//左
-		refDir.x = -1;
+		refDir.x = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左判定", true);
 		return true;
 	}
-	if (stageRay_[2] == stageLine)
+	if (stageRay_[2] <= stageLine||stageRay_[3] <= stageLine)
 	{
 		offset.x =abs(stageLine.end.x - ballLine.end.x);//右
 		//offset.x =-20;//右
-		refDir.x = 1;
+		refDir.x = -1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右判定", true);
 		return true;
 	}
@@ -270,9 +270,6 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下判定", true);
 		return true;
 	}
-
-	return true;
-
 }
 
 bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& refDir)
@@ -335,14 +332,14 @@ void Raycast::setStageRay(Collision stagepos)
 
 
 
-void Raycast::setBallRay(Vector2 pos, Vector2 size,Vector2 movepos,Vector2 attackpos)
+void Raycast::setBallRay(Vector2 pos, Vector2 size)
 {
 	ballRay_ =
 	{
-		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y},{pos.x + movepos.x - attackpos.x + size.x,pos.y + movepos.y - attackpos.y} },						//上
-		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y + size.y} ,{pos.x + size.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},		//下
-		{{pos.x + movepos.x + attackpos.x,pos.y + movepos.y - attackpos.y},{pos.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},							//左
-		{{pos.x + movepos.x + attackpos.x + size.x,pos.y + movepos.y - attackpos.y},{pos.x + size.x + movepos.x - attackpos.x,pos.y + size.y + movepos.y - attackpos.y}},		//右
+		{{pos.x,pos.y},{pos.x+ size.x,pos.y} },						//上
+		{{pos.x,pos.y+ size.y} ,{pos.x + size.x,pos.y + size.y}},		//下
+		{{pos.x,pos.y},{pos.x,pos.y + size.y}},						//左
+		{{pos.x+ size.x,pos.y},{pos.x + size.x,pos.y + size.y}},		//右
 	};
 }
 

@@ -15,7 +15,7 @@ public:
 	[[nodiscard]] bool StageToBallCheckColl(Collision stagepos, Vector2& offset,Vector2& refDir);
 	[[nodiscard]] bool AttackToBallCheckColl(Vector2& refDir);
 
-	void setBallRay(Vector2 pos, Vector2 size, Vector2 movepos,Vector2 attackpos);
+	void setBallRay(Vector2 pos, Vector2 size);
 	
 	void setPlayerRay(Line ray);
 

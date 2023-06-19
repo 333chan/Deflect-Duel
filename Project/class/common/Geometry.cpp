@@ -273,6 +273,26 @@ bool Line::operator==(const Line& line) const
 	return (p==line.p &&end == line.end);
 }
 
+bool Line::operator<=(const Line& line) const
+{
+	return (p <= line.p&& end <= line.end);
+}
+
+bool Line::operator<(const Line& line) const
+{
+	return (p < line.p && end < line.end);
+}
+
+bool Line::operator>=(const Line& line) const
+{
+	return (p >= line.p&& end >= line.end);
+}
+
+bool Line::operator>(const Line& line) const
+{
+	return (p > line.p&& end >line.end);
+}
+
 float Vector3::Magnitude() const
 {
 	return std::hypot(x, y, z);

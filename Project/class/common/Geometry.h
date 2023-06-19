@@ -120,6 +120,10 @@ struct Line
 	Vector2 vec();
 
 	bool operator == (const Line& line)const;
+	bool operator <= (const Line& line)const;
+	bool operator < (const Line& line)const;
+	bool operator >= (const Line& line)const;
+	bool operator > (const Line& line)const;
 };
 
 //“àÏ‚ğ•Ô‚·

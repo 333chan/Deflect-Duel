@@ -421,7 +421,7 @@ bool Player::IsStageHit(Line collRay)
 bool Player::IsBallHit()
 {
 	raycast_.setPlayerSquareRay(pos_, size_, movePos_);
-	raycast_.setBallRay(ball_->pos_, ball_->size_,ball_->movePos_, ball_->attackPos_);
+	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
 	if (raycast_.PlayerToBallChackColl(offset_))
 	{
@@ -434,11 +434,11 @@ bool Player::IsBallHit()
 bool Player::IsAttackHit()
 {
 	raycast_.setPlayerAttackRay(attackpos_, size_);
-	raycast_.setBallRay(ball_->pos_, ball_->size_, ball_->movePos_, ball_->attackPos_);
+	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
 	if (raycast_.AttackToBallCheckColl(refDir_))
 	{
-   		return true;
+    		return true;
 	}
 
 	return false;

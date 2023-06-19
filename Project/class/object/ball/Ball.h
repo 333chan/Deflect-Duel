@@ -30,6 +30,8 @@ public:
 
     //座標
     Vector2 pos_;
+    Vector2 centerPos_;
+    Vector2 endPos_;
 
     //大きさ
     Vector2 size_;
@@ -39,10 +41,7 @@ public:
     bool flg;
     bool attackHitFlg_;
 
-    Vector2 movepow;
-
     Vector2 movePos_;
-    Vector2 attackPos_;
     
 private:
     //ボール画像
@@ -62,12 +61,19 @@ private:
     Vector2 refPow_;
     Vector2 refDir_;
 
-    Vector2 attackRefPow_;
-    Vector2 attackRefDir_;
+    Vector2 ballVec_;
+
 
     //判定
     Raycast raycast_;
 
+
+    Vector2 vec;
+    float vecLen;
+    Vector2 vecNom;
+
+    //レイ
+    void VelRay();
 
 
 };
