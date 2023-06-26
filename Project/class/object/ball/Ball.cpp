@@ -142,7 +142,7 @@ bool Ball::IsStageHit()
 	movePos_ = { refPow_ * refDir_ };
 
 	//ƒ{[ƒ‹‚Ì”»’èƒŒƒC‚ğİ’è
-	raycast_.setBallRay(vel_ , size_);
+	raycast_.setBallRay(pos_ + movePos_, size_);
 
 	//tmx‚ÌCollLisetæ“¾
 	for (auto& coll : tmxObj_.GetStageCollList())
@@ -169,6 +169,8 @@ void Ball::VelRay()
 	endPos_ = centerPos_ + no * refPow_ * refDir_;
 
 	Line ballLine{ centerPos_,endPos_ };
+
+
 	
 	_dbgDrawLine(ballLine.p.x, ballLine.p.y, ballLine.end.x, ballLine.end.y, 0xff0000);
 }
