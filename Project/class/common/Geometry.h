@@ -10,7 +10,7 @@ struct Size {
 //座標を表す構造体
 struct Vector2 {
 	Vector2():x(0),y(0){}
-	Vector2(float inx,float iny):x(inx),y(iny){}
+	Vector2(float inx, float iny):x(inx),y(iny){}
 	float x, y;
 	///ベクトルの大きさを返します
 	float Magnitude()const;

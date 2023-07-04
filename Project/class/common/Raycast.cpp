@@ -65,6 +65,7 @@ bool Raycast::StageToBallCheckColl(Collision stagepos, Vector2& offset, Vector2&
 
 		for (const auto& rb : ballRay_)
 		{
+			
 			//デバック用判定ライン
 			_dbgDrawLine(rb.p.x, rb.p.y, rb.end.x, rb.end.y, 0xff0000);
 			//ボールとステージ
@@ -72,10 +73,12 @@ bool Raycast::StageToBallCheckColl(Collision stagepos, Vector2& offset, Vector2&
 			{
 				//Hitしたら
 				_dbgDrawFormatString(800, 20, 0xfffffff, "ボールがステージにHit");
+
 				return true;
 			}
 		}
 	}
+	_dbgDrawFormatString(0, 350, 0xfffffff, "%f,%f,%f,%f", ballRay_[0].p.x, ballRay_[0].p.y);
 	//当たってない
 	_dbgDrawFormatString(800, 40, 0xffffff, "ボールがステージに当たらず");
 	return false;
@@ -235,41 +238,42 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 
 	//交差している
 	offset = { 0.0f,0.0f };
-	refDir = { 0.0f,0.0f };
+	//refDir = { 0.0f,0.0f };
 
 	//ステージとボール
 	if (stageRay_[3] >= stageLine&& stageRay_[2] >= stageLine)
 	{
-		offset.x = -abs(stageLine.p.x - ballLine.end.x);//左
+		offset.x = -abs(stageLine.p.x - ballLine.p.x);//左
 		//offset.x = 20;//左
 		refDir.x = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左判定", true);
-		return true;
+		//return true;
 	}
-	if (stageRay_[2] <= stageLine||stageRay_[3] <= stageLine)
+	if (stageRay_[2] <= stageLine && stageRay_[3] <= stageLine)
 	{
 		offset.x =abs(stageLine.end.x - ballLine.end.x);//右
 		//offset.x =-20;//右
 		refDir.x = -1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右判定", true);
-		return true;
+		//return true;
 	}
 	if (stageRay_[0] == stageLine)
 	{
-		offset.y = abs(stageLine.p.y - ballLine.p.y);//上
+		offset.y = -abs(stageLine.p.y - ballLine.p.y);//上
 		//offset.y = 20;//上
 		refDir.y = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上判定", true);
-		return true;
+		//return true;
 	}
 	if (stageRay_[1] == stageLine)
 	{
-		offset.y = -abs(stageLine.end.y - ballLine.p.y);//下
+		offset.y = abs(stageLine.end.y - ballLine.end.y);//下
 		//offset.y = -20;//下
-		refDir.y= -1;
+		refDir.y=-1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下判定", true);
-		return true;
+		//return true;
 	}
+	return true;
 }
 
 bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& refDir)
@@ -304,13 +308,13 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 	}
 	if (playerAttackRay_[0] == playerLine)
 	{
-		refDir.x = -1;//上
+		refDir.y = -1;//上
 		_dbgDrawFormatString(600, 0, 0xffffff, "上に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[1] == playerLine)
 	{
-		refDir.x = 1;//下
+		refDir.y = 1;//下
 		_dbgDrawFormatString(600, 0, 0xffffff, "下に返す", true);
 		return true;
 	}
@@ -337,9 +341,9 @@ void Raycast::setBallRay(Vector2 pos, Vector2 size)
 	ballRay_ =
 	{
 		{{pos.x,pos.y},{pos.x+ size.x,pos.y} },						//上
-		{{pos.x,pos.y+ size.y} ,{pos.x + size.x,pos.y + size.y}},		//下
+		{{pos.x,pos.y+ size.y} ,{pos.x + size.x,pos.y + size.y}},	//下
 		{{pos.x,pos.y},{pos.x,pos.y + size.y}},						//左
-		{{pos.x+ size.x,pos.y},{pos.x + size.x,pos.y + size.y}},		//右
+		{{pos.x+ size.x,pos.y},{pos.x + size.x,pos.y + size.y}},	//右
 	};
 }
 

@@ -63,6 +63,9 @@ private:
 
     Vector2 ballVec_;
 
+    Vector2 speed_;
+
+    bool fastHitflg_;
 
     //”»’è
     Raycast raycast_;
