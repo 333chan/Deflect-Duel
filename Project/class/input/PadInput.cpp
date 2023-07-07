@@ -9,7 +9,7 @@ PadInput::PadInput()
 		{KeyID::Left,	PAD_INPUT_LEFT},
 		{KeyID::Right,	PAD_INPUT_RIGHT},
 		{KeyID::Decide,	PAD_INPUT_1},
-		{KeyID::Canacel,PAD_INPUT_5},
+		{KeyID::Cancel,PAD_INPUT_5},
 		{KeyID::Attack,	NULL},
 		{KeyID::Jump,	NULL}
 	};

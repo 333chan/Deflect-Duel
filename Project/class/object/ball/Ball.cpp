@@ -50,7 +50,7 @@ void Ball::Init()
 	refDir_ = { -1.0f,-1.0f };
 
 	movePos_ = { refPow_ * refDir_ };
-	speed_ = { 30,30 };
+	speed_ = { 10,10 };
 	vecLen = 0.0f;
 
 	fastHitflg_ = false;
@@ -62,31 +62,39 @@ void Ball::Update()
 	//攻撃判定ヒット時
 	if (attackHitFlg_)
 	{
-		vec += refPow_ * -refDir_;
+		//vec += refPow_ * -refDir_;
 	}
-
-
 	//ステージ判定
-	if (!IsStageHit())
+
+
+	if (IsStageHit()) 
 	{
+
+		//ステージに当たったら
+
+		//pos_ -= offset_;
+
+		//speed_ = { 0,0 };
+		vec = { 0,0 };
+		//vec += refPow_ + speed_ * refDir_;
+		//speed_ += 1;
+		flg = true;
+		attackHitFlg_ = false;
+		//pos_ -= offset_;
+
+	}
+	else
+	{
+
+		vec += refPow_+ speed_* refDir_;
 		//攻撃判定フラグがfalseなら
 		if (!attackHitFlg_)
 		{
 			//pos_ += refPow_ * refDir_;
-			vec += refPow_+ speed_ * refDir_;
+
 		}
 	}
-	else
-	{
-		//ステージに当たったら
-		pos_ -= offset_;
-		vec = { 0,0 };
-		vec += refPow_ + speed_ * refDir_;
-		//speed_ += 5;
-		flg = true;
-		attackHitFlg_ = false;
 
-	}
 
 	if (vec.x != 0.0f || vec.y != 0.0f)
 	{
@@ -97,7 +105,7 @@ void Ball::Update()
 
 	}
 
-	centerPos_ = { (pos_ + size_ / 2)};
+	centerPos_ = { (raycast_.ballRay_[0].p.x + size_.x / 2),(raycast_.ballRay_[0].p.y + size_.y / 2) };
 
 	SetBallform(pos_, size_);
 	VelRay();
@@ -105,23 +113,21 @@ void Ball::Update()
 
 void Ball::Draw()
 {
-	DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y,ballImage_,true);
+	DrawExtendGraph(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y ,ballImage_,true);
 
 	DrawCircle(centerPos_.x, centerPos_.y, 2, 0xff0000, true);
-
 
 	DrawFormatString(600,600,0xffffff,"%f,%f", refPow_.x* refDir_.x, refPow_.y* refDir_.y);
 	DrawFormatString(600,620,0xffffff,"%f,%f", refPow_.x* refDir_.x, refPow_.y* refDir_.y);
 
-
-	DrawFormatString(pos_.x + size_.x / 2 - 20, pos_.y - 20, 0xff0000, "ボール", true);
+	//DrawFormatString(pos_.x + size_.x / 2 - 20, pos_.y - 20, 0xff0000, "ボール", true);
 	DrawFormatString(48, 630, 0xff0000, "BallPosX%f,BallPosY%f", pos_.x, pos_.y);
 
 	DrawFormatString(0, 100, 0xff0000, "speed_%f,%f", speed_.x, speed_.y);
 	DrawFormatString(0, 150, 0xff0000, "refDir_%f,%f", refDir_.x,refDir_.y);
 	DrawFormatString(0, 200, 0xff0000, "%d",attackHitFlg_);
 
-	DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffff00, false);
+	DrawBox(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, 0xffff00, false);
 
 	//DrawCircle(pos_.x + size_.x / 2, pos_.y + size_.y / 2, rad_, 0xffff00, true);
 }
@@ -160,7 +166,9 @@ void Ball::VelRay()
 
 	//endPos_ = { (centerPos_ + size_+refPow_) * refDir_};
 
-	endPos_ = centerPos_ + speed_+size_ * 1.5 * refDir_;
+	Vector2 s = refPow_ + speed_ * refDir_;
+
+	endPos_ = { centerPos_.x + size_.x * s.Normalized().x ,centerPos_.y + size_.y * s.Normalized().y} ;
 
 	ballVec_ = endPos_ - centerPos_;
 

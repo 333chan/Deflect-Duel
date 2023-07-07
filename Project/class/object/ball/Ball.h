@@ -70,6 +70,8 @@ private:
     //”»’è
     Raycast raycast_;
 
+    Vector2 balloff;
+
 
     Vector2 vec;
     float vecLen;

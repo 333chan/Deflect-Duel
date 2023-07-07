@@ -78,7 +78,9 @@ bool Raycast::StageToBallCheckColl(Collision stagepos, Vector2& offset, Vector2&
 			}
 		}
 	}
-	_dbgDrawFormatString(0, 350, 0xfffffff, "%f,%f,%f,%f", ballRay_[0].p.x, ballRay_[0].p.y);
+	_dbgDrawFormatString(0, 400, 0xfffffff, "%f,%f,%f,%f", ballRay_[0].p.x, ballRay_[0].p.y);
+
+
 	//当たってない
 	_dbgDrawFormatString(800, 40, 0xffffff, "ボールがステージに当たらず");
 	return false;
@@ -243,7 +245,7 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 	//ステージとボール
 	if (stageRay_[3] >= stageLine&& stageRay_[2] >= stageLine)
 	{
-		offset.x = -abs(stageLine.p.x - ballLine.p.x);//左
+		offset.x = -abs(stageLine.p.x - ballLine.end.x);//左
 		//offset.x = 20;//左
 		refDir.x = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左判定", true);

@@ -7,12 +7,12 @@
 class Controller;
 enum class ControllerType;
 
-class TitelScene :
+class SelectScene :
     public BaseScene
 {
 public:
-    TitelScene();
-    ~TitelScene();
+    SelectScene();
+    ~SelectScene();
 
     //初期化
     void Init(void) override;
@@ -29,26 +29,24 @@ public:
     //シーンID返却
     SceneID GetSceneID(void) override
     {
-        return SceneID::Title;
+        return SceneID::Select;
     };
 
-
-
-private :
+private:
     //シーン切り替え関数
     UniqueScene UpdateScene(UniqueScene& scene);
 
     //背景座標
-    Vector2 bgPos;		
-    Vector2 bgPosEnd;	
+    Vector2 bgPos;
+    Vector2 bgPosEnd;
 
-    //ロゴ座標
-    Vector2 logoPos;
-    Vector2 logoPosEnd;
+    //ステージ画像座標
+    Vector2 stage1Pos;
+    Vector2 stage1PosEnd;
 
 
     int bgImageH_;      //背景画像
-    int logoImageH_;    //タイトルロゴ画像
+    int stage1ImageH_;  //ステージ画像
 
 protected:
     //tmx

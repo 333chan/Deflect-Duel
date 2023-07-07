@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include"SceneManager.h"
 #include "TitelScene.h"
+#include "SelectScene.h"
 #include "ResultScene.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
@@ -42,6 +43,9 @@ void GameScene::Init(void)
 
 UniqueScene GameScene::Update(UniqueScene scene)
 {
+
+	controller_->Update();
+
 	//ステージ
 	stage_->Update();
 
@@ -81,9 +85,9 @@ UniqueScene GameScene::UpdateScene(UniqueScene& scene)
 {
 	//デバック用
 #ifdef _DEBUG
-	if (CheckHitKey(KEY_INPUT_R))
+	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		return std::make_unique<ResultScene>();
+		return std::make_unique<TitelScene>();
 	}
 
 #endif

@@ -24,6 +24,9 @@ public:
 	void setPlayerAttackRay(Vector2 pos, Vector2 size);
 
 
+	std::vector<Line> ballRay_;
+
+
 private:
 
 	[[nodiscard]] void ChackLine(Line playerLine, Line stageLine);
@@ -39,7 +42,7 @@ private:
 	//ステージレイ
 	std::vector<Line> stageRay_;
 
-	std::vector<Line> ballRay_;
+
 
 	Line playerRay_;
 

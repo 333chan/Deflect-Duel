@@ -9,9 +9,12 @@ enum class KeyID
 	Left,	//左
 	Right,	//右
 	Decide,	//決定
-	Canacel,//キャンセル
+	Cancel,//キャンセル
 	Attack, //攻撃
 	Jump,	//ジャンプ
+
+	Transition,	//シーン遷移
+
 	Max
 };
 

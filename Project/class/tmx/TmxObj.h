@@ -44,6 +44,12 @@ public:
 	//ステージの画像
 	CollList& GetStageimageList(void);
 
+	//タイトル
+	CollList& GetTitleLogoimageList(void);
+	CollList& GetTitleBgimageList(void);
+
+	CollList& GetSelectStageList(void);
+
 private:
 	bool CheckTiledVersion(rapidxml::xml_node<>* node);
 
@@ -65,5 +71,12 @@ private:
 
 	//ステージ画像の大きさ
 	CollList stageimageList_;
+
+	CollList bgImageList_;			//背景
+
+	CollList titleLogoimageList_;	//タイトルロゴ
+
+	//ステージセレクト
+	CollList stageImageList_;	//ステージ1画像
 };
 

@@ -141,6 +141,7 @@ void Player::Update(void)
 	case State::JumpUp:
 	{
 		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+
 		if (YVel > 0)
 		{
 			state_ = State::Idel;

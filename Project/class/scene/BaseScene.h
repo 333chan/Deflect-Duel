@@ -6,6 +6,8 @@
 
 class BaseScene;
 
+
+
 using UniqueScene = std::unique_ptr<BaseScene>;
 
 class BaseScene
@@ -28,9 +30,13 @@ public:
 	virtual void  Release(void) = 0;
 
 	virtual SceneID GetSceneID(void) = 0;
+
+
 private:
 
 protected:
+
+
 	// ƒXƒNƒŠ[ƒ“î•ñ
 	int screenID_;
 

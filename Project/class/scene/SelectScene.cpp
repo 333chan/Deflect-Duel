@@ -2,10 +2,10 @@
 #include"SceneManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
+#include "GameScene.h"
 #include "SelectScene.h"
-#include "TitelScene.h"
 
-TitelScene::TitelScene()
+SelectScene::SelectScene()
 {
 
 	//コントローラーの生成
@@ -26,22 +26,21 @@ TitelScene::TitelScene()
 	DrawScreen();
 }
 
-TitelScene::~TitelScene()
+SelectScene::~SelectScene()
 {
-	//解放
 	Release();
 }
 
-void TitelScene::Init(void)
+void SelectScene::Init(void)
 {
 	//tmxの読み込み
-	tmxObj_.LoadTmx("resource/tmx/titleScene.tmx", false);
+	tmxObj_.LoadTmx("resource/tmx/selectScene.tmx", false);
 
 	bgImageH_ = LoadGraph("resource/image/stage/titleBg.png", true);
-	logoImageH_ = LoadGraph("resource/image/titlelogo.png");
+	stage1ImageH_ = LoadGraph("resource/image/stage/stage.png",true);
 }
 
-UniqueScene TitelScene::Update(UniqueScene scene)
+UniqueScene SelectScene::Update(UniqueScene scene)
 {
 	controller_->Update();
 	DrawScreen();
@@ -49,7 +48,7 @@ UniqueScene TitelScene::Update(UniqueScene scene)
 	return UpdateScene(scene);
 }
 
-void TitelScene::DrawScreen(void)
+void SelectScene::DrawScreen(void)
 {
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
@@ -60,38 +59,35 @@ void TitelScene::DrawScreen(void)
 		bgPos = coll.first;
 		bgPosEnd = coll.first + coll.second;
 	}
-	for (auto& coll : tmxObj_.GetTitleLogoimageList())
+	for (auto& coll : tmxObj_.GetSelectStageList())
 	{
-		logoPos = coll.first;
-		logoPosEnd = coll.first+coll.second;
+		stage1Pos = coll.first;
+		stage1PosEnd = coll.first + coll.second;
 	}
 
 	DrawExtendGraph(bgPos.x, bgPos.y, bgPosEnd.x, bgPosEnd.y, bgImageH_, true);
-	//DrawRotaGraph(logoPos.x,logoPos.y,1.3,Deg2RadF(-5), logoImageH_, true);
-	//DrawExtendGraph(logoPos.x, logoPos.y, logoPosEnd.x,logoPosEnd.y, logoImageH_, true);
-	DrawGraph(logoPos.x, logoPos.y, logoImageH_,true);
-	DrawString(550,600 - 16, "Start to Press X", 0xffffff);
+	DrawExtendGraph(stage1Pos.x, stage1Pos.y, stage1PosEnd.x, stage1PosEnd.y, stage1ImageH_, true);
+	DrawString(stage1Pos.x, stage1Pos.y-16, "倉庫/Press X",0xffffff);
+	//DrawGraph(logoPos.x, logoPos.y, logoImageH_, true);
 
-	DrawFormatString(0, 0, 0xffffff, "TitleScene");
+	DrawFormatString(0, 0, 0xffffff, "Select");
 
 
 }
 
-void TitelScene::Release(void)
+void SelectScene::Release(void)
 {
-
 	DeleteGraph(bgImageH_);
-	DeleteGraph(logoImageH_);
 
 }
 
-UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
+UniqueScene SelectScene::UpdateScene(UniqueScene& scene)
 {
 	//デバック用
 #ifdef _DEBUG
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		return std::make_unique<SelectScene>();
+		return std::make_unique<GameScene>();
 	}
 
 

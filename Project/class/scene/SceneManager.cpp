@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "TitelScene.h"
 #include "GameScene.h"
+#include "SelectScene.h"
 #include "SceneManager.h"
 #include "../../_debug/_DebugDispOut.h"
 
@@ -39,7 +40,7 @@ SceneManager::~SceneManager()
 void SceneManager::Init(void)
 {
 	//起動時シーン設定
-	scene_ = std::make_unique<GameScene>();
+	scene_ = std::make_unique<TitelScene>();
 
 	//デルタタイム系の初期化
 	deltaTime_ = 0.0f;

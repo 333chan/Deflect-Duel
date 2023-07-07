@@ -236,6 +236,7 @@ bool TmxObj::SetMap(void)
 			float CollW = static_cast<float>(atof(ObjectNode->first_attribute("width")->value()));
 			float CollH = static_cast<float>(atof(ObjectNode->first_attribute("height")->value()));
 			
+			//ステージ
 			if (collName == "stage")
 			{
 				stageCollList_.push_back(
@@ -245,7 +246,6 @@ bool TmxObj::SetMap(void)
 					}
 				);
 			}
-
 			if (collName == "stageimage")
 			{
 				stageimageList_.push_back(
@@ -256,133 +256,37 @@ bool TmxObj::SetMap(void)
 				);
 			}
 
-			/*if (collName == "titleColl")
+			//タイトル
+			if (collName == "logo")
 			{
-				titleCollList_.push_back(
+				titleLogoimageList_.push_back(
 					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
+						{ CollX,CollY},
+						{CollW,CollH}
 					}
 				);
 			}
-			if (collName == "InventoryColl")
+			if (collName == "bg")
 			{
-				inventoryCollList_.push_back(
+				bgImageList_.push_back(
 					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
+						{ CollX,CollY},
+						{CollW,CollH}
 					}
 				);
 			}
-			if (collName == "optionColl")
+
+			//セレクト
+			if (collName == "stage1")
 			{
-				optionCollList_.push_back(
+				stageImageList_.push_back(
 					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
+						{ CollX,CollY},
+						{CollW,CollH}
 					}
 				);
 			}
-			if (collName == "gameoverColl")
-			{
-				gameoverCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "resultColl")
-			{
-				resultCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "tipsColl")
-			{
-				tipsCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "cameraColl")
-			{
-				cameraCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "selectColl")
-			{
-				SelectCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "selectARColl")
-			{
-				ConnectedCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "openingColl")
-			{
-				OpeningCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "endingColl")
-			{
-				OpeningCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			if (collName == "exitColl")
-			{
-				ExitCollList_.push_back(
-					{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-					}
-				);
-			}
-			collListAll_.push_back(
-				{
-						CollName,
-						{{ CollX,CollY },
-						{ CollW,CollH }}
-				}*/
-			//);
+			
 		}
 	}
 	return true;
@@ -449,6 +353,21 @@ CollList& TmxObj::GetStageCollList(void)
 CollList& TmxObj::GetStageimageList(void)
 {
 	return stageimageList_;
+}
+
+CollList& TmxObj::GetTitleLogoimageList(void)
+{
+	return titleLogoimageList_;
+}
+
+CollList& TmxObj::GetTitleBgimageList(void)
+{
+	return bgImageList_;
+}
+
+CollList& TmxObj::GetSelectStageList(void)
+{
+	return stageImageList_;
 }
 
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)

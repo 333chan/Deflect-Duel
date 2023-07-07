@@ -163,6 +163,7 @@
     <ClCompile Include="class\input\PadInput.cpp" />
     <ClCompile Include="class\tmx\TmxObj.cpp" />
     <ClCompile Include="class\common\Raycast.cpp" />
+    <ClCompile Include="class\scene\SelectScene.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
@@ -189,6 +190,7 @@
     <ClInclude Include="class\input\PadInput.h" />
     <ClInclude Include="class\tmx\TmxObj.h" />
     <ClInclude Include="class\common\Raycast.h" />
+    <ClInclude Include="class\scene\SelectScene.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
   </ItemGroup>
