@@ -24,6 +24,7 @@
     <ProjectGuid>{aa78b31a-5bc3-4a64-bec6-0f9fdf7791f1}</ProjectGuid>
     <RootNamespace>Bouncer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Deflect-Duel</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -15,7 +15,7 @@ bool SceneManager::SystemInit(void)
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
 	ChangeWindowMode(true);
-	SetWindowText("Bouncer");
+	SetWindowText("Deflect Duel");
 
 	if (DxLib_Init() == -1)
 	{
