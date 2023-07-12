@@ -52,21 +52,21 @@ void TitelScene::Init(void)
 		BG(LoadGraph("resource/image/stage/backBills.png", true),
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
-			BG_MOVE_SPEED*1.7
+			BG_MOVE_SPEED*0.5
 	));
 
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/middleBills.png", true),
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
-			BG_MOVE_SPEED*3
+			BG_MOVE_SPEED
 		));
 
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/road.png", true),
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
-			BG_MOVE_SPEED*10
+			BG_MOVE_SPEED*1.7
 		));
 
 	//tmxÇÃCollLisetéÊìæ
@@ -163,8 +163,6 @@ UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
 	{
 		return std::make_unique<SelectScene>();
 	}
-
-
 #endif
 
 	//å≥ÇÃÉVÅ[ÉìÇ…ñﬂÇ∑
