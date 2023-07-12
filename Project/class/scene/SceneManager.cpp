@@ -10,6 +10,7 @@
 //画面サイズ(フルスクリーン予定)
 constexpr int SCREEN_SIZE_X =1280;
 constexpr int SCREEN_SIZE_Y = 720;
+
 bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
@@ -101,5 +102,10 @@ void SceneManager::Draw(void)
 
 void SceneManager::Relese(void)
 {
+}
+
+Vector2 SceneManager::GetScreenSize(void)
+{
+	return Vector2(SCREEN_SIZE_X,SCREEN_SIZE_Y);
 }
 

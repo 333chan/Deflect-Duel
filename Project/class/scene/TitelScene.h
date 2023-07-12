@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "BaseScene.h"
 #include "../common/Geometry.h"
 #include "../object/Object.h"
@@ -6,6 +7,14 @@
 
 class Controller;
 enum class ControllerType;
+
+struct BG
+{
+    int hadle;
+    std::pair<Vector2, Vector2> pos1;   //一枚目の始終点
+    std::pair<Vector2, Vector2> pos2;   //二枚目の始終点
+    float speed;
+};
 
 class TitelScene :
     public BaseScene
@@ -39,16 +48,21 @@ private :
     UniqueScene UpdateScene(UniqueScene& scene);
 
     //背景座標
-    Vector2 bgPos;		
-    Vector2 bgPosEnd;	
+    Vector2 bgPos_;
+    Vector2 bgEndPos_;
 
     //ロゴ座標
-    Vector2 logoPos;
-    Vector2 logoPosEnd;
+    Vector2 logoPos_;
+    Vector2 logoPosEnd_;
 
 
-    int bgImageH_;      //背景画像
-    int logoImageH_;    //タイトルロゴ画像
+    //タイトル背景
+    int bgImage_;               //背景
+    
+     //タイトルロゴ画像
+    int logoImageH_;   
+
+    std::vector<BG> bgVec_;
 
 protected:
     //tmx

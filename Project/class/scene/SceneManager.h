@@ -23,6 +23,9 @@ public:
 	//デルタタイム取得
 	double GetDeltaTime(void);
 
+	//スクリーンサイズ取得
+	Vector2 GetScreenSize(void);
+
 private:
 	//システムの初期化処理
 	bool SystemInit(void);
@@ -32,6 +35,8 @@ private:
 	void Update(void);
 	void Draw(void);
 	void Relese(void);
+
+
 
 	//経過時間
 	std::chrono::system_clock::time_point tickCount_;
