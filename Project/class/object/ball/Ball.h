@@ -64,6 +64,7 @@ private:
     Vector2 ballVec_;
 
     Vector2 speed_;
+    Vector2 maxSpeed_;
 
     bool fastHitflg_;
 

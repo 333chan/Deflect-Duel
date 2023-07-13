@@ -7,6 +7,8 @@
 constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
 
+const Vector2 MAX_SPEED = {30,30};
+
 Ball::Ball()
 {
 	Init();
@@ -62,7 +64,14 @@ void Ball::Update()
 	//攻撃判定ヒット時
 	if (attackHitFlg_)
 	{
-		//vec += refPow_ * -refDir_;
+		attackHitFlg_ = false;
+		vec = { 0,0 };
+		vec += refPow_ + speed_ * refDir_;
+
+   		if (speed_ < MAX_SPEED)
+		{
+			speed_ += 5;
+		}
 	}
 	//ステージ判定
 
@@ -71,26 +80,18 @@ void Ball::Update()
 	{
 
 		//ステージに当たったら
-
 		//pos_ -= offset_;
 
-		//speed_ = { 0,0 };
 		vec = { 0,0 };
-		//vec += refPow_ + speed_ * refDir_;
-		//speed_ += 1;
+
 		flg = true;
 		attackHitFlg_ = false;
-		//pos_ -= offset_;
-
 	}
 	else
 	{
-
-		vec += refPow_+ speed_* refDir_;
-		//攻撃判定フラグがfalseなら
 		if (!attackHitFlg_)
 		{
-			//pos_ += refPow_ * refDir_;
+			vec += refPow_ + speed_ * refDir_;
 
 		}
 	}

@@ -70,6 +70,7 @@ void Player::Init()
 	playerImage4_ = LoadGraph("resource/image/character/player_up.png", true);
 	playerImage5_ = LoadGraph("resource/image/character/player_down.png", true);
 	playerImage6_ = LoadGraph("resource/image/character/player_attack.png", true);
+	playerImage7_ = LoadGraph("resource/image/character/player_death.png", true);
 
 	//tmxÇÃì«Ç›çûÇ›
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
@@ -309,16 +310,22 @@ void Player::Update(void)
 		}
 
 		break;
+	case State::Death:
+
+		_dbgDrawFormatString(500, 300, 0xffffff, "éÄÇ…Ç‹ÇµÇΩÅ[", true);
+
+		break;
 	case State::Max:
 		break;
 	[[likery]]default:
 		break;
 	}
-
 	if (IsBallHit())
 	{
-		DrawFormatString(0, 200, 0xff0000, "éÄ", true);
+		state_ = State::Death;
+		
 	}
+
 
 	attackpos_ = { pos_.x + size_.x,pos_.y };
 
@@ -356,6 +363,10 @@ void Player::Draw(void)
 	case State::Attack:
 		DrawFormatString(300, 30, 0xffffff, "State:Attack");
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage6_, true);
+		break;
+	case State::Death:
+		DrawFormatString(300, 30, 0xffffff, "State:Attack");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage7_, true);
 		break;
 	case State::Max:
 		break;

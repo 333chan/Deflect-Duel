@@ -320,9 +320,6 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 		_dbgDrawFormatString(600, 0, 0xffffff, "â∫Ç…ï‘Ç∑", true);
 		return true;
 	}
-
-	return true;
-
 }
 
 void Raycast::setStageRay(Collision stagepos)
@@ -382,10 +379,10 @@ void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size)
 {
 	playerAttackRay_ =
 	{
-		{{pos.x ,pos.y },{pos.x + size.x,pos.y } },							//è„
-		{{pos.x ,pos.y + size.y } ,{pos.x + size.x ,pos.y + size.y}},		//â∫
-		{{pos.x ,pos.y },{pos.x ,pos.y + size.y }},							//ç∂
-		{{pos.x + size.x ,pos.y },{pos.x + size.x,pos.y + size.y }},		//âE
+		{{pos.x ,pos.y + 10 },{pos.x + size.x,pos.y+10 } },							//è„
+		{{pos.x ,pos.y -10 + size.y } ,{pos.x + size.x ,pos.y + size.y -10}},		//â∫
+		{{pos.x ,pos.y+10  },{pos.x ,pos.y + size.y-10 }},							//ç∂
+		{{pos.x + size.x ,pos.y +10 },{pos.x + size.x,pos.y + size.y -10 }},		//âE
 	};
 }
 

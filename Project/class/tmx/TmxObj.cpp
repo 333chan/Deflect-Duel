@@ -286,6 +286,16 @@ bool TmxObj::SetMap(void)
 					}
 				);
 			}
+			//ÉZÉåÉNÉg
+			if (collName == "logo")
+			{
+				logoImageList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
 			
 		}
 	}
@@ -368,6 +378,11 @@ CollList& TmxObj::GetTitleBgimageList(void)
 CollList& TmxObj::GetSelectStageList(void)
 {
 	return stageImageList_;
+}
+
+CollList& TmxObj::GetSelectLogoList(void)
+{
+	return logoImageList_;
 }
 
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)

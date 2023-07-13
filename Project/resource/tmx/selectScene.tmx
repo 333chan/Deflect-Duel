@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="16">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="25">
  <objectgroup id="4" name="bg">
   <object id="14" name="bgimage" x="0" y="0" width="1280" height="720"/>
  </objectgroup>
- <objectgroup id="6" name="stage2">
-  <object id="15" name="stageImage" x="720" y="224" width="480" height="304"/>
+ <objectgroup id="11" name="logo">
+  <object id="24" name="logoimage" x="0" y="80" width="1280" height="112"/>
  </objectgroup>
- <objectgroup id="2" name="stage1">
-  <object id="1" name="stageImage" x="80" y="224" width="480" height="304"/>
+ <objectgroup id="2" name="stage1" visible="0">
+  <object id="1" name="stageImage4" x="0" y="0" width="320" height="720"/>
+  <object id="19" name="stageImage3" x="320" y="0" width="320" height="720"/>
+  <object id="20" name="stageImage2" x="640" y="0" width="320" height="720"/>
+  <object id="21" name="stageImage" x="960" y="0" width="320" height="720"/>
  </objectgroup>
 </map>

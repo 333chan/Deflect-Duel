@@ -20,6 +20,7 @@ enum class State
     MoveRight,  //右移動
     Crouching,  //しゃがみ
     Attack,     //攻撃
+    Death,     //死
     Max
 };
 
@@ -111,6 +112,7 @@ private:
     int playerImage4_;
     int playerImage5_;
     int playerImage6_;
+    int playerImage7_;
 
     //ボールの座標と大きさ
     Vector2 ballpos_;

@@ -36,10 +36,6 @@ private:
     //シーン切り替え関数
     UniqueScene UpdateScene(UniqueScene& scene);
 
-    //背景座標
-    Vector2 bgPos;
-    Vector2 bgPosEnd;
-
     //ステージ画像座標
     Vector2 stage1Pos;
     Vector2 stage1PosEnd;
@@ -47,6 +43,7 @@ private:
 
     int bgImageH_;      //背景画像
     int stage1ImageH_;  //ステージ画像
+    int logoImageH_;  //ロゴ画像
 
 protected:
     //tmx

@@ -36,8 +36,9 @@ void SelectScene::Init(void)
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/selectScene.tmx", false);
 
-	bgImageH_ = LoadGraph("resource/image/stage/titleBg.png", true);
-	stage1ImageH_ = LoadGraph("resource/image/stage/stage.png",true);
+	bgImageH_ = LoadGraph("resource/image/stage/selectBg.png", true);
+	logoImageH_ = LoadGraph("resource/image/stage/stageselect.png", true);
+	stage1ImageH_ = LoadGraph("resource/image/stage/selectStage.png",true);
 }
 
 UniqueScene SelectScene::Update(UniqueScene scene)
@@ -53,31 +54,41 @@ void SelectScene::DrawScreen(void)
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 
-	//tmxのCollLiset取得
-	for (auto& coll : tmxObj_.GetTitleBgimageList())
+	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x,IpSceneMng.GetScreenSize().y, bgImageH_, true);
+
+
+
+	//tmxの位置とサイズ取得
+	for (const auto&imagePos:tmxObj_.GetSelectStageList())
 	{
-		bgPos = coll.first;
-		bgPosEnd = coll.first + coll.second;
-	}
-	for (auto& coll : tmxObj_.GetSelectStageList())
-	{
-		stage1Pos = coll.first;
-		stage1PosEnd = coll.first + coll.second;
+		//始点とサイズに
+		const auto& [sPos, size] = imagePos;
+
+		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, stage1ImageH_, true);
 	}
 
-	DrawExtendGraph(bgPos.x, bgPos.y, bgPosEnd.x, bgPosEnd.y, bgImageH_, true);
-	DrawExtendGraph(stage1Pos.x, stage1Pos.y, stage1PosEnd.x, stage1PosEnd.y, stage1ImageH_, true);
-	DrawString(stage1Pos.x, stage1Pos.y-16, "倉庫/Press X",0xffffff);
+	//tmxの位置とサイズ取得
+	for (const auto& bgPos : tmxObj_.GetSelectLogoList())
+	{
+		//始点とサイズに
+		const auto& [sPos, size] = bgPos;
+		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, logoImageH_, true);
+	}
+
+	DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Press X",0xffffff);
+	DrawString(380, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+	DrawString(700, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+	DrawString(1000, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+
 	//DrawGraph(logoPos.x, logoPos.y, logoImageH_, true);
 
-	DrawFormatString(0, 0, 0xffffff, "Select");
-
-
+	DrawFormatString(0,0, 0xffffff, "Select");
 }
 
 void SelectScene::Release(void)
 {
-	DeleteGraph(bgImageH_);
+	DeleteGraph(stage1ImageH_);
+	DeleteGraph(logoImageH_);
 
 }
 
