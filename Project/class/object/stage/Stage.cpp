@@ -36,7 +36,6 @@ void Stage::Draw()
 	{
 		stagePos = coll.first;
 		stagePosEnd = coll.second;
-		
 	}
 
 	DrawExtendGraph(stagePos.x, stagePos.y,stagePosEnd.x, stagePosEnd.y , stageImage_,true);

@@ -31,14 +31,24 @@ enum class Dir
     Down,   //下
     Right,  //右
     Left,   //左   
+    AirAttackRight, //空中攻撃右
+    AirAttackLeft,//空中攻撃左
     Max
+};
+
+enum class playerType
+{
+    One,    //1P
+    Two,    //2P
+    Max
+
 };
 
 class Player :
     public Object
 {
 public:
-    Player(ControllerType type, std::shared_ptr<Ball>& ball);
+    Player(ControllerType type, playerType pType,std::shared_ptr<Ball>& ball);
     ~Player();
 
     //初期化
@@ -53,15 +63,24 @@ public:
     //解放
     void Release(void) override;
 
+    State GetState(void);
+    playerType GetPlayerType(void);
+
 private:
     //コントローラー
     std::unique_ptr<Controller> controller_;
+
+    playerType playertype_;
+
+    //ボール
+    std::shared_ptr<Ball> ball_;
 
     //色
     int color ;
 
     //座標
     Vector2 pos_; 
+    Vector2 p2Pos_; 
     
     //大きさ
     Vector2 size_;
@@ -81,6 +100,8 @@ private:
     //方向
     Dir dir_;
 
+    playerType type_;
+
     //重力
     float gravity_;
 
@@ -94,8 +115,7 @@ private:
     //判定
     Raycast raycast_;
 
-    //ボール
-    std::shared_ptr<Ball> ball_;
+
 
     //判定処理
     bool IsStageHit(Line collRay);
@@ -119,6 +139,11 @@ private:
     Vector2 ballsize_;
 
     Vector2 bpos_;
+
+    int jumpSe_;
+    int attackMissSe_;
+    int attackSe_;
+    int daethSe_;
 
 protected:
     //tmx

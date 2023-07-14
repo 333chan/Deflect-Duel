@@ -16,7 +16,10 @@ KeyInput::KeyInput()
 		{KeyID::Cancel,		KEY_INPUT_ESCAPE},
 		{KeyID::Attack,		KEY_INPUT_SPACE},
 		{KeyID::Jump,		KEY_INPUT_SPACE},
-		{KeyID::Transition,	KEY_INPUT_X}
+		{KeyID::Stage1,		KEY_INPUT_1},
+		{KeyID::Transition,	KEY_INPUT_Z},
+		{KeyID::Rematch,	KEY_INPUT_R},
+		{KeyID::ReturnTitle,	KEY_INPUT_T},
 	};
 
 	for (const auto&data:inputTable_)

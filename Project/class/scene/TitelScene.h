@@ -62,6 +62,9 @@ private :
      //ƒ^ƒCƒgƒ‹ƒƒS‰æ‘œ
     int logoImageH_;   
 
+    int bgm;
+    int disSe;
+
     std::vector<BG> bgVec_;
 
 protected:

@@ -14,6 +14,9 @@ enum class KeyID
 	Jump,	//ジャンプ
 
 	Transition,	//シーン遷移
+	Stage1,	//ステージ1
+	Rematch,	//再戦
+	ReturnTitle,	//タイトルに戻る
 
 	Max
 };

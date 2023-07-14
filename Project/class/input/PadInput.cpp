@@ -4,14 +4,15 @@
 PadInput::PadInput()
 {
 	inputTable_ = {
-		{KeyID::Up,		PAD_INPUT_UP},
+		{KeyID::Up,		PAD_INPUT_1},
 		{KeyID::Down,	PAD_INPUT_DOWN},
 		{KeyID::Left,	PAD_INPUT_LEFT},
 		{KeyID::Right,	PAD_INPUT_RIGHT},
-		{KeyID::Decide,	PAD_INPUT_1},
+		{KeyID::Decide,	PAD_INPUT_2},
 		{KeyID::Cancel,PAD_INPUT_5},
-		{KeyID::Attack,	NULL},
-		{KeyID::Jump,	NULL}
+		{KeyID::Attack,	PAD_INPUT_3},
+		{KeyID::Jump,	PAD_INPUT_UP},
+		{KeyID::Transition,	PAD_INPUT_4}
 	};
 	for (auto data :inputTable_)
 	{

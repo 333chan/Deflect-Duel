@@ -14,7 +14,8 @@ TitelScene::TitelScene()
 	//コントローラーの生成
 	if (GetJoypadNum() >= 1)
 	{
-		controller_ = std::make_unique<PadInput>();
+		controller_ = std::make_unique<KeyInput>();
+
 	}
 	else
 	{
@@ -45,6 +46,9 @@ void TitelScene::Init(void)
 	bgImage_ = LoadGraph("resource/image/stage/titleBg.png", true);
 
 	logoImageH_ = LoadGraph("resource/image/titlelogo.png");
+
+	bgm = LoadSoundMem("resource/sound/titlebgm.mp3");
+	disSe = LoadSoundMem("resource/sound/dis.mp3");
 
 	auto screen = IpSceneMng.GetScreenSize();
 
@@ -82,6 +86,9 @@ void TitelScene::Init(void)
 		logoPos_ = coll.first;
 		logoPosEnd_ = coll.first + coll.second;
 	}
+
+	ChangeVolumeSoundMem(200, bgm);
+	PlaySoundMem(bgm, DX_PLAYTYPE_BACK);
 }
 
 UniqueScene TitelScene::Update(UniqueScene scene)
@@ -136,10 +143,11 @@ void TitelScene::DrawScreen(void)
 	}
 
 	DrawGraph(logoPos_.x, logoPos_.y, logoImageH_,true);
-	DrawString(550,600 - 16, "Start to Press X", 0xffffff);
+	DrawString(550,600 - 16, "Start to Press Z", 0xffffff);
 
+#ifdef _DEBUG
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
-
+#endif
 
 }
 
@@ -157,12 +165,17 @@ void TitelScene::Release(void)
 
 UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
 {
-	//デバック用
-#ifdef _DEBUG
+
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		return std::make_unique<SelectScene>();
+		ChangeVolumeSoundMem(255, disSe);
+		PlaySoundMem(disSe, DX_PLAYTYPE_BACK);
+		ChangeVolumeSoundMem(180,bgm);
+		return std::make_unique<SelectScene>(bgm);
 	}
+	//デバック用
+#ifdef _DEBUG
+
 #endif
 
 	//元のシーンに戻す

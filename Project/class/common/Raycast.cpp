@@ -33,8 +33,6 @@ bool Raycast::PlayerToBallChackColl(Vector2& offset)
 
 	for (const auto& rps : playerSquareRay_)
 	{
-		//デバック用判定ライン
-
 
 		for (const auto& rb : ballRay_)
 		{
@@ -208,13 +206,13 @@ bool Raycast::BallToPlayerChackLine(Line playerLine, Line ballLine, Vector2& bou
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右", true);
 		return true;
 	}
-	if (ballRay_[1] == ballLine)
+	if (ballRay_[0] == ballLine)
 	{
 		//bound.y = -abs(playerLine.p.y - ballLine.p.y);//上
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上", true);
 		return true;
 	}
-	if (ballRay_[0] == ballLine)
+	if (ballRay_[1] == ballLine)
 	{
 		//bound.y = abs(playerLine.end.y - ballLine.end.y);//下
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下", true);
@@ -298,12 +296,14 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 	//攻撃とボール
 	if (playerAttackRay_[3] == playerLine)
 	{
+		refDir.y = -1;//上
 		refDir.x = 1;//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "左に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[2] == playerLine)
 	{
+		refDir.y = 1;//下
 		refDir.x = -1;//右
 		_dbgDrawFormatString(600, 0, 0xffffff, "右に返す", true);
 		return true;
@@ -311,12 +311,14 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 	if (playerAttackRay_[0] == playerLine)
 	{
 		refDir.y = -1;//上
+		refDir.x = 1;//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "上に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[1] == playerLine)
 	{
 		refDir.y = 1;//下
+		refDir.x = -1;//右
 		_dbgDrawFormatString(600, 0, 0xffffff, "下に返す", true);
 		return true;
 	}
@@ -367,10 +369,10 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 
 	playerSquareRay_ =
 	{
-		{{pos.x ,pos.y },{pos.x + size.x ,pos.y} },						//上
-		{{pos.x ,pos.y + size.y} ,{pos.x + size.x,pos.y + size.y}},		//下
-		{{pos.x ,pos.y},{pos.x,pos.y + size.y}},						//左
-		{{pos.x + size.x,pos.y},{pos.x + size.x,pos.y + size.y}},		//右
+		{{pos.x+5 ,pos.y+10 },{pos.x-5 + size.x ,pos.y+10} },						//上
+		{{pos.x + 5 ,pos.y + size.y-5} ,{pos.x-5 + size.x,pos.y + size.y-5}},		//下
+		{{pos.x + 5 ,pos.y+10},{pos.x + 5,pos.y + size.y-5}},						//左
+		{{pos.x -5 + size.x,pos.y+10},{pos.x-5 + size.x,pos.y + size.y-5}},		//右
 	};
 
 }
@@ -379,10 +381,10 @@ void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size)
 {
 	playerAttackRay_ =
 	{
-		{{pos.x ,pos.y + 10 },{pos.x + size.x,pos.y+10 } },							//上
+		{{pos.x ,pos.y - 10 },{pos.x + size.x,pos.y-10 } },							//上
 		{{pos.x ,pos.y -10 + size.y } ,{pos.x + size.x ,pos.y + size.y -10}},		//下
-		{{pos.x ,pos.y+10  },{pos.x ,pos.y + size.y-10 }},							//左
-		{{pos.x + size.x ,pos.y +10 },{pos.x + size.x,pos.y + size.y -10 }},		//右
+		{{pos.x ,pos.y-10  },{pos.x ,pos.y + size.y-10 }},							//左
+		{{pos.x + size.x ,pos.y -10 },{pos.x + size.x,pos.y + size.y -10 }},		//右
 	};
 }
 

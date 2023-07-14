@@ -6,8 +6,6 @@
 
 class BaseScene;
 
-
-
 using UniqueScene = std::unique_ptr<BaseScene>;
 
 class BaseScene

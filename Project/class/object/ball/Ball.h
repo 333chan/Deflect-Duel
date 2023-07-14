@@ -33,6 +33,8 @@ public:
     Vector2 centerPos_;
     Vector2 endPos_;
 
+
+
     //‘å‚«‚³
     Vector2 size_;
 

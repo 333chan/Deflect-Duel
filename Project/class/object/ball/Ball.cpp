@@ -24,7 +24,9 @@ void Ball::Init()
 
 
 	//座標
-	pos_ = {500,250};
+	pos_ = {500,500};
+
+
 
 
 	//大きさ
@@ -38,7 +40,7 @@ void Ball::Init()
 	//補正
 	offset_ = { 0,0 };
 
-	ballImage_ = LoadGraph("resource/image/ball/ball.png", true);
+	ballImage_ = LoadGraph("resource/image/ball/ball32.png", true);
 
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
@@ -49,10 +51,10 @@ void Ball::Init()
 	attackHitFlg_ = false;
 
 	refPow_ = { 0.0f,0.0f };
-	refDir_ = { -1.0f,-1.0f };
+	refDir_ = { 1.0f,-1.0f };
 
 	movePos_ = { refPow_ * refDir_ };
-	speed_ = { 10,10 };
+	speed_ = { 5,5 };
 	vecLen = 0.0f;
 
 	fastHitflg_ = false;
@@ -70,7 +72,7 @@ void Ball::Update()
 
    		if (speed_ < MAX_SPEED)
 		{
-			speed_ += 5;
+			speed_ += 2;
 		}
 	}
 	//ステージ判定
@@ -92,7 +94,7 @@ void Ball::Update()
 		if (!attackHitFlg_)
 		{
 			vec += refPow_ + speed_ * refDir_;
-
+			
 		}
 	}
 
@@ -114,23 +116,33 @@ void Ball::Update()
 
 void Ball::Draw()
 {
-	DrawExtendGraph(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y ,ballImage_,true);
+	//デバック用
+#ifdef _DEBUG
+
 
 	DrawCircle(centerPos_.x, centerPos_.y, 2, 0xff0000, true);
 
-	DrawFormatString(600,600,0xffffff,"%f,%f", refPow_.x* refDir_.x, refPow_.y* refDir_.y);
-	DrawFormatString(600,620,0xffffff,"%f,%f", refPow_.x* refDir_.x, refPow_.y* refDir_.y);
-
-	//DrawFormatString(pos_.x + size_.x / 2 - 20, pos_.y - 20, 0xff0000, "ボール", true);
 	DrawFormatString(48, 630, 0xff0000, "BallPosX%f,BallPosY%f", pos_.x, pos_.y);
 
-	DrawFormatString(0, 100, 0xff0000, "speed_%f,%f", speed_.x, speed_.y);
-	DrawFormatString(0, 150, 0xff0000, "refDir_%f,%f", refDir_.x,refDir_.y);
+
+	DrawFormatString(0, 150, 0xff0000, "refDir_%d,%d", refDir_.x,refDir_.y);
 	DrawFormatString(0, 200, 0xff0000, "%d",attackHitFlg_);
 
 	DrawBox(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, 0xffff00, false);
 
 	//DrawCircle(pos_.x + size_.x / 2, pos_.y + size_.y / 2, rad_, 0xffff00, true);
+#endif
+
+	//DrawExtendGraph(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, ballImage_, true);
+
+	static double angle= 0.0;
+	angle += 0.2;
+
+	DrawRotaGraph(raycast_.ballRay_[0].p.x + 16, raycast_.ballRay_[0].p.y + 16, 1, angle, ballImage_, true);
+
+	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
+	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
+	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "ボールを相手に当てろ！");
 }
 
 void Ball::Release()
@@ -191,4 +203,5 @@ void Ball::SetAttackRef(Vector2& refDir)
 {
 	refDir_ = refDir;
 	attackHitFlg_ = true;
+	fastHitflg_ = true;
 }

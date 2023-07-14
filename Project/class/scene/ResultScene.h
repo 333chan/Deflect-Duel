@@ -2,11 +2,16 @@
 #include "BaseScene.h"
 #include "../common/Geometry.h"
 
+class Player;
+class Controller;
+
+enum class playerType;
+
 class ResultScene :
     public BaseScene
 {
 public:
-    ResultScene();
+    ResultScene(playerType ptype);
     ~ResultScene();
 
     //初期化
@@ -31,7 +36,14 @@ private:
     //シーン切り替え関数
     UniqueScene UpdateScene(UniqueScene& scene);
 
+    //コントローラー情報
+    std::unique_ptr<Controller> controller_;
 
+    int screenImage_;    //現在の画面を画像で保存
+
+    playerType playertype_;
+
+    int winSe;
 
 };
 

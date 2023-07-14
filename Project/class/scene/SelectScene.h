@@ -7,11 +7,13 @@
 class Controller;
 enum class ControllerType;
 
+class Title;
+
 class SelectScene :
     public BaseScene
 {
 public:
-    SelectScene();
+    SelectScene(int bgm);
     ~SelectScene();
 
     //初期化
@@ -43,7 +45,11 @@ private:
 
     int bgImageH_;      //背景画像
     int stage1ImageH_;  //ステージ画像
+    int stageNullImageH_;  //ステージ空き画像
     int logoImageH_;  //ロゴ画像
+
+    int selectBgm;
+    int disSe;
 
 protected:
     //tmx

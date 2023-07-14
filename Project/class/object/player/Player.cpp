@@ -10,18 +10,20 @@ constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 //constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
-Player::Player(ControllerType type, std::shared_ptr<Ball>& ball)
+Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& ball)
 {
 	//コントローラーの生成
-	if (type == ControllerType::Pad)
-	{
-		controller_ = std::make_unique<PadInput>();
-	}
-	else
+	if (pType == playerType::One)
 	{
 		controller_ = std::make_unique<KeyInput>();
 	}
-	
+	else if(pType == playerType::Two)
+	{
+		
+		controller_ = std::make_unique<PadInput>();
+	}
+	playertype_ = pType;
+
 	ball_ = ball;
 
 	Init();
@@ -38,10 +40,20 @@ void Player::Init()
 
 
 	//プレイヤー座標
-	pos_ = {100,300};
+	if (playertype_ == playerType::One)
+	{
+
+		pos_ = { 100,450 };
+	}
+	else if (playertype_ == playerType::Two)
+	{
+		pos_ = { 900,450 };
+	}
 
 	//プレイヤーサイズ
 	size_ = {48,96};
+
+
 	attacksize_ = {96,96};
 
 	ballpos_ = {0,0};
@@ -76,6 +88,13 @@ void Player::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
+
+	jumpSe_= LoadSoundMem("resource/sound/jump.mp3");
+	attackSe_= LoadSoundMem("resource/sound/attackhit.wav");
+	attackMissSe_= LoadSoundMem("resource/sound/attackmiss.wav");
+	attackMissSe_= LoadSoundMem("resource/sound/attackmiss.wav");
+	daethSe_ = LoadSoundMem("resource/sound/daeth.wav");
+
 }
 
 void Player::Update(void)
@@ -90,10 +109,12 @@ void Player::Update(void)
 	{
 		gravity_ = 0;
 
-		if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
-		{
-			dir_ = Dir::Max;
-		}
+		//if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
+		//{
+		//	dir_ = Dir::Max;
+		//}
+
+
 
 		//プレイヤー移動
 		if (controller_->ChaeckInputKey(KeyID::Up))
@@ -102,8 +123,9 @@ void Player::Update(void)
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
 			//ジャンプ
+			PlaySoundMem(jumpSe_, DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
-			dir_ = Dir::Up;
+			//dir_ = Dir::Up;
 
 			break;
 		}
@@ -124,23 +146,28 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
-			state_ = State::MoveLeft;
 			dir_ = Dir::Left;
+			state_ = State::MoveLeft;
 		}
 		else if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右移動
-			state_ = State::MoveRight;
 			dir_ = Dir::Right;
+			state_ = State::MoveRight;
 		}
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
+			ChangeVolumeSoundMem(150,attackSe_);
+			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
+
 	}
 	break;
 	case State::JumpUp:
 	{
+
+
 		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
 
 		if (YVel > 0)
@@ -188,11 +215,19 @@ void Player::Update(void)
 				pos_ -= offset_;
 			}
 		}
+
+ 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			ChangeVolumeSoundMem(150, attackSe_);
+			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			state_ = State::Attack;
+		}
+
 	}
 	break;
 	case State::Fall:
 	{
-		dir_ = Dir::Down;
+		//dir_ = Dir::Down;
 
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
@@ -231,6 +266,13 @@ void Player::Update(void)
 			}
 		}
 
+		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			ChangeVolumeSoundMem(150, attackSe_);
+			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			state_ = State::Attack;
+		}
+
 
 	}
 	break;
@@ -259,6 +301,13 @@ void Player::Update(void)
 			//移動キーを放したらIdel
 			state_ = State::Idel;
 		}
+
+		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			ChangeVolumeSoundMem(150, attackSe_);
+			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			state_ = State::Attack;
+		}
 	}
 		break;
 	case State::MoveRight:
@@ -285,6 +334,13 @@ void Player::Update(void)
 			//移動キーを放したらIdel
 			state_ = State::Idel;
 		}
+
+		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		{
+			ChangeVolumeSoundMem(150, attackSe_);
+			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			state_ = State::Attack;
+		}
 	}
 		break;
 
@@ -297,22 +353,35 @@ void Player::Update(void)
 		break;
 
 	case State::Attack:
-		
+
+
 
 		if(IsAttackHit())
 		{
+
 			ball_->SetAttackRef(refDir_);
 		}
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
+	
+			
 			state_ = State::Idel;
 		}
 
 		break;
 	case State::Death:
 
-		_dbgDrawFormatString(500, 300, 0xffffff, "死にましたー", true);
+		if (playertype_ == playerType::One)
+		{
+			_dbgDrawFormatString(500, 300, 0xffffff, "1P死にましたー", true);
+
+		}
+		else
+		{
+			_dbgDrawFormatString(500, 300, 0xffffff, "2P死にましたー", true);
+
+		}
 
 		break;
 	case State::Max:
@@ -320,53 +389,93 @@ void Player::Update(void)
 	[[likery]]default:
 		break;
 	}
+
 	if (IsBallHit())
 	{
+		ChangeVolumeSoundMem(180, daethSe_);
+		PlaySoundMem(daethSe_, DX_PLAYTYPE_BACK);
 		state_ = State::Death;
-		
 	}
 
+	if (dir_ == Dir::Left)
+	{
+		attackpos_ = { pos_.x - size_.x,pos_.y };
+	}
+	else if(dir_ == Dir::Right)
+	{
+		attackpos_ = { pos_.x + size_.x,pos_.y };
+	}
 
-	attackpos_ = { pos_.x + size_.x,pos_.y };
 
 }
 
 void Player::Draw(void)
 {
-	//プレイヤー描画
-#ifdef _DEBUG	//デバック時のみ
 	switch (state_)
 	{
 	case State::Idel:
-		DrawFormatString(300, 30, 0xffffff, "State:Idel");
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
+		//DrawFormatString(300, 30, 0xffffff, "State:Idel");
+		if (dir_ == Dir::Left)
+		{
+			DrawExtendGraph(pos_.x+size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage_, true);
+			break;
+		}
+		DrawExtendGraph(pos_.x , pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
 		break;
 	case State::JumpUp:
-		DrawFormatString(300, 30, 0xffffff, "State:JumpUp");
+		//DrawFormatString(300, 30, 0xffffff, "State:JumpUp");
+		if (dir_ == Dir::Left)
+		{
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			break;
+		}
+		if (dir_ == Dir::AirAttackLeft)
+		{
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			break;
+		}
+		else if(dir_ == Dir::AirAttackRight)
+		{
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			break;
+		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage4_, true);
+
+
 		break;
 	case State::Fall:
-		DrawFormatString(300, 30, 0xffffff, "State:Fall");
+		//DrawFormatString(300, 30, 0xffffff, "State:Fall");
+		if (dir_ == Dir::Left)
+		{
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage5_, true);
+			break;
+		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage5_, true);
 		break;
 	case State::MoveLeft:
-		DrawFormatString(300, 30, 0xffffff, "State:Left");
-		DrawExtendGraph(pos_.x +size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage2_, true);
+		//DrawFormatString(300, 30, 0xffffff, "State:Left");
+		DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage2_, true);
 		break;
 	case State::MoveRight:
-		DrawFormatString(300, 30, 0xffffff, "State:Right");
+		//DrawFormatString(300, 30, 0xffffff, "State:Right");
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage2_, true);
 		break;
 	case State::Crouching:
-		DrawFormatString(300, 30, 0xffffff, "State:Crouching");
+		//DrawFormatString(300, 30, 0xffffff, "State:Crouching");
 		break;
 	case State::Attack:
-		DrawFormatString(300, 30, 0xffffff, "State:Attack");
+		//DrawFormatString(300, 30, 0xffffff, "State:Attack");
+		if (dir_ == Dir::Left)
+		{
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x- size_.x, pos_.y + attacksize_.y, playerImage6_, true);
+			break;
+		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage6_, true);
 		break;
 	case State::Death:
-		DrawFormatString(300, 30, 0xffffff, "State:Attack");
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage7_, true);
+		//DrawFormatString(300, 30, 0xffffff, "State::Death");
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x+30, pos_.y + attacksize_.y, playerImage7_, true);
+		
 		break;
 	case State::Max:
 		break;
@@ -377,26 +486,30 @@ void Player::Draw(void)
 	switch (dir_)
 	{
 	case Dir::Up:
-		DrawFormatString(450, 30, 0xffffff, "Dir:Up");
+		//DrawFormatString(450, 30, 0xffffff, "Dir:Up");
 		break;
 	case Dir::Down:
-		DrawFormatString(450, 30, 0xffffff, "Dir:Down");
+		//DrawFormatString(450, 30, 0xffffff, "Dir:Down");
 		break;
 	case Dir::Right:
-		DrawFormatString(450, 30, 0xffffff, "Dir:Right");
+		//DrawFormatString(450, 30, 0xffffff, "Dir:Right");
 		break;
 	case Dir::Left:
-		DrawFormatString(450, 30, 0xffffff, "Dir:Left");
+		//DrawFormatString(450, 30, 0xffffff, "Dir:Left");
 		break;
 	case Dir::Max:
-		DrawFormatString(450, 30, 0xffffff, "Dir:MAX");
+		//DrawFormatString(450, 30, 0xffffff, "Dir:MAX");
 		break;
 	default:
 		break;
 	}
 
+	//プレイヤー描画
+#ifdef _DEBUG	//デバック時のみ
+
+
 	DrawFormatString(48, 600, 0xffff00, "playerPosX%f,playerPosY%f", pos_.x, pos_.y);
-	DrawFormatString(pos_.x + size_.x / 2 - 40, pos_.y - 20, 0xffff00, "プレイヤー", true);
+
 
 
 	//判定
@@ -406,10 +519,33 @@ void Player::Draw(void)
 
 #endif //_DEBUG
 
+		//プレイヤー
+	if (playertype_ == playerType::One)
+	{
+		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
+	}
+	else if (playertype_ == playerType::Two)
+	{
+		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
+	}
+
+	DrawString(50, 625, "Player1\n操作\nA/Dで左右移動\nWでジャンプ\nSPACEで攻撃", 0xfff00f, true);
+	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+
 }
 
 void Player::Release(void)
 {
+}
+
+State Player::GetState(void)
+{
+	return state_;
+}
+
+playerType Player::GetPlayerType(void)
+{
+	return playertype_;
 }
 
 //ステージとのあたり判定

@@ -8,6 +8,8 @@ class Player;
 class Ball;
 class Stage;
 
+enum class playerType;
+
 class GameScene :
     public BaseScene
 {
@@ -39,6 +41,7 @@ private:
 
     //プレイヤー情報
     std::unique_ptr<Player> player_;
+    std::unique_ptr<Player> player2_;
 
     //コントローラー情報
     std::unique_ptr<Controller> controller_;
@@ -48,5 +51,9 @@ private:
 
     //ボール情報
     std::shared_ptr<Ball> ball_;
+
+    playerType playertype_;
+
+    int gamebgm_;
 };
 
