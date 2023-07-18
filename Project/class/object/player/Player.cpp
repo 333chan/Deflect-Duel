@@ -7,7 +7,6 @@
 
 constexpr int MOVE_SPEED = 20.0f;		// 移動速度
 constexpr int JUMP_POW = 15.0f;		// ジャンプ力
-//constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
 Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& ball)
@@ -22,10 +21,14 @@ Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& bal
 		
 		controller_ = std::make_unique<PadInput>();
 	}
+
+	//プレイヤーの種類情報
 	playertype_ = pType;
 
+	//ボール情報
 	ball_ = ball;
 
+	//初期化
 	Init();
 
 }
@@ -37,25 +40,25 @@ Player::~Player()
 
 void Player::Init()
 {
-
-
 	//プレイヤー座標
 	if (playertype_ == playerType::One)
 	{
-
+		//1P
 		pos_ = { 100,450 };
 	}
 	else if (playertype_ == playerType::Two)
 	{
+		//2P
 		pos_ = { 900,450 };
 	}
 
 	//プレイヤーサイズ
 	size_ = {48,96};
 
-
+	//攻撃時の画像サイズ
 	attacksize_ = {96,96};
 
+	//ボール情報
 	ballpos_ = {0,0};
 	ballsize_ = { 0,0 };
 
@@ -71,11 +74,13 @@ void Player::Init()
 	//補正差分
 	offset_ = { 0.0f ,0.0f };
 
+	//反射方向
 	refDir_ = { 0.0f ,0.0f };
 
+	//経過時間
 	jumpDeltaTime_ = 0.0;
 
-	//Idel
+	//プレイヤー画像(無理やり)
 	playerImage_ = LoadGraph("resource/image/character/player_idle.png", true);
 	playerImage2_ = LoadGraph("resource/image/character/player_move.png", true);
 	playerImage3_ = LoadGraph("resource/image/character/Player_Crouch.png", true);
@@ -88,19 +93,15 @@ void Player::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
-
+	//サウンドの読み込み
 	jumpSe_= LoadSoundMem("resource/sound/jump.mp3");
 	attackSe_= LoadSoundMem("resource/sound/attackhit.wav");
-	attackMissSe_= LoadSoundMem("resource/sound/attackmiss.wav");
-	attackMissSe_= LoadSoundMem("resource/sound/attackmiss.wav");
 	daethSe_ = LoadSoundMem("resource/sound/daeth.wav");
 
 }
 
 void Player::Update(void)
 {
-
-
 	controller_->Update();
 
 	switch (state_)
@@ -109,28 +110,20 @@ void Player::Update(void)
 	{
 		gravity_ = 0;
 
-		//if (!CheckHitKeyAll(DX_CHECKINPUT_KEY))
-		//{
-		//	dir_ = Dir::Max;
-		//}
-
-
-
 		//プレイヤー移動
 		if (controller_->ChaeckInputKey(KeyID::Up))
 		{
 			//ジャンプ
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
-			//ジャンプ
+
 			PlaySoundMem(jumpSe_, DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
-			//dir_ = Dir::Up;
-
 			break;
 		}
 		if (!IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
 		{
+			//ステージに当たっていないなら
 			jumpDeltaTime_ = 1.3;
 			gravity_ = 7.8;
 			state_ = State::Fall;
@@ -157,6 +150,7 @@ void Player::Update(void)
 		}
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
+			//攻撃
 			ChangeVolumeSoundMem(150,attackSe_);
 			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
@@ -166,20 +160,16 @@ void Player::Update(void)
 	break;
 	case State::JumpUp:
 	{
-
-
 		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
 
 		if (YVel > 0)
 		{
 			state_ = State::Idel;
-
 		}
 
 		gravity_ += FALL_ACCEL;
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
-		
-
+	
 		pos_.y += YVel;
 
 		if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y })))
@@ -190,11 +180,9 @@ void Player::Update(void)
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
-			dir_ = Dir::Right;
-
 			//右移動
+			dir_ = Dir::Right;
 			pos_.x += MOVE_SPEED;
-			//state_ = State::MoveRight;
 			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 			{
 				//当たってたら補正
@@ -205,10 +193,9 @@ void Player::Update(void)
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
-			dir_ = Dir::Left;
 			//左移動
+			dir_ = Dir::Left;
 			pos_.x -= MOVE_SPEED;
-			//state_ = State::MoveLeft;
 			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 			{
 				//当たってたら補正
@@ -218,6 +205,7 @@ void Player::Update(void)
 
  		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
+			//攻撃
 			ChangeVolumeSoundMem(150, attackSe_);
 			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
@@ -227,8 +215,6 @@ void Player::Update(void)
 	break;
 	case State::Fall:
 	{
-		//dir_ = Dir::Down;
-
 		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
@@ -246,8 +232,8 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右移動
-			pos_.x += MOVE_SPEED;
 			dir_ = Dir::Right;
+			pos_.x += MOVE_SPEED;
 			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
 			{
 				//当たってたら補正
@@ -257,8 +243,8 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
-			pos_.x -= MOVE_SPEED;
 			dir_ = Dir::Left;
+			pos_.x -= MOVE_SPEED;
 			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
 			{
 				//当たってたら補正
@@ -268,6 +254,7 @@ void Player::Update(void)
 
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
+			//攻撃
 			ChangeVolumeSoundMem(150, attackSe_);
 			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
@@ -298,12 +285,13 @@ void Player::Update(void)
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
-			//移動キーを放したらIdel
+			//キーを放したらIdel
 			state_ = State::Idel;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
+			//攻撃
 			ChangeVolumeSoundMem(150, attackSe_);
 			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
@@ -331,12 +319,14 @@ void Player::Update(void)
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
 		{
-			//移動キーを放したらIdel
+			//キーを放したらIdel
 			state_ = State::Idel;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
+
+			//攻撃
 			ChangeVolumeSoundMem(150, attackSe_);
 			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
@@ -346,16 +336,15 @@ void Player::Update(void)
 
 	case State::Crouching:
 
+		//しゃがみ
 		if (!controller_->ChaeckLongInputKey(KeyID::Down))
 		{
+			//キーを離したら
 			state_ = State::Idel;
 		}
 		break;
 
 	case State::Attack:
-
-
-
 		if(IsAttackHit())
 		{
 
@@ -364,8 +353,7 @@ void Player::Update(void)
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
-	
-			
+			//キーを放したら
 			state_ = State::Idel;
 		}
 
@@ -380,7 +368,6 @@ void Player::Update(void)
 		else
 		{
 			_dbgDrawFormatString(500, 300, 0xffffff, "2P死にましたー", true);
-
 		}
 
 		break;
@@ -483,6 +470,14 @@ void Player::Draw(void)
 		break;
 	}
 
+
+
+	//プレイヤー描画
+#ifdef _DEBUG	//デバック時のみ
+
+
+	DrawFormatString(48, 600, 0xffff00, "playerPosX%f,playerPosY%f", pos_.x, pos_.y);
+
 	switch (dir_)
 	{
 	case Dir::Up:
@@ -503,14 +498,6 @@ void Player::Draw(void)
 	default:
 		break;
 	}
-
-	//プレイヤー描画
-#ifdef _DEBUG	//デバック時のみ
-
-
-	DrawFormatString(48, 600, 0xffff00, "playerPosX%f,playerPosY%f", pos_.x, pos_.y);
-
-
 
 	//判定
 	//DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
@@ -536,6 +523,9 @@ void Player::Draw(void)
 
 void Player::Release(void)
 {
+	DeleteSoundMem(jumpSe_);
+	DeleteSoundMem(attackSe_);
+	DeleteSoundMem(daethSe_);
 }
 
 State Player::GetState(void)

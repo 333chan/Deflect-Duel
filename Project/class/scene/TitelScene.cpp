@@ -41,17 +41,17 @@ void TitelScene::Init(void)
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/titleScene.tmx", false);
 
-	//bgImage_ = LoadGraph("resource/image/stage/titleBgFull.png", true);
-
-	bgImage_ = LoadGraph("resource/image/stage/titleBg.png", true);
-
+	//画像読み込み
+	bgImageH_ = LoadGraph("resource/image/stage/titleBg.png", true);
 	logoImageH_ = LoadGraph("resource/image/titlelogo.png");
 
-	bgm = LoadSoundMem("resource/sound/titlebgm.mp3");
-	disSe = LoadSoundMem("resource/sound/dis.mp3");
+	//サウンド読み込み
+	bgm_ = LoadSoundMem("resource/sound/titlebgm.mp3");
+	decideSe_ = LoadSoundMem("resource/sound/dis.mp3");
 
 	auto screen = IpSceneMng.GetScreenSize();
 
+	//多重スクロール
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/backBills.png", true),
 			{ { 0,0 } ,{screen} },
@@ -79,46 +79,55 @@ void TitelScene::Init(void)
 		bgPos_ = coll.first;
 		bgEndPos_ = coll.first + coll.second;
 	}
-
-
 	for (auto& coll : tmxObj_.GetTitleLogoimageList())
 	{
 		logoPos_ = coll.first;
 		logoPosEnd_ = coll.first + coll.second;
 	}
 
-	ChangeVolumeSoundMem(200, bgm);
-	PlaySoundMem(bgm, DX_PLAYTYPE_BACK);
+
+	ChangeVolumeSoundMem(200, bgm_);
+	PlaySoundMem(bgm_, DX_PLAYTYPE_BACK);
+
+#ifdef _DEBUG
+	//bgImage_ = LoadGraph("resource/image/stage/titleBgFull.png", true);
+	DrawFormatString(0, 0, 0xffffff, "TitleScene");
+#endif
+
 }
 
 UniqueScene TitelScene::Update(UniqueScene scene)
 {
 	controller_->Update();
 
+	//多重スクロール
 	for (auto& bg:bgVec_)
 	{
 		auto& [sPos, ePos] = bg.pos1;
 		auto& [sPos2, ePos2] = bg.pos2;
 
+		//一枚目
 		sPos.x -= bg.speed;
 		ePos.x -= bg.speed;
 
+		//二枚目
 		sPos2.x -= bg.speed;
 		ePos2.x -= bg.speed;
 
+		
 		if (0 > ePos.x)
 		{
+			//一枚目画面外
 			sPos.x = IpSceneMng.GetScreenSize().x - bg.speed;
 			ePos.x = IpSceneMng.GetScreenSize().x * 2 - bg.speed;
 		}
 
 		if (0 > ePos2.x)
 		{
+			//二枚目画面外
 			sPos2.x = IpSceneMng.GetScreenSize().x - bg.speed;
 			ePos2.x = IpSceneMng.GetScreenSize().x * 2 - bg.speed;
 		}
-
-
 	}
 
 	DrawScreen();
@@ -130,8 +139,7 @@ void TitelScene::DrawScreen(void)
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 
-	//DrawGraph(0,0,bgImage_,true);
-	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y, bgImage_, true);
+	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y, bgImageH_, true);
 
 	for (const auto& bg : bgVec_)
 	{
@@ -160,6 +168,7 @@ void TitelScene::Release(void)
 	}
 
 	DeleteGraph(logoImageH_);
+	DeleteSoundMem(decideSe_);
 
 }
 
@@ -168,10 +177,12 @@ UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
 
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		ChangeVolumeSoundMem(255, disSe);
-		PlaySoundMem(disSe, DX_PLAYTYPE_BACK);
-		ChangeVolumeSoundMem(180,bgm);
-		return std::make_unique<SelectScene>(bgm);
+
+		ChangeVolumeSoundMem(255, decideSe_);
+		PlaySoundMem(decideSe_, DX_PLAYTYPE_BACK);
+
+		ChangeVolumeSoundMem(150,bgm_);
+		return std::make_unique<SelectScene>(bgm_);
 	}
 	//デバック用
 #ifdef _DEBUG

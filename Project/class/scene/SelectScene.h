@@ -42,14 +42,15 @@ private:
     Vector2 stage1Pos;
     Vector2 stage1PosEnd;
 
+    //画像ハンドル
+    int bgImageH_;          //背景
+    int stage1ImageH_;      //ステージ
+    int stageNullImageH_;   //ステージ空き
+    int logoImageH_;        //ロゴ
 
-    int bgImageH_;      //背景画像
-    int stage1ImageH_;  //ステージ画像
-    int stageNullImageH_;  //ステージ空き画像
-    int logoImageH_;  //ロゴ画像
-
-    int selectBgm;
-    int disSe;
+    //サウンド
+    int selectBgm_;     
+    int decideSe_;         //決定音
 
 protected:
     //tmx

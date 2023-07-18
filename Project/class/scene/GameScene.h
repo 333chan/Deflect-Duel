@@ -52,8 +52,10 @@ private:
     //ボール情報
     std::shared_ptr<Ball> ball_;
 
+    //1P2P判断
     playerType playertype_;
 
-    int gamebgm_;
+    //サウンド
+    int gameBgm_;
 };
 

@@ -63,13 +63,17 @@ public:
     //解放
     void Release(void) override;
 
+    //状態の取得
     State GetState(void);
+
+    //プレイヤーの種類の取得
     playerType GetPlayerType(void);
 
 private:
     //コントローラー
     std::unique_ptr<Controller> controller_;
 
+    //1Pか2P判断
     playerType playertype_;
 
     //ボール
@@ -91,7 +95,7 @@ private:
     Vector2 attacksize_;
     Vector2 attackpos_;
 
-
+    //跳ね返す方向
     Vector2 refDir_;
 
     //状態
@@ -114,8 +118,6 @@ private:
 
     //判定
     Raycast raycast_;
-
-
 
     //判定処理
     bool IsStageHit(Line collRay);
@@ -140,10 +142,10 @@ private:
 
     Vector2 bpos_;
 
-    int jumpSe_;
-    int attackMissSe_;
-    int attackSe_;
-    int daethSe_;
+    //サウンド
+    int jumpSe_;    //ジャンプ
+    int attackSe_;  //攻撃
+    int daethSe_;   //死
 
 protected:
     //tmx

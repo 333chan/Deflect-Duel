@@ -10,10 +10,10 @@ enum class ControllerType;
 
 struct BG
 {
-    int hadle;
+    int hadle;  //画像ハンドル
     std::pair<Vector2, Vector2> pos1;   //一枚目の始終点
     std::pair<Vector2, Vector2> pos2;   //二枚目の始終点
-    float speed;
+    float speed;    //スクロール速度
 };
 
 class TitelScene :
@@ -56,14 +56,13 @@ private :
     Vector2 logoPosEnd_;
 
 
-    //タイトル背景
-    int bgImage_;               //背景
-    
-     //タイトルロゴ画像
-    int logoImageH_;   
+    //画像ハンドル
+    int bgImageH_;  //背景
+    int logoImageH_; //ロゴ画像
 
-    int bgm;
-    int disSe;
+    //サウンド
+    int bgm_;
+    int decideSe_;  //決定音
 
     std::vector<BG> bgVec_;
 

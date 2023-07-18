@@ -36,8 +36,6 @@ private:
 	void Draw(void);
 	void Relese(void);
 
-
-
 	//Œo‰ßŽžŠÔ
 	std::chrono::system_clock::time_point tickCount_;
 

@@ -147,6 +147,8 @@ void Ball::Draw()
 
 void Ball::Release()
 {
+
+	DeleteGraph(ballImage_);
 }
 
 void Ball::SetBallform(Vector2& pos, Vector2& size)

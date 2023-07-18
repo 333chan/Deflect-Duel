@@ -21,10 +21,12 @@ public:
 
 private:
 
+    //座標
     Vector2 stagePos;		//始点
     Vector2 stagePosEnd;	//終点
 
-    int stageImage_;
+    // 画像
+    int stageImage_;        //背景
 
 protected:
     //tmx

@@ -41,9 +41,11 @@ private:
 
     int screenImage_;    //Œ»İ‚Ì‰æ–Ê‚ğ‰æ‘œ‚Å•Û‘¶
 
+    //1P2P”»’f
     playerType playertype_;
 
-    int winSe;
+    //ƒTƒEƒ“ƒh
+    int winSe_;
 
 };
 

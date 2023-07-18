@@ -18,6 +18,7 @@ void Stage::Init()
 	//tmx‚Ì“Ç‚İ‚İ
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 
+	//‰æ‘œ‚Ì“Ç‚İ‚İ
 	stageImage_ = LoadGraph("resource/image/stage/stage.png",true);
 
 }
@@ -39,10 +40,9 @@ void Stage::Draw()
 	}
 
 	DrawExtendGraph(stagePos.x, stagePos.y,stagePosEnd.x, stagePosEnd.y , stageImage_,true);
-	//DrawBox(stagePos.x, stagePos.y, stagePosEnd.x, stagePosEnd.y, 0xff0000, true);
-
 }
 
 void Stage::Release()
 {
+	DeleteGraph(stageImage_);
 }

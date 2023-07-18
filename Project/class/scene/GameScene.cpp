@@ -41,24 +41,26 @@ void GameScene::Init(void)
 	player2_ = std::make_unique<Player>(ControllerType::Pad, playerType::Two, ball_);
 	stage_ = std::make_unique<Stage>();
 
-	gamebgm_ = LoadSoundMem("resource/sound/gamebgm.mp3");
-	PlaySoundMem(gamebgm_, DX_PLAYTYPE_BACK);
-	ChangeVolumeSoundMem(150, gamebgm_);
+	//サウンドのロード
+	gameBgm_ = LoadSoundMem("resource/sound/gamebgm.mp3");
+
+	PlaySoundMem(gameBgm_, DX_PLAYTYPE_BACK);
+	ChangeVolumeSoundMem(150, gameBgm_);
 	
 }
 
 UniqueScene GameScene::Update(UniqueScene scene)
 {
-
+	//コントローラー
 	controller_->Update();
 
+	//1Pか2Pどちらか死んでいたら
 	if (player_->GetState()== State::Death|| player2_->GetState() == State::Death)
 	{
-		auto t = player_->GetState() == State::Death ? playerType ::Two : playerType::One;
+		auto pState = player_->GetState() == State::Death ? playerType ::Two : playerType::One;
 
-
-		StopSoundMem(gamebgm_);
-		return std::make_unique<ResultScene>(t);
+		StopSoundMem(gameBgm_);
+		return std::make_unique<ResultScene>(pState);
 	}
 
 	//ステージ
@@ -99,7 +101,7 @@ void GameScene::DrawScreen(void)
 
 void GameScene::Release(void)
 {
-
+	DeleteSoundMem(gameBgm_);
 }
 
 UniqueScene GameScene::UpdateScene(UniqueScene& scene)
