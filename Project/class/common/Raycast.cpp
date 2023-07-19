@@ -196,30 +196,24 @@ bool Raycast::BallToPlayerChackLine(Line playerLine, Line ballLine, Vector2& bou
 	//ボールとプレイヤー
 	if (ballRay_[3] == ballLine)
 	{
-		//bound.x = -abs(playerLine.p.x - ballLine.end.x);//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左", true);
 		return true;
 	}
 	if (ballRay_[2] == ballLine)
 	{
-		//bound.x = abs(playerLine.end.x - ballLine.p.x);//右
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右", true);
 		return true;
 	}
 	if (ballRay_[0] == ballLine)
 	{
-		//bound.y = -abs(playerLine.p.y - ballLine.p.y);//上
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上", true);
 		return true;
 	}
 	if (ballRay_[1] == ballLine)
 	{
-		//bound.y = abs(playerLine.end.y - ballLine.end.y);//下
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下", true);
 		return true;
 	}
-
-	//return true;
 }
 
 bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offset, Vector2& refDir)
@@ -238,40 +232,31 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 
 	//交差している
 	offset = { 0.0f,0.0f };
-	//refDir = { 0.0f,0.0f };
 
 	//ステージとボール
 	if (stageRay_[3] >= stageLine&& stageRay_[2] >= stageLine)
 	{
 		offset.x = -abs(stageLine.p.x - ballLine.end.x);//左
-		//offset.x = 20;//左
 		refDir.x = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左判定", true);
-		//return true;
 	}
 	if (stageRay_[2] <= stageLine && stageRay_[3] <= stageLine)
 	{
 		offset.x =abs(stageLine.end.x - ballLine.end.x);//右
-		//offset.x =-20;//右
 		refDir.x = -1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右判定", true);
-		//return true;
 	}
 	if (stageRay_[0] == stageLine)
 	{
 		offset.y = -abs(stageLine.p.y - ballLine.p.y);//上
-		//offset.y = 20;//上
 		refDir.y = 1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール上判定", true);
-		//return true;
 	}
 	if (stageRay_[1] == stageLine)
 	{
 		offset.y = abs(stageLine.end.y - ballLine.end.y);//下
-		//offset.y = -20;//下
 		refDir.y=-1;
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール下判定", true);
-		//return true;
 	}
 	return true;
 }
@@ -353,20 +338,12 @@ void Raycast::setPlayerRay(Line ray)
 	playerRay_ = ray;
 
 	//レイのデバック表示
-	//_dbgDrawLine(ray.p.x, ray.p.y,ray.end.x, ray.end.y, 0xff0000);
+	_dbgDrawLine(ray.p.x, ray.p.y,ray.end.x, ray.end.y, 0xff0000);
 
 }
 
 void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 {
-	//playerSquareRay_ = 
-	//{
-	//	{{pos.x + movePos.x,pos.y + movePos.y },{pos.x  + size.x + movePos.x,pos.y + movePos.y } },						//上
-	//	{{pos.x + movePos.x,pos.y + size.y + movePos.y} ,{pos.x + size.x + movePos.x,pos.y + size.y + movePos.y}},		//下
-	//	{{pos.x + movePos.x,pos.y + movePos.y},{pos.x + movePos.x,pos.y + size.y + movePos.y }},							//左
-	//	{{pos.x + size.x + movePos.x,pos.y + movePos.y},{pos.x + size.x + movePos.x,pos.y + size.y + movePos.y }},		//右
-	//};
-
 	playerSquareRay_ =
 	{
 		{{pos.x+5 ,pos.y+10 },{pos.x-5 + size.x ,pos.y+10} },						//上

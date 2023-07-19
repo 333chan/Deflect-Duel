@@ -40,8 +40,8 @@ private:
     UniqueScene UpdateScene(UniqueScene & scene);
 
     //プレイヤー情報
-    std::unique_ptr<Player> player_;
-    std::unique_ptr<Player> player2_;
+    std::unique_ptr<Player> player_;    //P1
+    std::unique_ptr<Player> player2_;   //P2
 
     //コントローラー情報
     std::unique_ptr<Controller> controller_;

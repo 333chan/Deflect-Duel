@@ -37,8 +37,23 @@ void GameScene::Init(void)
 
 	//インスタンスの生成
 	ball_ = std::make_shared<Ball>();	//ユニークだと所有権ごと渡してしまうため
-	player_ = std::make_unique<Player>(ControllerType::Key , playerType::One, ball_);
-	player2_ = std::make_unique<Player>(ControllerType::Pad, playerType::Two, ball_);
+
+	if (GetJoypadNum() >= 2)
+	{
+		player_ = std::make_unique<Player>(ControllerType::Pad1, playerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Pad2, playerType::Two, ball_);
+	}
+	else if (GetJoypadNum() == 1)
+	{
+		player_ = std::make_unique<Player>(ControllerType::Key, playerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Pad1, playerType::Two, ball_);
+	}
+	else
+	{
+		player_ = std::make_unique<Player>(ControllerType::Key, playerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Key, playerType::Two, ball_);
+	}
+
 	stage_ = std::make_unique<Stage>();
 
 	//サウンドのロード
@@ -111,8 +126,8 @@ UniqueScene GameScene::UpdateScene(UniqueScene& scene)
 
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		auto t = player_->GetState() == State::Death ? playerType::Two : playerType::One;
-		return std::make_unique<ResultScene>(t);
+		auto pState = player_->GetState() == State::Death ? playerType::Two : playerType::One;
+		return std::make_unique<ResultScene>(pState);
 	}
 
 #endif

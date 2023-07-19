@@ -6,7 +6,8 @@
 enum  class ControllerType
 {
 	Key,
-	Pad,
+	Pad1,
+	Pad2,
 	Max
 };
 

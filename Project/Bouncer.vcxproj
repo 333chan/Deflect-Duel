@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="class\input\PadInput2.cpp" />
     <ClCompile Include="class\object\ball\Ball.cpp" />
     <ClCompile Include="class\scene\BaseScene.cpp" />
     <ClCompile Include="class\scene\TitelScene.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="class\input\PadInput2.h" />
     <ClInclude Include="class\object\ball\Ball.h" />
     <ClInclude Include="class\common\Collision2D.h" />
     <ClInclude Include="class\tmx\rapidxml.hpp" />

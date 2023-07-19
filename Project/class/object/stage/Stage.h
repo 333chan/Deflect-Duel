@@ -16,7 +16,7 @@ public:
     void Update() override;
     //•`‰æ
     void Draw() override;   
-
+    //‰ğ•úˆ—
     void Release() override;
 
 private:

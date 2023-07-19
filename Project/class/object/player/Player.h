@@ -13,7 +13,7 @@ enum class ControllerType;
 //ó‘Ô
 enum class State
 {
-    Idel,       //—§‚Â
+    Idle,       //—§‚¿
     JumpUp,     //ƒWƒƒƒ“ƒvã¸
     Fall,       //‰º~
     MoveLeft,   //¶ˆÚ“®

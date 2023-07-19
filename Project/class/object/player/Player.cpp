@@ -2,6 +2,7 @@
 #include "../../scene/SceneManager.h"
 #include "../../input/KeyInput.h"
 #include "../../input/PadInput.h"
+#include "../../input/PadInput2.h"
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
@@ -12,14 +13,18 @@ constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& ball)
 {
 	//コントローラーの生成
-	if (pType == playerType::One)
+	if (type == ControllerType::Pad1)
 	{
-		controller_ = std::make_unique<KeyInput>();
+		controller_ = std::make_unique<PadInput>();
 	}
-	else if(pType == playerType::Two)
+	else if(type == ControllerType::Pad2)
 	{
 		
-		controller_ = std::make_unique<PadInput>();
+		controller_ = std::make_unique<PadInput2>();
+	}
+	else if (type == ControllerType::Key)
+	{
+		controller_ = std::make_unique<KeyInput>();
 	}
 
 	//プレイヤーの種類情報
@@ -63,7 +68,7 @@ void Player::Init()
 	ballsize_ = { 0,0 };
 
 	//状態
-	state_ = State::Idel;
+	state_ = State::Idle;
 
 	//方向
 	dir_ = Dir::Max;
@@ -106,9 +111,18 @@ void Player::Update(void)
 
 	switch (state_)
 	{
-	case State::Idel:
+	case State::Idle:
 	{
 		gravity_ = 0;
+
+		if (!IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		{
+			//ステージに当たっていないなら
+			jumpDeltaTime_ = 1.3;
+			gravity_ = 7.8;
+			state_ = State::Fall;
+			break;
+		}
 
 		//プレイヤー移動
 		if (controller_->ChaeckInputKey(KeyID::Up))
@@ -119,14 +133,6 @@ void Player::Update(void)
 
 			PlaySoundMem(jumpSe_, DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
-			break;
-		}
-		if (!IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
-		{
-			//ステージに当たっていないなら
-			jumpDeltaTime_ = 1.3;
-			gravity_ = 7.8;
-			state_ = State::Fall;
 			break;
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Down))
@@ -164,7 +170,7 @@ void Player::Update(void)
 
 		if (YVel > 0)
 		{
-			state_ = State::Idel;
+			state_ = State::Idle;
 		}
 
 		gravity_ += FALL_ACCEL;
@@ -226,7 +232,7 @@ void Player::Update(void)
 			//当たってたら補正
 			pos_ -= offset_;
 			
-			state_ = State::Idel;
+			state_ = State::Idle;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
@@ -286,7 +292,7 @@ void Player::Update(void)
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//キーを放したらIdel
-			state_ = State::Idel;
+			state_ = State::Idle;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
@@ -320,7 +326,7 @@ void Player::Update(void)
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//キーを放したらIdel
-			state_ = State::Idel;
+			state_ = State::Idle;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
@@ -340,7 +346,7 @@ void Player::Update(void)
 		if (!controller_->ChaeckLongInputKey(KeyID::Down))
 		{
 			//キーを離したら
-			state_ = State::Idel;
+			//state_ = State::Idel;
 		}
 		break;
 
@@ -354,21 +360,11 @@ void Player::Update(void)
 		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			//キーを放したら
-			state_ = State::Idel;
+			state_ = State::Idle;
 		}
 
 		break;
 	case State::Death:
-
-		if (playertype_ == playerType::One)
-		{
-			_dbgDrawFormatString(500, 300, 0xffffff, "1P死にましたー", true);
-
-		}
-		else
-		{
-			_dbgDrawFormatString(500, 300, 0xffffff, "2P死にましたー", true);
-		}
 
 		break;
 	case State::Max:
@@ -386,10 +382,12 @@ void Player::Update(void)
 
 	if (dir_ == Dir::Left)
 	{
+		//左向いてたら
 		attackpos_ = { pos_.x - size_.x,pos_.y };
 	}
 	else if(dir_ == Dir::Right)
 	{
+		//右向いてたら
 		attackpos_ = { pos_.x + size_.x,pos_.y };
 	}
 
@@ -398,19 +396,20 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+	//プレイヤーの描画
 	switch (state_)
 	{
-	case State::Idel:
-		//DrawFormatString(300, 30, 0xffffff, "State:Idel");
+	case State::Idle:	//立ち
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x+size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage_, true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage_, true);
 			break;
 		}
 		DrawExtendGraph(pos_.x , pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
+
+		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idel", true);
 		break;
-	case State::JumpUp:
-		//DrawFormatString(300, 30, 0xffffff, "State:JumpUp");
+	case State::JumpUp:	//ジャンプ上昇
 		if (dir_ == Dir::Left)
 		{
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
@@ -428,41 +427,42 @@ void Player::Draw(void)
 		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage4_, true);
 
-
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
-	case State::Fall:
-		//DrawFormatString(300, 30, 0xffffff, "State:Fall");
+	case State::Fall:	//落下
 		if (dir_ == Dir::Left)
 		{
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage5_, true);
 			break;
 		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage5_, true);
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Fall", true);
 		break;
-	case State::MoveLeft:
-		//DrawFormatString(300, 30, 0xffffff, "State:Left");
+	case State::MoveLeft://左移動
 		DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage2_, true);
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Left", true);
 		break;
-	case State::MoveRight:
-		//DrawFormatString(300, 30, 0xffffff, "State:Right");
+	case State::MoveRight://右移動
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage2_, true);
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Right", true);
 		break;
 	case State::Crouching:
-		//DrawFormatString(300, 30, 0xffffff, "State:Crouching");
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Crouching", true);
 		break;
-	case State::Attack:
-		//DrawFormatString(300, 30, 0xffffff, "State:Attack");
+	case State::Attack://攻撃
 		if (dir_ == Dir::Left)
 		{
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x- size_.x, pos_.y + attacksize_.y, playerImage6_, true);
 			break;
 		}
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage6_, true);
+
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Attack", true);
 		break;
-	case State::Death:
-		//DrawFormatString(300, 30, 0xffffff, "State::Death");
+	case State::Death://死
 		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x+30, pos_.y + attacksize_.y, playerImage7_, true);
-		
+
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Death", true);
 		break;
 	case State::Max:
 		break;
@@ -470,43 +470,7 @@ void Player::Draw(void)
 		break;
 	}
 
-
-
-	//プレイヤー描画
-#ifdef _DEBUG	//デバック時のみ
-
-
-	DrawFormatString(48, 600, 0xffff00, "playerPosX%f,playerPosY%f", pos_.x, pos_.y);
-
-	switch (dir_)
-	{
-	case Dir::Up:
-		//DrawFormatString(450, 30, 0xffffff, "Dir:Up");
-		break;
-	case Dir::Down:
-		//DrawFormatString(450, 30, 0xffffff, "Dir:Down");
-		break;
-	case Dir::Right:
-		//DrawFormatString(450, 30, 0xffffff, "Dir:Right");
-		break;
-	case Dir::Left:
-		//DrawFormatString(450, 30, 0xffffff, "Dir:Left");
-		break;
-	case Dir::Max:
-		//DrawFormatString(450, 30, 0xffffff, "Dir:MAX");
-		break;
-	default:
-		break;
-	}
-
-	//判定
-	//DrawBox(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, 0xffffff, false);
-
-	//DrawBox(ball_.pos_.x, ball_.pos_.y, ball_.pos_.x + ball_.size_.x, ball_.pos_.y + ball_.size_.y, 0xffff00, false);
-
-#endif //_DEBUG
-
-		//プレイヤー
+	//プレイヤーの名前
 	if (playertype_ == playerType::One)
 	{
 		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
@@ -516,8 +480,22 @@ void Player::Draw(void)
 		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
 	}
 
+	//操作説明
 	DrawString(50, 625, "Player1\n操作\nA/Dで左右移動\nWでジャンプ\nSPACEで攻撃", 0xfff00f, true);
 	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+
+#ifdef _DEBUG	//デバック時のみ
+
+	//プレイヤー
+	if (playertype_ == playerType::One)
+	{
+		DrawFormatString(48, 600, 0xffff00, "player1PosX%f,player1PosY%f", pos_.x, pos_.y);
+	}
+	else if (playertype_ == playerType::Two)
+	{
+		DrawFormatString(800, 600, 0xff0000, "player2PosX%f,player2PosY%f", pos_.x, pos_.y);
+	}
+#endif //_DEBUG
 
 }
 
@@ -542,7 +520,9 @@ playerType Player::GetPlayerType(void)
 bool Player::IsStageHit(Line collRay)
 {
 	//レイのデバック表示
-	//_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
+	_dbgDrawLine(collRay.p.x, collRay.p.y, collRay.end.x, collRay.end.y, 0xff0000);
+
+	//プレイヤーのレイをセット
 	raycast_.setPlayerRay(collRay);
 
 	//tmxのCollLiset取得
@@ -558,9 +538,11 @@ bool Player::IsStageHit(Line collRay)
 
 bool Player::IsBallHit()
 {
+	//矩形レイのセット
 	raycast_.setPlayerSquareRay(pos_, size_, movePos_);
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
+	//プレイヤーとボールの接触判定
 	if (raycast_.PlayerToBallChackColl(offset_))
 	{
 		return true;
@@ -571,9 +553,11 @@ bool Player::IsBallHit()
 
 bool Player::IsAttackHit()
 {
+	//矩形レイのセット
 	raycast_.setPlayerAttackRay(attackpos_, size_);
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
+	//攻撃とボールの接触判定
 	if (raycast_.AttackToBallCheckColl(refDir_))
 	{
     		return true;

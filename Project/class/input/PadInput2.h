@@ -1,16 +1,17 @@
 #pragma once
 #include "Controller.h"
-class PadInput :
+
+class PadInput2 :
     public Controller
 {
 public:
-    PadInput();
-    ~PadInput();
+    PadInput2();
+    ~PadInput2();
 
     void Update(void) override;
-    ControllerType GetControllerType(void) override 
+    ControllerType GetControllerType(void) override
     {
-        return ControllerType::Pad1;
+        return ControllerType::Pad2;
     }
 private:
     std::unordered_map<KeyID, unsigned int> inputTable_;
