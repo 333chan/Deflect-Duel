@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include"SceneManager.h"
+#include"../common/SoundManager.h"
 #include "TitelScene.h"
 #include "SelectScene.h"
 #include "ResultScene.h"
@@ -45,8 +46,8 @@ void GameScene::Init(void)
 	}
 	else if (GetJoypadNum() == 1)
 	{
-		player_ = std::make_unique<Player>(ControllerType::Key, playerType::One, ball_);
-		player2_ = std::make_unique<Player>(ControllerType::Pad1, playerType::Two, ball_);
+		player_ = std::make_unique<Player>(ControllerType::Pad1, playerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Key, playerType::Two, ball_);
 	}
 	else
 	{
@@ -56,11 +57,8 @@ void GameScene::Init(void)
 
 	stage_ = std::make_unique<Stage>();
 
-	//サウンドのロード
-	gameBgm_ = LoadSoundMem("resource/sound/gamebgm.mp3");
-
-	PlaySoundMem(gameBgm_, DX_PLAYTYPE_BACK);
-	ChangeVolumeSoundMem(150, gameBgm_);
+	PlaySoundMem(lpSoundMng.GetID("gameBgm"), DX_PLAYTYPE_BACK);
+	ChangeVolumeSoundMem(150, lpSoundMng.GetID("gameBgm"));
 	
 }
 
@@ -74,7 +72,7 @@ UniqueScene GameScene::Update(UniqueScene scene)
 	{
 		auto pState = player_->GetState() == State::Death ? playerType ::Two : playerType::One;
 
-		StopSoundMem(gameBgm_);
+		StopSoundMem(lpSoundMng.GetID("gameBgm"));
 		return std::make_unique<ResultScene>(pState);
 	}
 
@@ -116,7 +114,7 @@ void GameScene::DrawScreen(void)
 
 void GameScene::Release(void)
 {
-	DeleteSoundMem(gameBgm_);
+
 }
 
 UniqueScene GameScene::UpdateScene(UniqueScene& scene)

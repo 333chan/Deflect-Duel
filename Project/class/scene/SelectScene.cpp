@@ -1,18 +1,19 @@
 #include <DxLib.h>
 #include"SceneManager.h"
+#include"../common/SoundManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
 #include "GameScene.h"
 #include "TitelScene.h"
 #include "SelectScene.h"
 
-SelectScene::SelectScene(int bgm)
+SelectScene::SelectScene()
 {
 
 	//コントローラーの生成
 	if (GetJoypadNum() >= 1)
 	{
-		controller_ = std::make_unique<KeyInput>();
+		controller_ = std::make_unique<PadInput>();
 
 	}
 	else
@@ -22,8 +23,6 @@ SelectScene::SelectScene(int bgm)
 
 	//初期化
 	Init();
-
-	selectBgm_ = bgm;
 
 	//ちらつき防止
 	DrawScreen();
@@ -45,9 +44,6 @@ void SelectScene::Init(void)
 	stage1ImageH_ = LoadGraph("resource/image/stage/selectStage.png",true);
 	stageNullImageH_ = LoadGraph("resource/image/stage/selectStageNull.png", true);
 
-	//サウンド読み込み
-	decideSe_ = LoadSoundMem("resource/sound/dis.mp3");
-
 }
 
 UniqueScene SelectScene::Update(UniqueScene scene)
@@ -64,6 +60,7 @@ void SelectScene::DrawScreen(void)
 	ClsDrawScreen();
 
 	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x,IpSceneMng.GetScreenSize().y, bgImageH_, true);
+
 
 	//tmxから位置とサイズ取得
 	for (const auto& imagePos : tmxObj_.GetSelectStageList())
@@ -90,10 +87,24 @@ void SelectScene::DrawScreen(void)
 	}
 
 	//ステージの名前
-	DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Press 1",0xffffff);
+	if (GetJoypadNum() >= 1)
+	{
+		DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Push LB", 0xffffff);
+	}
+	else
+	{
+		DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Press 1", 0xffffff);
+	}
+
 	DrawString(380, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
 	DrawString(700, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
 	DrawString(1000, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+	DrawBox(0, IpSceneMng.GetScreenSize().y, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y-30, 0x000000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,255);
+	DrawString(10, IpSceneMng.GetScreenSize().y - 20, "A:タイトルに戻る", 0xffffff, true);
+
 
 #ifdef _DEBUG
 	DrawFormatString(0, 0, 0xffffff, "Select");
@@ -107,8 +118,6 @@ void SelectScene::Release(void)
 	DeleteGraph(stage1ImageH_);
 	DeleteGraph(logoImageH_);
 
-	DeleteSoundMem(decideSe_);
-	DeleteSoundMem(selectBgm_);
 
 }
 
@@ -117,11 +126,19 @@ UniqueScene SelectScene::UpdateScene(UniqueScene& scene)
 
 	if (controller_->ChaeckInputKey(KeyID::Stage1))
 	{
-		ChangeVolumeSoundMem(255, decideSe_);
-		PlaySoundMem(decideSe_, DX_PLAYTYPE_BACK);
+		ChangeVolumeSoundMem(255, lpSoundMng.GetID("decideSe"));
+		PlaySoundMem(lpSoundMng.GetID("decideSe"), DX_PLAYTYPE_BACK);
 
-		StopSoundMem(selectBgm_);
+		StopSoundMem(lpSoundMng.GetID("bgm"));
 		return std::make_unique<GameScene>();
+	}
+	if (controller_->ChaeckInputKey(KeyID::Cancel))
+	{
+		ChangeVolumeSoundMem(255, lpSoundMng.GetID("decideSe"));
+		PlaySoundMem(lpSoundMng.GetID("decideSe"), DX_PLAYTYPE_BACK);
+
+		StopSoundMem(lpSoundMng.GetID("bgm"));
+		return std::make_unique<TitelScene>();
 	}
 
 	//デバック用

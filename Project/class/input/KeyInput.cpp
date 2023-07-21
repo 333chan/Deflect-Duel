@@ -19,7 +19,7 @@ KeyInput::KeyInput()
 		{KeyID::Stage1,		KEY_INPUT_1},
 		{KeyID::Transition,	KEY_INPUT_Z},
 		{KeyID::Rematch,	KEY_INPUT_R},
-		{KeyID::ReturnTitle,	KEY_INPUT_T},
+		{KeyID::ReturnSelect, KEY_INPUT_T },
 	};
 
 	for (const auto&data:inputTable_)

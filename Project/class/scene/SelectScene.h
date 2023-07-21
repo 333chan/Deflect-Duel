@@ -13,7 +13,7 @@ class SelectScene :
     public BaseScene
 {
 public:
-    SelectScene(int bgm);
+    SelectScene();
     ~SelectScene();
 
     //‰Šú‰»

@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../scene/SceneManager.h"
+#include "../../common/SoundManager.h"
 #include "../../tmx/TmxObj.h"
 #include "../../../_debug/_DebugDispOut.h"
 #include "Ball.h"
@@ -74,6 +75,10 @@ void Ball::Update()
 		//ステージに当たったら
 		//pos_ -= offset_;
 		vec_ = { 0,0 };
+
+		ChangeVolumeSoundMem(180, lpSoundMng.GetID("ballSe"));
+		PlaySoundMem(lpSoundMng.GetID("ballSe"), DX_PLAYTYPE_BACK);
+
 		attackHitFlg_ = false;
 	}
 	else

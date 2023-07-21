@@ -9,10 +9,14 @@ PadInput::PadInput()
 		{KeyID::Left,	PAD_INPUT_LEFT},
 		{KeyID::Right,	PAD_INPUT_RIGHT},
 		{KeyID::Decide,	PAD_INPUT_2},
-		{KeyID::Cancel,PAD_INPUT_5},
+		{KeyID::Cancel,PAD_INPUT_1},
 		{KeyID::Attack,	PAD_INPUT_3},
 		{KeyID::Jump,	PAD_INPUT_UP},
-		{KeyID::Transition,	PAD_INPUT_4}
+		{KeyID::Transition,	PAD_INPUT_4},
+		{KeyID::Stage1,		PAD_INPUT_5},
+		{KeyID::Rematch,	PAD_INPUT_2},
+		{KeyID::ReturnSelect, PAD_INPUT_1},
+		{KeyID::All ,PAD_INPUT_2 }
 	};
 	for (auto data :inputTable_)
 	{

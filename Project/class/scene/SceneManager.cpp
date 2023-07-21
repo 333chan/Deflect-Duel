@@ -15,7 +15,18 @@ bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
-	ChangeWindowMode(true);
+	//確認メッセージ
+	if (MessageBox(NULL, "フルスクリーンで起動しますか？", "画面サイズ設定", MB_YESNO) == IDYES)
+	{
+		//フルスクリーン
+		ChangeWindowMode(false);
+	}
+	else
+	{
+		//ウィンドウ
+		ChangeWindowMode(true);
+	}
+
 	SetWindowText("Deflect Duel");
 
 	if (DxLib_Init() == -1)
@@ -57,9 +68,22 @@ void SceneManager::Run(void)
 
 	Init();
 
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
+	while (ProcessMessage() == 0 ) {
 		
-		
+		if (CheckHitKey(KEY_INPUT_ESCAPE))
+		{
+			//確認メッセージ
+			if (MessageBox(NULL, "ゲームを終了しますか？", "終了確認", MB_YESNO) == IDYES)
+			{
+				// DXLIB終了
+				DxLib_End();
+			}
+			else
+			{
+				continue;
+			}
+		}
+
 		//デバック開始
 		_dbgStartDraw();
 

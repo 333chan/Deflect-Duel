@@ -1,11 +1,13 @@
 #include <DxLib.h>
 #include "SceneManager.h"
+#include"../common/SoundManager.h"
 #include "../object/player/Player.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
 #include "TitelScene.h"
 #include "GameScene.h"
 #include "ResultScene.h"
+#include "SelectScene.h"
 
 ResultScene::ResultScene(playerType ptype)
 {
@@ -14,7 +16,7 @@ ResultScene::ResultScene(playerType ptype)
 	//パッドの数１つ以上の場合はパッド操作にする、現在は無効
 	if (GetJoypadNum() > 0)
 	{
-		controller_ = std::make_unique<KeyInput>();
+		controller_ = std::make_unique<PadInput>();
 
 	}
 	else
@@ -43,11 +45,8 @@ void ResultScene::Init(void)
 	//取得した画像を描画
 	GetDrawScreenGraph(0, 0, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y, screenImage_, true);
 
-	//サウンドの読み込み
-	winSe_ = LoadSoundMem("resource/sound/win.mp3");
-
-	ChangeVolumeSoundMem(220, winSe_);
-	PlaySoundMem(winSe_, DX_PLAYTYPE_BACK);
+	ChangeVolumeSoundMem(200, lpSoundMng.GetID("winSe"));
+	PlaySoundMem(lpSoundMng.GetID("winSe"), DX_PLAYTYPE_BACK);
 }
 
 UniqueScene ResultScene::Update(UniqueScene scene)
@@ -70,27 +69,25 @@ void ResultScene::DrawScreen(void)
 	if (playertype_ == playerType::One)
 	{
 		//1Pが勝ったら
-		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P勝ち", 0xffff00);
+		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xffff00);
 	}
 	else if (playertype_ == playerType::Two)
 	{
 		//2Pが勝ったら
-		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P勝ち", 0xff0000);
+		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0xff0000);
 	}
 
 	//再戦
 	DrawFormatString(IpSceneMng.GetScreenSize().x / 2-120,
-		IpSceneMng.GetScreenSize().y / 2, 0xffffff, "Press R key to Rematch");
+		IpSceneMng.GetScreenSize().y / 2, 0xffffff, "B:再戦する");
 
 	//タイトルに戻る
 	DrawFormatString(IpSceneMng.GetScreenSize().x / 2-120,
-		IpSceneMng.GetScreenSize().y / 2+20,0xffffff,"Press T key for Title");
+		IpSceneMng.GetScreenSize().y / 2+20,0xffffff,"A:ステージセレクトに戻る");
 }
 
 void ResultScene::Release(void)
 {
-
-	DeleteSoundMem(winSe_);
 
 }
 
@@ -98,14 +95,17 @@ UniqueScene ResultScene::UpdateScene(UniqueScene& scene)
 {
 
 
-	if (controller_->ChaeckInputKey(KeyID::ReturnTitle))
+	if (controller_->ChaeckInputKey(KeyID::ReturnSelect))
 	{
-		StopSoundMem(winSe_);
-		return std::make_unique<TitelScene>();
+		StopSoundMem(lpSoundMng.GetID("winSe"));
+
+		ChangeVolumeSoundMem(150, lpSoundMng.GetID("bgm"));
+		PlaySoundMem(lpSoundMng.GetID("bgm"), DX_PLAYTYPE_BACK);
+		return std::make_unique<SelectScene>();
 	}
 	if (controller_->ChaeckInputKey(KeyID::Rematch))
 	{
-		StopSoundMem(winSe_);
+		StopSoundMem(lpSoundMng.GetID("winSe"));
 		return std::make_unique<GameScene>();
 	}
 

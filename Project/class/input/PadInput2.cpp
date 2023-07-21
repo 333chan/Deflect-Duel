@@ -12,7 +12,11 @@ PadInput2::PadInput2()
 		{KeyID::Cancel,PAD_INPUT_5},
 		{KeyID::Attack,	PAD_INPUT_3},
 		{KeyID::Jump,	PAD_INPUT_UP},
-		{KeyID::Transition,	PAD_INPUT_4}
+		{KeyID::Transition,	PAD_INPUT_5},
+		{KeyID::Stage1,		KEY_INPUT_1},
+		{KeyID::Rematch,	KEY_INPUT_2},
+		{KeyID::ReturnSelect, KEY_INPUT_5},
+		{KeyID::Max , DX_INPUT_PAD1}
 	};
 	for (auto data : inputTable_)
 	{

@@ -1,7 +1,9 @@
 #include <DxLib.h>
 #include"SceneManager.h"
+#include"../common/SoundManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
+#include "../input/PadInput2.h"
 #include "SelectScene.h"
 #include "TitelScene.h"
 
@@ -14,14 +16,14 @@ TitelScene::TitelScene()
 	//コントローラーの生成
 	if (GetJoypadNum() >= 1)
 	{
-		controller_ = std::make_unique<KeyInput>();
-
+		controllerFlg = true;
+		controller_ = std::make_unique<PadInput>();
 	}
 	else
 	{
+		controllerFlg = false;
 		controller_ = std::make_unique<KeyInput>();
 	}
-
 
 	//初期化
 	Init();
@@ -45,27 +47,24 @@ void TitelScene::Init(void)
 	bgImageH_ = LoadGraph("resource/image/stage/titleBg.png", true);
 	logoImageH_ = LoadGraph("resource/image/titlelogo.png");
 
-	//サウンド読み込み
-	bgm_ = LoadSoundMem("resource/sound/titlebgm.mp3");
-	decideSe_ = LoadSoundMem("resource/sound/dis.mp3");
-
 	auto screen = IpSceneMng.GetScreenSize();
 
 	//多重スクロール
+	//最奥
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/backBills.png", true),
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
 			BG_MOVE_SPEED*0.3
 	));
-
+	//中間
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/middleBills.png", true),
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
 			BG_MOVE_SPEED
 		));
-
+	//手前
 	bgVec_.emplace_back(
 		BG(LoadGraph("resource/image/stage/road.png", true),
 			{ { 0,0 } ,{screen} },
@@ -86,8 +85,11 @@ void TitelScene::Init(void)
 	}
 
 
-	ChangeVolumeSoundMem(200, bgm_);
-	PlaySoundMem(bgm_, DX_PLAYTYPE_BACK);
+
+	ChangeVolumeSoundMem(200, lpSoundMng.GetID("bgm"));
+	PlaySoundMem(lpSoundMng.GetID("bgm"), DX_PLAYTYPE_LOOP);
+
+
 
 #ifdef _DEBUG
 	//bgImage_ = LoadGraph("resource/image/stage/titleBgFull.png", true);
@@ -150,8 +152,14 @@ void TitelScene::DrawScreen(void)
 		DrawExtendGraphF(sPos2.x, sPos2.y, ePos2.x, ePos2.y, bg.hadle, true);	//二枚目
 	}
 
+	if (controllerFlg = true)
+	{
+
+	}
+
+
 	DrawGraph(logoPos_.x, logoPos_.y, logoImageH_,true);
-	DrawString(550,600 - 16, "Start to Press Z", 0xffffff);
+	DrawString(550,600 - 16, "PRESS B BUTTON", 0xffffff);
 
 #ifdef _DEBUG
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
@@ -168,21 +176,24 @@ void TitelScene::Release(void)
 	}
 
 	DeleteGraph(logoImageH_);
-	DeleteSoundMem(decideSe_);
 
 }
 
 UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
 {
 
-	if (controller_->ChaeckInputKey(KeyID::Transition))
+	if (controller_->ChaeckInputKey(KeyID::Decide))
+	{
+		ChangeVolumeSoundMem(255, lpSoundMng.GetID("decideSe"));
+		PlaySoundMem(lpSoundMng.GetID("decideSe"), DX_PLAYTYPE_BACK);
+
+		ChangeVolumeSoundMem(150, lpSoundMng.GetID("bgm"));
+		return std::make_unique<SelectScene>();
+	}
+
+	if (CheckHitKeyAll(DX_CHECKINPUT_PAD))
 	{
 
-		ChangeVolumeSoundMem(255, decideSe_);
-		PlaySoundMem(decideSe_, DX_PLAYTYPE_BACK);
-
-		ChangeVolumeSoundMem(150,bgm_);
-		return std::make_unique<SelectScene>(bgm_);
 	}
 	//デバック用
 #ifdef _DEBUG

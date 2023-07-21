@@ -4,7 +4,7 @@
   <object id="14" name="bgimage" x="0" y="0" width="1280" height="720"/>
  </objectgroup>
  <objectgroup id="11" name="logo">
-  <object id="24" name="logoimage" x="0" y="80" width="1280" height="112"/>
+  <object id="24" name="logoimage" x="-0.207965" y="30.0767" width="1282.67" height="112"/>
  </objectgroup>
  <objectgroup id="2" name="stage1" visible="0">
   <object id="1" name="stageImage4" x="0" y="0" width="320" height="720"/>

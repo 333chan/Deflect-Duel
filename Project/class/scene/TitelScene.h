@@ -64,6 +64,8 @@ private :
     int bgm_;
     int decideSe_;  //Œˆ’è‰¹
 
+    bool controllerFlg;
+
     std::vector<BG> bgVec_;
 
 protected:

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "../../scene/SceneManager.h"
+#include "../../common/SoundManager.h"
 #include "../../input/KeyInput.h"
 #include "../../input/PadInput.h"
 #include "../../input/PadInput2.h"
@@ -98,10 +99,7 @@ void Player::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
-	//ÉTÉEÉìÉhÇÃì«Ç›çûÇ›
-	jumpSe_= LoadSoundMem("resource/sound/jump.mp3");
-	attackSe_= LoadSoundMem("resource/sound/attackhit.wav");
-	daethSe_ = LoadSoundMem("resource/sound/daeth.wav");
+
 
 }
 
@@ -131,7 +129,7 @@ void Player::Update(void)
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
 
-			PlaySoundMem(jumpSe_, DX_PLAYTYPE_BACK);
+			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 			break;
 		}
@@ -157,8 +155,8 @@ void Player::Update(void)
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			//çUåÇ
-			ChangeVolumeSoundMem(150,attackSe_);
-			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
+			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
 
@@ -212,8 +210,8 @@ void Player::Update(void)
  		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			//çUåÇ
-			ChangeVolumeSoundMem(150, attackSe_);
-			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
+			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
 
@@ -261,8 +259,8 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			//çUåÇ
-			ChangeVolumeSoundMem(150, attackSe_);
-			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
+			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
 
@@ -298,8 +296,8 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
 		{
 			//çUåÇ
-			ChangeVolumeSoundMem(150, attackSe_);
-			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
+			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
 	}
@@ -333,8 +331,8 @@ void Player::Update(void)
 		{
 
 			//çUåÇ
-			ChangeVolumeSoundMem(150, attackSe_);
-			PlaySoundMem(attackSe_, DX_PLAYTYPE_BACK);
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
+			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 			state_ = State::Attack;
 		}
 	}
@@ -375,8 +373,8 @@ void Player::Update(void)
 
 	if (IsBallHit())
 	{
-		ChangeVolumeSoundMem(180, daethSe_);
-		PlaySoundMem(daethSe_, DX_PLAYTYPE_BACK);
+		ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
+		PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
 		state_ = State::Death;
 	}
 
@@ -501,9 +499,7 @@ void Player::Draw(void)
 
 void Player::Release(void)
 {
-	DeleteSoundMem(jumpSe_);
-	DeleteSoundMem(attackSe_);
-	DeleteSoundMem(daethSe_);
+
 }
 
 State Player::GetState(void)
