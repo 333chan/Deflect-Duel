@@ -457,6 +457,12 @@ void Player::Draw(void)
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//—Ž‰º
+		count += 0.015;
+
+		if (count > 2)
+		{
+			count = 0;
+		}
 		if (dir_ == Dir::Left)
 		{
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage5_, true);
