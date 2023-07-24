@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include"SceneManager.h"
 #include"../common/SoundManager.h"
+#include"../common/ImageManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
 #include "GameScene.h"
@@ -37,13 +38,6 @@ void SelectScene::Init(void)
 {
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/selectScene.tmx", false);
-
-	//画像読み込み
-	bgImageH_ = LoadGraph("resource/image/stage/selectBg.png", true);
-	logoImageH_ = LoadGraph("resource/image/stage/stageselect.png", true);
-	stage1ImageH_ = LoadGraph("resource/image/stage/selectStage.png",true);
-	stageNullImageH_ = LoadGraph("resource/image/stage/selectStageNull.png", true);
-
 }
 
 UniqueScene SelectScene::Update(UniqueScene scene)
@@ -59,14 +53,14 @@ void SelectScene::DrawScreen(void)
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 
-	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x,IpSceneMng.GetScreenSize().y, bgImageH_, true);
+	DrawExtendGraph(0, 0, lpSceneMng.GetScreenSize().x,lpSceneMng.GetScreenSize().y, lpImageMng.GetID("selectBg")[0], true);
 
 
 	//tmxから位置とサイズ取得
 	for (const auto& imagePos : tmxObj_.GetSelectStageList())
 	{
 		const auto& [sPos, size] = imagePos;
-		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, stageNullImageH_, true);
+		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, lpImageMng.GetID("selectStageNull")[0], true);
 	}
 
 	//tmxから位置とサイズ取得
@@ -74,7 +68,7 @@ void SelectScene::DrawScreen(void)
 	{
 		//始点とサイズに
 		const auto& [sPos, size] = imagePos;
-		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, stage1ImageH_, true);
+		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, lpImageMng.GetID("selectStage")[0], true);
 		break;
 	}
 
@@ -83,27 +77,27 @@ void SelectScene::DrawScreen(void)
 	{
 		//始点とサイズに
 		const auto& [sPos, size] = bgPos;
-		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, logoImageH_, true);
+		DrawExtendGraph(sPos.x, sPos.y, sPos.x + size.x, sPos.y + size.y, lpImageMng.GetID("selectLogo")[0], true);
 	}
 
 	//ステージの名前
 	if (GetJoypadNum() >= 1)
 	{
-		DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Push LB", 0xffffff);
+		DrawString(100, lpSceneMng.GetScreenSize().y - 100, "倉庫/Push LB", 0xffffff);
 	}
 	else
 	{
-		DrawString(100, IpSceneMng.GetScreenSize().y - 100, "倉庫/Press 1", 0xffffff);
+		DrawString(100, lpSceneMng.GetScreenSize().y - 100, "倉庫/Press 1", 0xffffff);
 	}
 
-	DrawString(380, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
-	DrawString(700, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
-	DrawString(1000, IpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+	DrawString(380, lpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+	DrawString(700, lpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
+	DrawString(1000, lpSceneMng.GetScreenSize().y - 100, "Coming soon...",0xffffff);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-	DrawBox(0, IpSceneMng.GetScreenSize().y, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y-30, 0x000000, true);
+	DrawBox(0, lpSceneMng.GetScreenSize().y, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y-30, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND,255);
-	DrawString(10, IpSceneMng.GetScreenSize().y - 20, "A:タイトルに戻る", 0xffffff, true);
+	DrawString(10, lpSceneMng.GetScreenSize().y - 20, "A:タイトルに戻る", 0xffffff, true);
 
 
 #ifdef _DEBUG
@@ -115,10 +109,6 @@ void SelectScene::DrawScreen(void)
 
 void SelectScene::Release(void)
 {
-	DeleteGraph(stage1ImageH_);
-	DeleteGraph(logoImageH_);
-
-
 }
 
 UniqueScene SelectScene::UpdateScene(UniqueScene& scene)

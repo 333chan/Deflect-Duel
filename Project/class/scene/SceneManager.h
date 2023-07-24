@@ -4,7 +4,7 @@
 #include"../common/Geometry.h"
 #include"BaseScene.h"
 
-#define IpSceneMng SceneManager::GetInstance()
+#define lpSceneMng SceneManager::GetInstance()
 
 class SceneManager
 {

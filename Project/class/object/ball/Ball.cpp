@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "../../scene/SceneManager.h"
 #include "../../common/SoundManager.h"
+#include"../../common/ImageManager.h"
 #include "../../tmx/TmxObj.h"
 #include "../../../_debug/_DebugDispOut.h"
 #include "Ball.h"
@@ -24,9 +25,6 @@ void Ball::Init()
 {
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
-
-	//画像
-	ballImage_ = LoadGraph("resource/image/ball/ball32.png", true);
 
 	//座標
 	pos_ = {500,500};
@@ -64,7 +62,7 @@ void Ball::Update()
 
    		if (speed_ < MAX_SPEED)
 		{
-			speed_ += 2;
+			speed_ += 1.5f;
 		}
 	}
 
@@ -122,16 +120,16 @@ void Ball::Draw()
 
 	DrawBox(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, 0xffff00, false);
 #endif
-	DrawRotaGraph(raycast_.ballRay_[0].p.x + 16, raycast_.ballRay_[0].p.y + 16, 1, angle_, ballImage_, true);
+	DrawRotaGraph(raycast_.ballRay_[0].p.x + 16, raycast_.ballRay_[0].p.y + 16, 1, angle_, lpImageMng.GetID("ball")[0], true);
 
-	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
-	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
-	DrawFormatString(IpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "ボールを相手に当てろ！");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "ボールを相手に当てろ！");
 }
 
 void Ball::Release()
 {
-	DeleteGraph(ballImage_);
+
 }
 
 void Ball::SetBallform(Vector2& pos, Vector2& size)

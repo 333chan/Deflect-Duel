@@ -25,9 +25,6 @@ private:
     Vector2 stagePos;		//始点
     Vector2 stagePosEnd;	//終点
 
-    // 画像
-    int stageImage_;        //背景
-
 protected:
     //tmx
     TmxObj tmxObj_;

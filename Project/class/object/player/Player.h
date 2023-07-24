@@ -36,6 +36,7 @@ enum class Dir
     Max
 };
 
+//プレイヤーの種類
 enum class playerType
 {
     One,    //1P
@@ -89,6 +90,8 @@ private:
     //大きさ
     Vector2 size_;
 
+    Vector2 imageSize_;
+
     Vector2 movePos_;
 
     //攻撃時の画像の大きさ
@@ -104,6 +107,7 @@ private:
     //方向
     Dir dir_;
 
+    //プレイヤーの種類
     playerType type_;
 
     //重力
@@ -124,6 +128,8 @@ private:
     bool IsBallHit();
     bool IsAttackHit();
 
+    bool isGround;
+
     //経過時間
     double jumpDeltaTime_;
 
@@ -140,12 +146,8 @@ private:
     Vector2 ballpos_;
     Vector2 ballsize_;
 
+    //ボール座標
     Vector2 bpos_;
-
-    //サウンド
-    int jumpSe_;    //ジャンプ
-    int attackSe_;  //攻撃
-    int daethSe_;   //死
 
 protected:
     //tmx

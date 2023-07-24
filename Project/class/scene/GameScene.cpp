@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include"SceneManager.h"
 #include"../common/SoundManager.h"
+#include"../common/ImageManager.h"
 #include "TitelScene.h"
 #include "SelectScene.h"
 #include "ResultScene.h"

@@ -1,13 +1,14 @@
 #include "Player.h"
 #include "../../scene/SceneManager.h"
 #include "../../common/SoundManager.h"
+#include "../../common/ImageManager.h"
 #include "../../input/KeyInput.h"
 #include "../../input/PadInput.h"
 #include "../../input/PadInput2.h"
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
-constexpr int MOVE_SPEED = 20.0f;		// 移動速度
+constexpr int MOVE_SPEED = 16.5f;		// 移動速度
 constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
@@ -100,7 +101,7 @@ void Player::Init()
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
 
-
+	isGround = false;
 }
 
 void Player::Update(void)
@@ -120,6 +121,10 @@ void Player::Update(void)
 			gravity_ = 7.8;
 			state_ = State::Fall;
 			break;
+		}
+		else
+		{
+			isGround = true;
 		}
 
 		//プレイヤー移動
@@ -172,7 +177,7 @@ void Player::Update(void)
 		}
 
 		gravity_ += FALL_ACCEL;
-		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
+		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
 	
 		pos_.y += YVel;
 
@@ -219,7 +224,7 @@ void Player::Update(void)
 	break;
 	case State::Fall:
 	{
-		jumpDeltaTime_ += IpSceneMng.GetDeltaTime();
+		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
 		auto YVel = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
@@ -394,25 +399,51 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+
+	static float count=0;
+
+
 	//プレイヤーの描画
 	switch (state_)
 	{
 	case State::Idle:	//立ち
+
+		count += 0.08;
+
+		if (count > 7)
+		{
+			count = 0;
+		}
+
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage_, true);
+			DrawExtendGraph(
+				pos_.x + size_.x, pos_.y,
+				pos_.x, pos_.y + size_.y,
+				lpImageMng.GetID("idle")[count], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x , pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage_, true);
-
+		DrawExtendGraph(
+			pos_.x ,pos_.y,
+			pos_.x + size_.x, pos_.y + size_.y,
+			lpImageMng.GetID("idle")[count], true);
 		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idel", true);
 		break;
 	case State::JumpUp:	//ジャンプ上昇
+		count += 0.015;
+
+		if (count > 2)
+		{
+			count = 0;
+		}
+
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[count], true);
 			break;
 		}
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[count], true);
+
 		if (dir_ == Dir::AirAttackLeft)
 		{
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
@@ -423,8 +454,6 @@ void Player::Draw(void)
 			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage4_, true);
-
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//落下

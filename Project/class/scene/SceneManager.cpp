@@ -15,6 +15,25 @@ bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
+
+	SetWindowText("Deflect Duel");
+
+	//ウィンドウ
+	ChangeWindowMode(true);
+
+	if (DxLib_Init() == -1)
+	{
+		return false;
+	}
+
+	if (GetJoypadNum() == 0)
+	{
+		if (MessageBox(NULL, "ゲームパッドを接続してゲームを再起動してください", "ゲームパッドが接続されていません", MB_OK))
+		{
+			return false;
+		}
+	}
+
 	//確認メッセージ
 	if (MessageBox(NULL, "フルスクリーンで起動しますか？", "画面サイズ設定", MB_YESNO) == IDYES)
 	{
@@ -27,12 +46,6 @@ bool SceneManager::SystemInit(void)
 		ChangeWindowMode(true);
 	}
 
-	SetWindowText("Deflect Duel");
-
-	if (DxLib_Init() == -1)
-	{
-		return false;
-	}
 
 	_dbgSetup(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 255);
 

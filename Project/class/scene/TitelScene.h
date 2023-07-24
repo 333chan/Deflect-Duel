@@ -55,17 +55,9 @@ private :
     Vector2 logoPos_;
     Vector2 logoPosEnd_;
 
-
-    //画像ハンドル
-    int bgImageH_;  //背景
-    int logoImageH_; //ロゴ画像
-
-    //サウンド
-    int bgm_;
-    int decideSe_;  //決定音
-
     bool controllerFlg;
 
+    //構造体
     std::vector<BG> bgVec_;
 
 protected:

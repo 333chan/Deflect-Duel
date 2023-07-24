@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "SceneManager.h"
 #include"../common/SoundManager.h"
+#include"../common/ImageManager.h"
 #include "../object/player/Player.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
@@ -43,7 +44,7 @@ void ResultScene::Init(void)
 	screenImage_ = MakeScreen(screenSizeX_, screenSizeY_, true);
 
 	//取得した画像を描画
-	GetDrawScreenGraph(0, 0, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y, screenImage_, true);
+	GetDrawScreenGraph(0, 0, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y, screenImage_, true);
 
 	ChangeVolumeSoundMem(200, lpSoundMng.GetID("winSe"));
 	PlaySoundMem(lpSoundMng.GetID("winSe"), DX_PLAYTYPE_BACK);
@@ -63,27 +64,27 @@ void ResultScene::DrawScreen(void)
 	DrawGraph(0, 0, screenImage_,true);
 
 
-	DrawBox(IpSceneMng.GetScreenSize().x / 2 - 151, IpSceneMng.GetScreenSize().y / 2 + 51, IpSceneMng.GetScreenSize().x / 2 + 101, IpSceneMng.GetScreenSize().y / 2 - 81, 0xffffff, true);
-	DrawBox(IpSceneMng.GetScreenSize().x / 2-150, IpSceneMng.GetScreenSize().y / 2+50, IpSceneMng.GetScreenSize().x / 2 + 100, IpSceneMng.GetScreenSize().y / 2-80, 0x151515, true);
+	DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, lpSceneMng.GetScreenSize().y / 2 + 51, lpSceneMng.GetScreenSize().x / 2 + 101, lpSceneMng.GetScreenSize().y / 2 - 81, 0xffffff, true);
+	DrawBox(lpSceneMng.GetScreenSize().x / 2-150, lpSceneMng.GetScreenSize().y / 2+50, lpSceneMng.GetScreenSize().x / 2 + 100, lpSceneMng.GetScreenSize().y / 2-80, 0x151515, true);
 
 	if (playertype_ == playerType::One)
 	{
 		//1Pが勝ったら
-		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xffff00);
+		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xffff00);
 	}
 	else if (playertype_ == playerType::Two)
 	{
 		//2Pが勝ったら
-		DrawString(IpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0xff0000);
+		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0xff0000);
 	}
 
 	//再戦
-	DrawFormatString(IpSceneMng.GetScreenSize().x / 2-120,
-		IpSceneMng.GetScreenSize().y / 2, 0xffffff, "B:再戦する");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2-120,
+		lpSceneMng.GetScreenSize().y / 2, 0xffffff, "B:再戦する");
 
 	//タイトルに戻る
-	DrawFormatString(IpSceneMng.GetScreenSize().x / 2-120,
-		IpSceneMng.GetScreenSize().y / 2+20,0xffffff,"A:ステージセレクトに戻る");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2-120,
+		lpSceneMng.GetScreenSize().y / 2+20,0xffffff,"A:ステージセレクトに戻る");
 }
 
 void ResultScene::Release(void)

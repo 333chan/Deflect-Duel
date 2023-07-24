@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include"SceneManager.h"
 #include"../common/SoundManager.h"
+#include"../common/ImageManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
 #include "../input/PadInput2.h"
@@ -43,30 +44,26 @@ void TitelScene::Init(void)
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/titleScene.tmx", false);
 
-	//画像読み込み
-	bgImageH_ = LoadGraph("resource/image/stage/titleBg.png", true);
-	logoImageH_ = LoadGraph("resource/image/titlelogo.png");
-
-	auto screen = IpSceneMng.GetScreenSize();
+	auto screen = lpSceneMng.GetScreenSize();
 
 	//多重スクロール
 	//最奥
 	bgVec_.emplace_back(
-		BG(LoadGraph("resource/image/stage/backBills.png", true),
+		BG(lpImageMng.GetID("backBills")[0],
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
 			BG_MOVE_SPEED*0.3
 	));
 	//中間
 	bgVec_.emplace_back(
-		BG(LoadGraph("resource/image/stage/middleBills.png", true),
+		BG(lpImageMng.GetID("middleBills")[0],
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
 			BG_MOVE_SPEED
 		));
 	//手前
 	bgVec_.emplace_back(
-		BG(LoadGraph("resource/image/stage/road.png", true),
+		BG(lpImageMng.GetID("road")[0],
 			{ { 0,0 } ,{screen} },
 			{ { screen.x,0 } ,{screen.x * 2,screen.y} },
 			BG_MOVE_SPEED*3.5
@@ -92,7 +89,6 @@ void TitelScene::Init(void)
 
 
 #ifdef _DEBUG
-	//bgImage_ = LoadGraph("resource/image/stage/titleBgFull.png", true);
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");
 #endif
 
@@ -120,15 +116,15 @@ UniqueScene TitelScene::Update(UniqueScene scene)
 		if (0 > ePos.x)
 		{
 			//一枚目画面外
-			sPos.x = IpSceneMng.GetScreenSize().x - bg.speed;
-			ePos.x = IpSceneMng.GetScreenSize().x * 2 - bg.speed;
+			sPos.x = lpSceneMng.GetScreenSize().x - bg.speed;
+			ePos.x = lpSceneMng.GetScreenSize().x * 2 - bg.speed;
 		}
 
 		if (0 > ePos2.x)
 		{
 			//二枚目画面外
-			sPos2.x = IpSceneMng.GetScreenSize().x - bg.speed;
-			ePos2.x = IpSceneMng.GetScreenSize().x * 2 - bg.speed;
+			sPos2.x = lpSceneMng.GetScreenSize().x - bg.speed;
+			ePos2.x = lpSceneMng.GetScreenSize().x * 2 - bg.speed;
 		}
 	}
 
@@ -141,7 +137,7 @@ void TitelScene::DrawScreen(void)
 	SetDrawScreen(screenID_);
 	ClsDrawScreen();
 
-	DrawExtendGraph(0, 0, IpSceneMng.GetScreenSize().x, IpSceneMng.GetScreenSize().y, bgImageH_, true);
+	DrawExtendGraph(0, 0, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y, lpImageMng.GetID("titleBg")[0], true);
 
 	for (const auto& bg : bgVec_)
 	{
@@ -158,7 +154,7 @@ void TitelScene::DrawScreen(void)
 	}
 
 
-	DrawGraph(logoPos_.x, logoPos_.y, logoImageH_,true);
+	DrawGraph(logoPos_.x, logoPos_.y, lpImageMng.GetID("titlelogo")[0], true);
 	DrawString(550,600 - 16, "PRESS B BUTTON", 0xffffff);
 
 #ifdef _DEBUG
@@ -169,14 +165,6 @@ void TitelScene::DrawScreen(void)
 
 void TitelScene::Release(void)
 {
-
-	for (auto& bg : bgVec_)
-	{
-		DeleteGraph(bg.hadle);
-	}
-
-	DeleteGraph(logoImageH_);
-
 }
 
 UniqueScene TitelScene::UpdateScene(UniqueScene& scene)

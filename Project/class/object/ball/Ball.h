@@ -57,9 +57,6 @@ private:
     //‚ ‚½‚è”»’èˆ—
     bool IsStageHit();
 
-    //ƒ{[ƒ‹‰æ‘œ
-    int ballImage_;
-
     //‰ñ“]
     double angle_;
 

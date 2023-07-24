@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "Stage.h"
 #include "../../scene/SceneManager.h"
+#include"../../common/ImageManager.h"
 #include "../../tmx/TmxObj.h"
 
 Stage::Stage()
@@ -17,10 +18,6 @@ void Stage::Init()
 {
 	//tmx‚Ì“Ç‚İ‚İ
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
-
-	//‰æ‘œ‚Ì“Ç‚İ‚İ
-	stageImage_ = LoadGraph("resource/image/stage/stage.png",true);
-
 }
 
 void Stage::Update()
@@ -39,10 +36,10 @@ void Stage::Draw()
 		stagePosEnd = coll.second;
 	}
 
-	DrawExtendGraph(stagePos.x, stagePos.y,stagePosEnd.x, stagePosEnd.y , stageImage_,true);
+	DrawExtendGraph(stagePos.x, stagePos.y,stagePosEnd.x, stagePosEnd.y , lpImageMng.GetID("stage")[0], true);
 }
 
 void Stage::Release()
 {
-	DeleteGraph(stageImage_);
+
 }

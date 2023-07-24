@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="class\common\ImageManager.cpp" />
     <ClCompile Include="class\common\SoundManager.cpp" />
     <ClCompile Include="class\input\PadInput2.cpp" />
     <ClCompile Include="class\object\ball\Ball.cpp" />
@@ -171,6 +172,7 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="class\common\ImageManager.h" />
     <ClInclude Include="class\common\SoundManager.h" />
     <ClInclude Include="class\input\PadInput2.h" />
     <ClInclude Include="class\object\ball\Ball.h" />
