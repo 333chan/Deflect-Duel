@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="class\common\AnimController.cpp" />
     <ClCompile Include="class\common\ImageManager.cpp" />
     <ClCompile Include="class\common\SoundManager.cpp" />
     <ClCompile Include="class\input\PadInput2.cpp" />
@@ -172,7 +173,10 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="class\common\AnimController.h" />
+    <ClInclude Include="resource\image\icon\icon.h" />
     <ClInclude Include="class\common\ImageManager.h" />
+    <ClInclude Include="class\common\resource.h" />
     <ClInclude Include="class\common\SoundManager.h" />
     <ClInclude Include="class\input\PadInput2.h" />
     <ClInclude Include="class\object\ball\Ball.h" />
@@ -200,6 +204,9 @@
     <ClInclude Include="class\scene\SelectScene.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />
     <ClInclude Include="_debug\_DebugDispOut.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource\image\icon\icon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

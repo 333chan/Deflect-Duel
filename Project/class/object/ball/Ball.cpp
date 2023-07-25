@@ -32,7 +32,7 @@ void Ball::Init()
 	//ëÂÇ´Ç≥
 	size_ = {32,32 };
 
-	//ï‚ê≥
+	//ï‚ê≥íl
 	offset_ = { 0,0 };
 
 	refPow_ = { 0.0f,0.0f };

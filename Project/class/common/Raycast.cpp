@@ -349,7 +349,7 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 		{{pos.x+5 ,pos.y+10 },{pos.x-5 + size.x ,pos.y+10} },						//è„
 		{{pos.x + 5 ,pos.y + size.y-5} ,{pos.x-5 + size.x,pos.y + size.y-5}},		//â∫
 		{{pos.x + 5 ,pos.y+10},{pos.x + 5,pos.y + size.y-5}},						//ç∂
-		{{pos.x -5 + size.x,pos.y+10},{pos.x-5 + size.x,pos.y + size.y-5}},		//âE
+		{{pos.x -5 + size.x,pos.y+10},{pos.x-5 + size.x,pos.y + size.y-5}},			//âE
 	};
 
 }

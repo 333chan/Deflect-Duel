@@ -4,6 +4,7 @@
 #include "SelectScene.h"
 #include "SceneManager.h"
 #include "../../_debug/_DebugDispOut.h"
+#include "../../resource/image/icon/icon.h"
 
 
 
@@ -15,6 +16,8 @@ bool SceneManager::SystemInit(void)
 {
 	SetOutApplicationLogValidFlag(false);
 	SetGraphMode(static_cast<int>(SCREEN_SIZE_X), static_cast<int>(SCREEN_SIZE_Y), 32);
+
+	SetWindowIconID(ICON_1);
 
 	SetWindowText("Deflect Duel");
 

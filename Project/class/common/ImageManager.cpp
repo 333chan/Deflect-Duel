@@ -71,6 +71,8 @@ ImageManager::ImageManager()
 	//ƒvƒŒƒCƒ„[
 	GetID("idle", "resource/image/character/sprite/idle.png", Vector2Int(1, 8), Vector2Int(19,31));
 	GetID("jumpUp", "resource/image/character/sprite/jumpUp.png", Vector2Int(1, 2), Vector2Int(20,30));
+	GetID("down", "resource/image/character/sprite/down.png", Vector2Int(1, 2), Vector2Int(19, 30));
+	GetID("run", "resource/image/character/sprite/run.png", Vector2Int(1, 10), Vector2Int(26, 31));
 }
 
 ImageManager::~ImageManager()

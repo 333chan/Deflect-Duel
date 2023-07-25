@@ -2,13 +2,14 @@
 #include "../../scene/SceneManager.h"
 #include "../../common/SoundManager.h"
 #include "../../common/ImageManager.h"
+#include "../../common/AnimController.h"
 #include "../../input/KeyInput.h"
 #include "../../input/PadInput.h"
 #include "../../input/PadInput2.h"
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
-constexpr int MOVE_SPEED = 16.5f;		// 移動速度
+constexpr int MOVE_SPEED = 5.0f;		// 移動速度
 constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
@@ -29,6 +30,7 @@ Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& bal
 		controller_ = std::make_unique<KeyInput>();
 	}
 
+
 	//プレイヤーの種類情報
 	playertype_ = pType;
 
@@ -47,6 +49,9 @@ Player::~Player()
 
 void Player::Init()
 {
+
+	animController_ = std::make_unique<AnimController>();
+
 	//プレイヤー座標
 	if (playertype_ == playerType::One)
 	{
@@ -100,6 +105,7 @@ void Player::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
+	animController_->SetAnim(Anim::Idle);
 
 	isGround = false;
 }
@@ -169,6 +175,7 @@ void Player::Update(void)
 	break;
 	case State::JumpUp:
 	{
+
 		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
 
 		if (YVel > 0)
@@ -399,50 +406,37 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
-
-	static float count=0;
-
-
 	//プレイヤーの描画
 	switch (state_)
 	{
 	case State::Idle:	//立ち
-
-		count += 0.08;
-
-		if (count > 7)
-		{
-			count = 0;
-		}
+		
+		animController_->SetAnim(Anim::Idle);
 
 		if (dir_ == Dir::Left)
 		{
 			DrawExtendGraph(
 				pos_.x + size_.x, pos_.y,
 				pos_.x, pos_.y + size_.y,
-				lpImageMng.GetID("idle")[count], true);
+				lpImageMng.GetID("idle")[animController_->Update()], true);
 			break;
 		}
 		DrawExtendGraph(
 			pos_.x ,pos_.y,
 			pos_.x + size_.x, pos_.y + size_.y,
-			lpImageMng.GetID("idle")[count], true);
+			lpImageMng.GetID("idle")[animController_->Update()], true);
+
 		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idel", true);
 		break;
 	case State::JumpUp:	//ジャンプ上昇
-		count += 0.015;
-
-		if (count > 2)
-		{
-			count = 0;
-		}
+		animController_->SetAnim(Anim::JumpUp);
 
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[count], true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[animController_->Update()], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[count], true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[animController_->Update()], true);
 
 		if (dir_ == Dir::AirAttackLeft)
 		{
@@ -457,26 +451,23 @@ void Player::Draw(void)
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//落下
-		count += 0.015;
-
-		if (count > 2)
-		{
-			count = 0;
-		}
+		animController_->SetAnim(Anim::Fall);
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage5_, true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("down")[animController_->Update()], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage5_, true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("down")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Fall", true);
 		break;
 	case State::MoveLeft://左移動
-		DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage2_, true);
+		animController_->SetAnim(Anim::Run);
+		DrawExtendGraph(pos_.x + size_.x+5, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("run")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Left", true);
 		break;
 	case State::MoveRight://右移動
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, playerImage2_, true);
+		animController_->SetAnim(Anim::Run);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x+5, pos_.y + size_.y, lpImageMng.GetID("run")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Right", true);
 		break;
 	case State::Crouching:

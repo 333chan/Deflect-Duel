@@ -10,6 +10,9 @@
 class Controller;
 enum class ControllerType;
 
+class AnimController;
+enum class Anim;
+
 //状態
 enum class State
 {
@@ -74,11 +77,13 @@ private:
     //コントローラー
     std::unique_ptr<Controller> controller_;
 
-    //1Pか2P判断
-    playerType playertype_;
+    std::unique_ptr<AnimController> animController_;
 
     //ボール
     std::shared_ptr<Ball> ball_;
+
+    //1Pか2P判断
+    playerType playertype_;
 
     //色
     int color ;
