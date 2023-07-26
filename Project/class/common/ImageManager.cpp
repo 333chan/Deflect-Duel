@@ -68,11 +68,18 @@ ImageManager::ImageManager()
 	//ボール
 	GetID("ball","resource/image/ball/ball32.png");
 
-	//プレイヤー
-	GetID("idle", "resource/image/character/sprite/idle.png", Vector2Int(1, 8), Vector2Int(19,31));
-	GetID("jumpUp", "resource/image/character/sprite/jumpUp.png", Vector2Int(1, 2), Vector2Int(20,30));
-	GetID("down", "resource/image/character/sprite/down.png", Vector2Int(1, 2), Vector2Int(19, 30));
-	GetID("run", "resource/image/character/sprite/run.png", Vector2Int(1, 10), Vector2Int(26, 31));
+	//プレイヤー1
+	//GetID("idle", "resource/image/character/sprite/idle2.png", Vector2Int(8, 1), Vector2Int(40, 38));
+
+	GetID("knight_idle", "resource/image/character/sprite/knight/idle.png", Vector2Int(6, 1), Vector2Int(31, 43));
+	GetID("knight_jumpUp", "resource/image/character/sprite/knight/jumpUp.png", Vector2Int(5, 1), Vector2Int(29,48));
+	GetID("knight_fall", "resource/image/character/sprite/knight/down.png", Vector2Int(4, 1), Vector2Int(37, 45));
+	GetID("knight_run", "resource/image/character/sprite/knight/run.png", Vector2Int(8, 1), Vector2Int(42, 36));
+	GetID("knight_attack", "resource/image/character/sprite/knight/attack.png", Vector2Int(8, 2), Vector2Int(79, 45));
+
+	//プレイヤー2
+	GetID("rogue_idle", "resource/image/character/sprite/rogue/idle.png", Vector2Int(8, 1), Vector2Int(40, 38));
+
 }
 
 ImageManager::~ImageManager()

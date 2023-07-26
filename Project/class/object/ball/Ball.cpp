@@ -9,6 +9,8 @@
 constexpr float FALL_SPEED = 1.0f;	// 落下速度
 constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
 
+constexpr float MAX_SPIN_SPEED = 20.0f;	//最高回転速度
+
 const Vector2 MAX_SPEED = {30,30};	//最高速度
 
 Ball::Ball()
@@ -27,7 +29,7 @@ void Ball::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 
 	//座標
-	pos_ = {500,500};
+	pos_ = {500,200};
 
 	//大きさ
 	size_ = {32,32 };
@@ -36,7 +38,7 @@ void Ball::Init()
 	offset_ = { 0,0 };
 
 	refPow_ = { 0.0f,0.0f };
-	refDir_ = { 1.0f,-1.0f };
+	refDir_ = { 0.0f,0.0f };
 
 	movePos_ = { refPow_ * refDir_ };
 	speed_ = { 5,5 };
@@ -44,6 +46,7 @@ void Ball::Init()
 	vecLen_ = 0.0f;
 
 	angle_ = 0.0;
+	spinSpead_ = 0.2;
 
 	attackHitFlg_ = false;
 
@@ -59,6 +62,11 @@ void Ball::Update()
 		attackHitFlg_ = false;
 		vec_ = { 0,0 };
 		vec_ += refPow_ + speed_ * refDir_;
+
+		if (spinSpead_< MAX_SPIN_SPEED)
+		{
+			spinSpead_ += 0.025;
+		}
 
    		if (speed_ < MAX_SPEED)
 		{
@@ -103,7 +111,8 @@ void Ball::Update()
 	VelRay();
 
 	//回転処理
-	angle_ += 0.2;
+
+	angle_ += spinSpead_;
 
 }
 
@@ -114,6 +123,7 @@ void Ball::Draw()
 	DrawCircle(centerPos_.x, centerPos_.y, 2, 0xff0000, true);
 
 	DrawFormatString(450, 700, 0xffffff, "BallPosX%f,BallPosY%f", pos_.x, pos_.y);
+	DrawFormatString(450, 600, 0xffffff, "%f",spinSpead_);
 
 	DrawFormatString(0, 150, 0xff0000, "refDir_%d,%d", refDir_.x,refDir_.y);
 	DrawFormatString(0, 200, 0xff0000, "%d",attackHitFlg_);

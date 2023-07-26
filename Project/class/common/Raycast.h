@@ -21,7 +21,7 @@ public:
 
 	void setPlayerSquareRay(Vector2 pos, Vector2 size, Vector2 moveSpeed);
 
-	void setPlayerAttackRay(Vector2 pos, Vector2 size);
+	void setPlayerAttackRay(Vector2 pos, Vector2 size, int reversal);
 
 
 	std::vector<Line> ballRay_;

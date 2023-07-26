@@ -10,7 +10,7 @@
 #include "ResultScene.h"
 #include "SelectScene.h"
 
-ResultScene::ResultScene(playerType ptype)
+ResultScene::ResultScene(PlayerType ptype)
 {
 	playertype_ = ptype;
 
@@ -67,12 +67,12 @@ void ResultScene::DrawScreen(void)
 	DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, lpSceneMng.GetScreenSize().y / 2 + 51, lpSceneMng.GetScreenSize().x / 2 + 101, lpSceneMng.GetScreenSize().y / 2 - 81, 0xffffff, true);
 	DrawBox(lpSceneMng.GetScreenSize().x / 2-150, lpSceneMng.GetScreenSize().y / 2+50, lpSceneMng.GetScreenSize().x / 2 + 100, lpSceneMng.GetScreenSize().y / 2-80, 0x151515, true);
 
-	if (playertype_ == playerType::One)
+	if (playertype_ == PlayerType::One)
 	{
 		//1PÇ™èüÇ¡ÇΩÇÁ
 		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xffff00);
 	}
-	else if (playertype_ == playerType::Two)
+	else if (playertype_ == PlayerType::Two)
 	{
 		//2PÇ™èüÇ¡ÇΩÇÁ
 		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0xff0000);

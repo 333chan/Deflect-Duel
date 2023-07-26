@@ -1,5 +1,7 @@
 #pragma once
 
+enum class PlayerType;
+
 enum class Anim{
 	Idle,
 	Run,
@@ -27,6 +29,8 @@ private:
 	float animCount_;
 
 	Anim anim_;
+
+	PlayerType pType_;
 
 };
 

@@ -40,7 +40,7 @@ enum class Dir
 };
 
 //プレイヤーの種類
-enum class playerType
+enum class PlayerType
 {
     One,    //1P
     Two,    //2P
@@ -52,7 +52,7 @@ class Player :
     public Object
 {
 public:
-    Player(ControllerType type, playerType pType,std::shared_ptr<Ball>& ball);
+    Player(ControllerType type, PlayerType pType,std::shared_ptr<Ball>& ball);
     ~Player();
 
     //初期化
@@ -71,7 +71,7 @@ public:
     State GetState(void);
 
     //プレイヤーの種類の取得
-    playerType GetPlayerType(void);
+    PlayerType GetPlayerType(void);
 
 private:
     //コントローラー
@@ -83,7 +83,7 @@ private:
     std::shared_ptr<Ball> ball_;
 
     //1Pか2P判断
-    playerType playertype_;
+    PlayerType playertype_;
 
     //色
     int color ;
@@ -103,6 +103,8 @@ private:
     Vector2 attacksize_;
     Vector2 attackpos_;
 
+    int reversal_;
+
     //跳ね返す方向
     Vector2 refDir_;
 
@@ -113,7 +115,7 @@ private:
     Dir dir_;
 
     //プレイヤーの種類
-    playerType type_;
+    PlayerType type_;
 
     //重力
     float gravity_;

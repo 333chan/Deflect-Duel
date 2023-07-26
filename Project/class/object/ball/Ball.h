@@ -60,6 +60,8 @@ private:
     //回転
     double angle_;
 
+    float spinSpead_;
+
     //ステージ
     TmxObj tmxObj_;
 

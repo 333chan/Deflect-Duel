@@ -8,7 +8,7 @@ class Player;
 class Ball;
 class Stage;
 
-enum class playerType;
+enum class PlayerType;
 
 class GameScene :
     public BaseScene
@@ -53,7 +53,7 @@ private:
     std::shared_ptr<Ball> ball_;
 
     //1P2P”»’f
-    playerType playertype_;
+    PlayerType playertype_;
 
     //ƒTƒEƒ“ƒh
     int gameBgm_;

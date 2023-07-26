@@ -354,14 +354,14 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 
 }
 
-void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size)
+void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size,int reversal)
 {
 	playerAttackRay_ =
 	{
-		{{pos.x ,pos.y - 10 },{pos.x + size.x,pos.y-10 } },							//è„
-		{{pos.x ,pos.y -10 + size.y } ,{pos.x + size.x ,pos.y + size.y -10}},		//â∫
-		{{pos.x ,pos.y-10  },{pos.x ,pos.y + size.y-10 }},							//ç∂
-		{{pos.x + size.x ,pos.y -10 },{pos.x + size.x,pos.y + size.y -10 }},		//âE
+		{{pos.x,pos.y - 10 },{pos.x + size.x* reversal,pos.y - 10 } },						//è„
+		{{pos.x,pos.y - 10 + size.y } ,{pos.x + size.x * reversal,pos.y + size.y - 10}},	//â∫
+		{{pos.x ,pos.y - 10  },{pos.x,pos.y + size.y - 10 }},						//ç∂
+		{{pos.x+ size.x * reversal ,pos.y - 10 },{pos.x + size.x * reversal,pos.y + size.y - 10 }},	//âE
 	};
 }
 

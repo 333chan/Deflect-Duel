@@ -5,13 +5,13 @@
 class Player;
 class Controller;
 
-enum class playerType;
+enum class PlayerType;
 
 class ResultScene :
     public BaseScene
 {
 public:
-    ResultScene(playerType ptype);
+    ResultScene(PlayerType ptype);
     ~ResultScene();
 
     //‰Šú‰»
@@ -42,7 +42,7 @@ private:
     int screenImage_;    //Œ»İ‚Ì‰æ–Ê‚ğ‰æ‘œ‚Å•Û‘¶
 
     //1P2P”»’f
-    playerType playertype_;
+    PlayerType playertype_;
 
     //ƒTƒEƒ“ƒh
     int winSe_;

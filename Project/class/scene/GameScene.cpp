@@ -42,18 +42,18 @@ void GameScene::Init(void)
 
 	if (GetJoypadNum() >= 2)
 	{
-		player_ = std::make_unique<Player>(ControllerType::Pad1, playerType::One, ball_);
-		player2_ = std::make_unique<Player>(ControllerType::Pad2, playerType::Two, ball_);
+		player_ = std::make_unique<Player>(ControllerType::Pad1, PlayerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Pad2, PlayerType::Two, ball_);
 	}
 	else if (GetJoypadNum() == 1)
 	{
-		player_ = std::make_unique<Player>(ControllerType::Pad1, playerType::One, ball_);
-		player2_ = std::make_unique<Player>(ControllerType::Key, playerType::Two, ball_);
+		player_ = std::make_unique<Player>(ControllerType::Pad1, PlayerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Key, PlayerType::Two, ball_);
 	}
 	else
 	{
-		player_ = std::make_unique<Player>(ControllerType::Key, playerType::One, ball_);
-		player2_ = std::make_unique<Player>(ControllerType::Key, playerType::Two, ball_);
+		player_ = std::make_unique<Player>(ControllerType::Key, PlayerType::One, ball_);
+		player2_ = std::make_unique<Player>(ControllerType::Key, PlayerType::Two, ball_);
 	}
 
 	stage_ = std::make_unique<Stage>();
@@ -71,7 +71,7 @@ UniqueScene GameScene::Update(UniqueScene scene)
 	//1P‚©2P‚Ç‚¿‚ç‚©Ž€‚ñ‚Å‚¢‚½‚ç
 	if (player_->GetState()== State::Death|| player2_->GetState() == State::Death)
 	{
-		auto pState = player_->GetState() == State::Death ? playerType ::Two : playerType::One;
+		auto pState = player_->GetState() == State::Death ? PlayerType ::Two : PlayerType::One;
 
 		StopSoundMem(lpSoundMng.GetID("gameBgm"));
 		return std::make_unique<ResultScene>(pState);
@@ -125,7 +125,7 @@ UniqueScene GameScene::UpdateScene(UniqueScene& scene)
 
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
-		auto pState = player_->GetState() == State::Death ? playerType::Two : playerType::One;
+		auto pState = player_->GetState() == State::Death ? PlayerType::Two : PlayerType::One;
 		return std::make_unique<ResultScene>(pState);
 	}
 

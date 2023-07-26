@@ -9,11 +9,11 @@
 #include "../../tmx/TmxObj.h"
 #include"../../../_debug/_DebugDispOut.h"
 
-constexpr int MOVE_SPEED = 5.0f;		// 移動速度
+constexpr int MOVE_SPEED = 15.0f;		// 移動速度
 constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
-Player::Player(ControllerType type, playerType pType, std::shared_ptr<Ball>& ball)
+Player::Player(ControllerType type, PlayerType pType, std::shared_ptr<Ball>& ball)
 {
 	//コントローラーの生成
 	if (type == ControllerType::Pad1)
@@ -53,22 +53,24 @@ void Player::Init()
 	animController_ = std::make_unique<AnimController>();
 
 	//プレイヤー座標
-	if (playertype_ == playerType::One)
+	if (playertype_ == PlayerType::One)
 	{
 		//1P
 		pos_ = { 100,450 };
+
+		//プレイヤーサイズ
+		size_ = { 64,96 };
 	}
-	else if (playertype_ == playerType::Two)
+	else if (playertype_ == PlayerType::Two)
 	{
 		//2P
 		pos_ = { 900,450 };
-	}
+		//プレイヤーサイズ
+		size_ = {80,96 };
+	} 
 
-	//プレイヤーサイズ
-	size_ = {48,96};
-
-	//攻撃時の画像サイズ
-	attacksize_ = {96,96};
+	//攻撃時のサイズ
+	attacksize_ = {48,96};
 
 	//ボール情報
 	ballpos_ = {0,0};
@@ -93,11 +95,7 @@ void Player::Init()
 	jumpDeltaTime_ = 0.0;
 
 	//プレイヤー画像(無理やり)
-	playerImage_ = LoadGraph("resource/image/character/player_idle.png", true);
-	playerImage2_ = LoadGraph("resource/image/character/player_move.png", true);
 	playerImage3_ = LoadGraph("resource/image/character/Player_Crouch.png", true);
-	playerImage4_ = LoadGraph("resource/image/character/player_up.png", true);
-	playerImage5_ = LoadGraph("resource/image/character/player_down.png", true);
 	playerImage6_ = LoadGraph("resource/image/character/player_attack.png", true);
 	playerImage7_ = LoadGraph("resource/image/character/player_death.png", true);
 
@@ -106,6 +104,8 @@ void Player::Init()
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
 	animController_->SetAnim(Anim::Idle);
+
+	reversal_ = 0;
 
 	isGround = false;
 }
@@ -393,11 +393,13 @@ void Player::Update(void)
 	if (dir_ == Dir::Left)
 	{
 		//左向いてたら
-		attackpos_ = { pos_.x - size_.x,pos_.y };
+		reversal_ = -1;
+		attackpos_ = { pos_.x ,pos_.y };
 	}
 	else if(dir_ == Dir::Right)
 	{
 		//右向いてたら
+		reversal_ = 1;
 		attackpos_ = { pos_.x + size_.x,pos_.y };
 	}
 
@@ -415,28 +417,50 @@ void Player::Draw(void)
 
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(
-				pos_.x + size_.x, pos_.y,
-				pos_.x, pos_.y + size_.y,
-				lpImageMng.GetID("idle")[animController_->Update()], true);
+			if (playertype_ == PlayerType::One)
+			{
+				DrawExtendGraph(
+					pos_.x + size_.x, pos_.y,
+					pos_.x, pos_.y + size_.y,
+					lpImageMng.GetID("knight_idle")[animController_->Update()], true);
+			} 
+
+			if(playertype_ == PlayerType::Two)
+			{
+				DrawExtendGraph(
+					pos_.x + size_.x, pos_.y,
+					pos_.x, pos_.y + size_.y,
+					lpImageMng.GetID("rogue_idle")[animController_->Update()], true);
+			}
+
 			break;
 		}
-		DrawExtendGraph(
-			pos_.x ,pos_.y,
-			pos_.x + size_.x, pos_.y + size_.y,
-			lpImageMng.GetID("idle")[animController_->Update()], true);
 
-		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idel", true);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawExtendGraph(
+				pos_.x, pos_.y,
+				pos_.x + size_.x , pos_.y + size_.y,
+				lpImageMng.GetID("knight_idle")[animController_->Update()], true);
+		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawExtendGraph(
+				pos_.x, pos_.y,
+				pos_.x + size_.x, pos_.y + size_.y,
+				lpImageMng.GetID("rogue_idle")[animController_->Update()], true);
+		}
+		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idle", true);
 		break;
 	case State::JumpUp:	//ジャンプ上昇
 		animController_->SetAnim(Anim::JumpUp);
 
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[animController_->Update()], true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_jumpUp")[animController_->Update()], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("jumpUp")[animController_->Update()], true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("knight_jumpUp")[animController_->Update()], true);
 
 		if (dir_ == Dir::AirAttackLeft)
 		{
@@ -454,20 +478,20 @@ void Player::Draw(void)
 		animController_->SetAnim(Anim::Fall);
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("down")[animController_->Update()], true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_fall")[animController_->Update()], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("down")[animController_->Update()], true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("knight_fall")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Fall", true);
 		break;
 	case State::MoveLeft://左移動
 		animController_->SetAnim(Anim::Run);
-		DrawExtendGraph(pos_.x + size_.x+5, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("run")[animController_->Update()], true);
+		DrawExtendGraph(pos_.x + size_.x+5, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_run")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Left", true);
 		break;
 	case State::MoveRight://右移動
 		animController_->SetAnim(Anim::Run);
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x+5, pos_.y + size_.y, lpImageMng.GetID("run")[animController_->Update()], true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x+5, pos_.y + size_.y, lpImageMng.GetID("knight_run")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Right", true);
 		break;
 	case State::Crouching:
@@ -476,10 +500,10 @@ void Player::Draw(void)
 	case State::Attack://攻撃
 		if (dir_ == Dir::Left)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x- size_.x, pos_.y + attacksize_.y, playerImage6_, true);
+			DrawExtendGraph(pos_.x + size_.x, pos_.y, attacksize_.x, pos_.y + attacksize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
 			break;
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, playerImage6_, true);
+		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
 
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Attack", true);
 		break;
@@ -495,11 +519,11 @@ void Player::Draw(void)
 	}
 
 	//プレイヤーの名前
-	if (playertype_ == playerType::One)
+	if (playertype_ == PlayerType::One)
 	{
 		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
 	}
-	else if (playertype_ == playerType::Two)
+	else if (playertype_ == PlayerType::Two)
 	{
 		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
 	}
@@ -511,11 +535,11 @@ void Player::Draw(void)
 #ifdef _DEBUG	//デバック時のみ
 
 	//プレイヤー
-	if (playertype_ == playerType::One)
+	if (playertype_ == PlayerType::One)
 	{
 		DrawFormatString(48, 600, 0xffff00, "player1PosX%f,player1PosY%f", pos_.x, pos_.y);
 	}
-	else if (playertype_ == playerType::Two)
+	else if (playertype_ == PlayerType::Two)
 	{
 		DrawFormatString(800, 600, 0xff0000, "player2PosX%f,player2PosY%f", pos_.x, pos_.y);
 	}
@@ -533,7 +557,7 @@ State Player::GetState(void)
 	return state_;
 }
 
-playerType Player::GetPlayerType(void)
+PlayerType Player::GetPlayerType(void)
 {
 	return playertype_;
 }
@@ -576,7 +600,7 @@ bool Player::IsBallHit()
 bool Player::IsAttackHit()
 {
 	//矩形レイのセット
-	raycast_.setPlayerAttackRay(attackpos_, size_);
+	raycast_.setPlayerAttackRay(attackpos_, attacksize_,reversal_);
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
 	//攻撃とボールの接触判定
