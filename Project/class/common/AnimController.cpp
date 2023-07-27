@@ -12,6 +12,7 @@ AnimController::~AnimController()
 void AnimController::Init(void)
 {
 	animCount_ = 0.0f;
+	animEndflg_ = false;
 }
 
 int AnimController::Update()
@@ -40,24 +41,26 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::JumpUp:
-		animCount_ += 0.15;
-		if (animCount_ > 4)
+		animCount_ += 0.2;
+		if (animCount_ > 6)
 		{
-			animCount_ = 4;
+			animCount_ = 6;
 		}
 		break;
 	case Anim::Fall:
 		animCount_ += 0.2;
-		if (animCount_ > 3)
+		if (animCount_ > 2)
 		{
 			animCount_ = 2;
 		}
 		break;
 	case Anim::Attack:
-		animCount_ += 0.5;
+		animCount_ += 0.4;
+		animEndflg_ = false;
 		if (animCount_ > 15)
 		{
-			animCount_ = 0;
+			animCount_ = 15;
+			animEndflg_ = true;
 		}
 		break;
 	case Anim::Death:
@@ -81,4 +84,9 @@ void AnimController::SetAnim(Anim animType)
 	}
 
 
+}
+
+bool AnimController::SetAnimEnd(bool animEnd)
+{
+	return animEndflg_;
 }

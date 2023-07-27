@@ -13,6 +13,9 @@ constexpr int MOVE_SPEED = 15.0f;		// 移動速度
 constexpr int JUMP_POW = 15.0f;		// ジャンプ力
 constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
 
+constexpr int DRAW_OFFSET = 12;	//描画補正
+constexpr float DRAW_EXRATE = 2.25f;//拡大率
+
 Player::Player(ControllerType type, PlayerType pType, std::shared_ptr<Ball>& ball)
 {
 	//コントローラーの生成
@@ -59,18 +62,24 @@ void Player::Init()
 		pos_ = { 100,450 };
 
 		//プレイヤーサイズ
-		size_ = { 64,96 };
+		collSize_ = { 64,96 };
+
+		DrawSize_ = { 18,66 };
+
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
 		//2P
 		pos_ = { 900,450 };
 		//プレイヤーサイズ
-		size_ = {80,96 };
+		collSize_ = {80,96 };
 	} 
 
 	//攻撃時のサイズ
 	attacksize_ = {48,96};
+
+	GetGraphSizeF(lpImageMng.GetID("knight_attack")[0],&imageSize_.x, &imageSize_.y);
+	//imageSize_ = {79-size_.x,96};
 
 	//ボール情報
 	ballpos_ = {0,0};
@@ -105,13 +114,17 @@ void Player::Init()
 
 	animController_->SetAnim(Anim::Idle);
 
-	reversal_ = 0;
+	reverse_ = 0;
+
+	animEnd_ = false;
 
 	isGround = false;
 }
 
 void Player::Update(void)
 {
+	imagePos_ = { pos_.x + (imageSize_.x - collSize_.x)/2-23,pos_.y};
+	
 	controller_->Update();
 
 	switch (state_)
@@ -120,17 +133,13 @@ void Player::Update(void)
 	{
 		gravity_ = 0;
 
-		if (!IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		if (!IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
 		{
 			//ステージに当たっていないなら
 			jumpDeltaTime_ = 1.3;
 			gravity_ = 7.8;
 			state_ = State::Fall;
 			break;
-		}
-		else
-		{
-			isGround = true;
 		}
 
 		//プレイヤー移動
@@ -176,19 +185,19 @@ void Player::Update(void)
 	case State::JumpUp:
 	{
 
-		auto YVel = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
 
-		if (YVel > 0)
+		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
+		gravity_ += FALL_ACCEL;
+
+		yVel_ = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		pos_.y += yVel_;
+
+		if (yVel_ > 0&&state_==State::JumpUp)
 		{
-			state_ = State::Idle;
+			state_ = State::Fall;
 		}
 
-		gravity_ += FALL_ACCEL;
-		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
-	
-		pos_.y += YVel;
-
-		if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y })))
+		if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -199,7 +208,7 @@ void Player::Update(void)
 			//右移動
 			dir_ = Dir::Right;
 			pos_.x += MOVE_SPEED;
-			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+			if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -212,18 +221,33 @@ void Player::Update(void)
 			//左移動
 			dir_ = Dir::Left;
 			pos_.x -= MOVE_SPEED;
-			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+			if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
 			}
 		}
 
- 		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+ 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			//攻撃
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
 			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+
+			if (IsAttackHit())
+			{
+
+				ball_->SetAttackRef(refDir_);
+			}
+
+			animEnd_ = false;
+
+			if (animController_->SetAnimEnd(animEnd_) == true)
+			{
+				//キーを放したら
+				state_ = State::Idle;
+			}
+
 			state_ = State::Attack;
 		}
 
@@ -234,10 +258,10 @@ void Player::Update(void)
 		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
-		auto YVel = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
-		pos_.y += YVel;
+		yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		pos_.y += yVel_;
 
-		if (IsStageHit(Line({ pos_.x + size_.x / 2, pos_.y + size_.y / 2 }, { pos_.x + size_.x / 2,pos_.y + size_.y })))
+		if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -250,7 +274,7 @@ void Player::Update(void)
 			//右移動
 			dir_ = Dir::Right;
 			pos_.x += MOVE_SPEED;
-			if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+			if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
@@ -261,14 +285,14 @@ void Player::Update(void)
 			//左移動
 			dir_ = Dir::Left;
 			pos_.x -= MOVE_SPEED;
-			if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+			if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
 			{
 				//当たってたら補正
 				pos_ -= offset_;
 			}
 		}
 
-		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			//攻撃
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
@@ -292,7 +316,7 @@ void Player::Update(void)
 			state_ = State::JumpUp;
 		}
 
-		if (IsStageHit(Line({ {pos_.x + size_.x / 2,pos_.y + size_.y / 2},{pos_.x,pos_.y + size_.y / 2} })))
+		if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -327,7 +351,7 @@ void Player::Update(void)
 			state_ = State::JumpUp;
 		}
 
-		if (IsStageHit(Line({ pos_.x + size_.x / 2,pos_.y + size_.y / 2 }, { pos_.x + size_.x ,pos_.y + size_.y / 2 })))
+		if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
 		{
 			//当たってたら補正
 			pos_ -= offset_;
@@ -361,13 +385,16 @@ void Player::Update(void)
 		break;
 
 	case State::Attack:
-		if(IsAttackHit())
-		{
 
-			ball_->SetAttackRef(refDir_);
-		}
+		//if(IsAttackHit())
+		//{
 
-		if (!controller_->ChaeckLongInputKey(KeyID::Attack))
+		//	ball_->SetAttackRef(refDir_);
+		//}
+
+		//animEnd_ = false;
+
+		if (animController_->SetAnimEnd(animEnd_) == true)
 		{
 			//キーを放したら
 			state_ = State::Idle;
@@ -393,14 +420,14 @@ void Player::Update(void)
 	if (dir_ == Dir::Left)
 	{
 		//左向いてたら
-		reversal_ = -1;
+		reverse_ = -1;
 		attackpos_ = { pos_.x ,pos_.y };
 	}
 	else if(dir_ == Dir::Right)
 	{
 		//右向いてたら
-		reversal_ = 1;
-		attackpos_ = { pos_.x + size_.x,pos_.y };
+		reverse_ = 1;
+		attackpos_ = { pos_.x + collSize_.x,pos_.y };
 	}
 
 
@@ -408,6 +435,7 @@ void Player::Update(void)
 
 void Player::Draw(void)
 {
+
 	//プレイヤーの描画
 	switch (state_)
 	{
@@ -415,39 +443,20 @@ void Player::Draw(void)
 		
 		animController_->SetAnim(Anim::Idle);
 
-		if (dir_ == Dir::Left)
-		{
-			if (playertype_ == PlayerType::One)
-			{
-				DrawExtendGraph(
-					pos_.x + size_.x, pos_.y,
-					pos_.x, pos_.y + size_.y,
-					lpImageMng.GetID("knight_idle")[animController_->Update()], true);
-			} 
-
-			if(playertype_ == PlayerType::Two)
-			{
-				DrawExtendGraph(
-					pos_.x + size_.x, pos_.y,
-					pos_.x, pos_.y + size_.y,
-					lpImageMng.GetID("rogue_idle")[animController_->Update()], true);
-			}
-
-			break;
-		}
-
 		if (playertype_ == PlayerType::One)
 		{
-			DrawExtendGraph(
-				pos_.x, pos_.y,
-				pos_.x + size_.x , pos_.y + size_.y,
-				lpImageMng.GetID("knight_idle")[animController_->Update()], true);
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET, 
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_idle")[animController_->Update()],
+				true, -1 * reverse_);
 		}
 		if (playertype_ == PlayerType::Two)
 		{
 			DrawExtendGraph(
 				pos_.x, pos_.y,
-				pos_.x + size_.x, pos_.y + size_.y,
+				pos_.x + collSize_.x, pos_.y + collSize_.y,
 				lpImageMng.GetID("rogue_idle")[animController_->Update()], true);
 		}
 		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idle", true);
@@ -455,55 +464,87 @@ void Player::Draw(void)
 	case State::JumpUp:	//ジャンプ上昇
 		animController_->SetAnim(Anim::JumpUp);
 
-		if (dir_ == Dir::Left)
+		if (playertype_ == PlayerType::One)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_jumpUp")[animController_->Update()], true);
-			break;
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_jumpUp")[animController_->Update()],
+				true, -1 * reverse_);
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("knight_jumpUp")[animController_->Update()], true);
-
 		if (dir_ == Dir::AirAttackLeft)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x, pos_.y + collSize_.y, playerImage4_, true);
 			break;
 		}
 		else if(dir_ == Dir::AirAttackRight)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, playerImage4_, true);
+			DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x, pos_.y + collSize_.y, playerImage4_, true);
 			break;
 		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//落下
 		animController_->SetAnim(Anim::Fall);
-		if (dir_ == Dir::Left)
+		if (playertype_ == PlayerType::One)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_fall")[animController_->Update()], true);
-			break;
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_fall")[animController_->Update()],
+				true, -1 * reverse_);
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x, pos_.y + size_.y, lpImageMng.GetID("knight_fall")[animController_->Update()], true);
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Fall", true);
 		break;
 	case State::MoveLeft://左移動
 		animController_->SetAnim(Anim::Run);
-		DrawExtendGraph(pos_.x + size_.x+5, pos_.y, pos_.x, pos_.y + size_.y, lpImageMng.GetID("knight_run")[animController_->Update()], true);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_run")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Left", true);
 		break;
 	case State::MoveRight://右移動
 		animController_->SetAnim(Anim::Run);
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + size_.x+5, pos_.y + size_.y, lpImageMng.GetID("knight_run")[animController_->Update()], true);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_run")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Right", true);
 		break;
 	case State::Crouching:
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Crouching", true);
 		break;
 	case State::Attack://攻撃
-		if (dir_ == Dir::Left)
+		animController_->SetAnim(Anim::Attack);
+		if (playertype_ == PlayerType::One)
 		{
-			DrawExtendGraph(pos_.x + size_.x, pos_.y, attacksize_.x, pos_.y + attacksize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
-			break;
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_attack")[animController_->Update()],
+				true, -1 * reverse_);
 		}
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x, pos_.y + attacksize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
+
+		//if (dir_ == Dir::Left)
+		//{
+		//	DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x-30, pos_.y + collSize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
+		//	break;
+		//}
+		//DrawExtendGraph(imagePos_.x, pos_.y, imagePos_.x + collSize_.x+imageSize_.x, pos_.y + collSize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
 
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Attack", true);
 		break;
@@ -521,16 +562,17 @@ void Player::Draw(void)
 	//プレイヤーの名前
 	if (playertype_ == PlayerType::One)
 	{
-		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
+		DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
-		DrawFormatString(pos_.x + size_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
+		DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
 	}
 
 	//操作説明
 	DrawString(50, 625, "Player1\n操作\nA/Dで左右移動\nWでジャンプ\nSPACEで攻撃", 0xfff00f, true);
 	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+	
 
 #ifdef _DEBUG	//デバック時のみ
 
@@ -538,6 +580,7 @@ void Player::Draw(void)
 	if (playertype_ == PlayerType::One)
 	{
 		DrawFormatString(48, 600, 0xffff00, "player1PosX%f,player1PosY%f", pos_.x, pos_.y);
+		DrawFormatString(50, 625 + 16 * 5, 0xff0000, "yvel:%f", yVel_);
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
@@ -585,7 +628,7 @@ bool Player::IsStageHit(Line collRay)
 bool Player::IsBallHit()
 {
 	//矩形レイのセット
-	raycast_.setPlayerSquareRay(pos_, size_, movePos_);
+	raycast_.setPlayerSquareRay(pos_, collSize_, movePos_);
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
 	//プレイヤーとボールの接触判定
@@ -600,7 +643,7 @@ bool Player::IsBallHit()
 bool Player::IsAttackHit()
 {
 	//矩形レイのセット
-	raycast_.setPlayerAttackRay(attackpos_, attacksize_,reversal_);
+	raycast_.setPlayerAttackRay(attackpos_, attacksize_,reverse_);
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
 
 	//攻撃とボールの接触判定

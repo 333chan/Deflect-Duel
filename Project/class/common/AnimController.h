@@ -23,10 +23,14 @@ public:
 
 	void SetAnim(Anim animType);
 
+	bool SetAnimEnd(bool animEnd);
+
 private:
 
 	//アニメーションの再生時間
 	float animCount_;
+
+	bool animEndflg_;
 
 	Anim anim_;
 

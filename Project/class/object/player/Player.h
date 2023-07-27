@@ -93,8 +93,11 @@ private:
     Vector2 p2Pos_; 
     
     //‘å‚«‚³
-    Vector2 size_;
+    Vector2 collSize_;
 
+    Vector2 DrawSize_;
+
+    Vector2 imagePos_;
     Vector2 imageSize_;
 
     Vector2 movePos_;
@@ -103,13 +106,15 @@ private:
     Vector2 attacksize_;
     Vector2 attackpos_;
 
-    int reversal_;
+    int reverse_;
 
     //’µ‚Ë•Ô‚·•ûŒü
     Vector2 refDir_;
 
     //ó‘Ô
     State state_;
+
+    Anim animState_;
 
     //•ûŒü
     Dir dir_;
@@ -119,6 +124,9 @@ private:
 
     //d—Í
     float gravity_;
+
+    double yVel_ ;
+    bool animEnd_;
 
     //•â³·•ª
     Vector2 offset_;

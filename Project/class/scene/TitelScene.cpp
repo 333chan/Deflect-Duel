@@ -178,13 +178,10 @@ UniqueScene TitelScene::UpdateScene(UniqueScene& scene)
 		ChangeVolumeSoundMem(150, lpSoundMng.GetID("bgm"));
 		return std::make_unique<SelectScene>();
 	}
-
-	if (CheckHitKeyAll(DX_CHECKINPUT_PAD))
-	{
-
-	}
 	//デバック用
 #ifdef _DEBUG
+
+
 
 #endif
 
