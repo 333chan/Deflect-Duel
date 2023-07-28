@@ -2,6 +2,7 @@
 #include "../../scene/SceneManager.h"
 #include "../../common/SoundManager.h"
 #include"../../common/ImageManager.h"
+#include "../../common/AnimController.h"
 #include "../../tmx/TmxObj.h"
 #include "../../../_debug/_DebugDispOut.h"
 #include "Ball.h"
@@ -28,11 +29,13 @@ void Ball::Init()
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 
+	animController_ = std::make_unique<AnimController>();
+
 	//座標
 	pos_ = {500,200};
 
 	//大きさ
-	size_ = {32,32 };
+	collSize_ = {32,32 };
 
 	//補正値
 	offset_ = { 0,0 };
@@ -105,9 +108,9 @@ void Ball::Update()
 
 	}
 
-	centerPos_ = { (raycast_.ballRay_[0].p.x + size_.x / 2),(raycast_.ballRay_[0].p.y + size_.y / 2) };
+	centerPos_ = { (raycast_.ballRay_[0].p.x + collSize_.x / 2),(raycast_.ballRay_[0].p.y + collSize_.y / 2) };
 
-	SetBallform(pos_, size_);
+	SetBallform(pos_, collSize_);
 	VelRay();
 
 	//回転処理
@@ -130,7 +133,11 @@ void Ball::Draw()
 
 	DrawBox(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, 0xffff00, false);
 #endif
-	DrawRotaGraph(raycast_.ballRay_[0].p.x + 16, raycast_.ballRay_[0].p.y + 16, 1, angle_, lpImageMng.GetID("ball")[0], true);
+	animController_->SetAnim(Anim::Spin);
+	DrawRotaGraph2(
+		raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2, 
+		17, 24,
+		1.5, angle_, lpImageMng.GetID("ball")[animController_->Update()], true);
 
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
@@ -145,7 +152,7 @@ void Ball::Release()
 void Ball::SetBallform(Vector2& pos, Vector2& size)
 {
 	pos = pos_;
-	size = size_;
+	size = collSize_;
 }
 
 bool Ball::IsStageHit()
@@ -153,7 +160,7 @@ bool Ball::IsStageHit()
 	movePos_ = { refPow_ + speed_ * refDir_ };
 
 	//ボールの判定レイを設定
-	raycast_.setBallRay(pos_ + movePos_, size_);
+	raycast_.setBallRay(pos_ + movePos_, collSize_);
 
 	//tmxのCollLiset取得
 	for (auto& coll : tmxObj_.GetStageCollList())
@@ -174,7 +181,7 @@ void Ball::VelRay()
 
 	Vector2 s = refPow_ + speed_ * refDir_;
 
-	endPos_ = { centerPos_.x + size_.x * s.Normalized().x ,centerPos_.y + size_.y * s.Normalized().y} ;
+	endPos_ = { centerPos_.x + collSize_.x * s.Normalized().x ,centerPos_.y + collSize_.y * s.Normalized().y} ;
 
 	ballVec_ = endPos_ - centerPos_;
 

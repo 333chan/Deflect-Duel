@@ -41,7 +41,7 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::JumpUp:
-		animCount_ += 0.2;
+		animCount_ += 0.45;
 		if (animCount_ > 6)
 		{
 			animCount_ = 6;
@@ -55,7 +55,16 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::Attack:
-		animCount_ += 0.4;
+		animCount_ += 1.0;
+		animEndflg_ = false;
+		if (animCount_ > 15)
+		{
+			animCount_ = 15;
+			animEndflg_ = true;
+		}
+		break;
+	case Anim::Crouch:
+		animCount_ += 1.0;
 		animEndflg_ = false;
 		if (animCount_ > 15)
 		{
@@ -64,6 +73,13 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::Death:
+		break;
+	case Anim::Spin:
+		animCount_ += 0.2;
+		if (animCount_ > 3)
+		{
+			animCount_ = 0;
+		}
 		break;
 	case Anim::Max:
 		break;

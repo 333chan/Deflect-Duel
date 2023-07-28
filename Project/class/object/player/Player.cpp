@@ -10,8 +10,8 @@
 #include"../../../_debug/_DebugDispOut.h"
 
 constexpr int MOVE_SPEED = 15.0f;		// 移動速度
-constexpr int JUMP_POW = 15.0f;		// ジャンプ力
-constexpr float FALL_ACCEL = 1.0f;	// 重力加速度
+constexpr int JUMP_POW = 16.0f;		// ジャンプ力
+constexpr float FALL_ACCEL = 2.0f;	// 重力加速度
 
 constexpr int DRAW_OFFSET = 12;	//描画補正
 constexpr float DRAW_EXRATE = 2.25f;//拡大率
@@ -87,6 +87,7 @@ void Player::Init()
 
 	//状態
 	state_ = State::Idle;
+	animController_->SetAnim(Anim::Fall);
 
 	//方向
 	dir_ = Dir::Max;
@@ -112,7 +113,6 @@ void Player::Init()
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
-	animController_->SetAnim(Anim::Idle);
 
 	reverse_ = 0;
 
@@ -162,14 +162,12 @@ void Player::Update(void)
 
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
-			//左移動
-			dir_ = Dir::Left;
+			//左
 			state_ = State::MoveLeft;
 		}
 		else if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
-			//右移動
-			dir_ = Dir::Right;
+			//右
 			state_ = State::MoveRight;
 		}
 		if (controller_->ChaeckInputKey(KeyID::Attack))
@@ -184,17 +182,18 @@ void Player::Update(void)
 	break;
 	case State::JumpUp:
 	{
-
-
 		jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
 		gravity_ += FALL_ACCEL;
 
-		yVel_ = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
 		pos_.y += yVel_;
 
 		if (yVel_ > 0&&state_==State::JumpUp)
 		{
+			//jumpDeltaTime_ = 1.3;
+			//gravity_ = 7.8;
 			state_ = State::Fall;
+			break;
 		}
 
 		if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y })))
@@ -206,26 +205,12 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右移動
-			dir_ = Dir::Right;
-			pos_.x += MOVE_SPEED;
-			if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
-			{
-				//当たってたら補正
-				pos_ -= offset_;
-			}
-			
-
+			MovePosition(Dir::Right);
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
-			dir_ = Dir::Left;
-			pos_.x -= MOVE_SPEED;
-			if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
-			{
-				//当たってたら補正
-				pos_ -= offset_;
-			}
+			MovePosition(Dir::Left);
 		}
 
  		if (controller_->ChaeckInputKey(KeyID::Attack))
@@ -265,31 +250,18 @@ void Player::Update(void)
 		{
 			//当たってたら補正
 			pos_ -= offset_;
-			
 			state_ = State::Idle;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右移動
-			dir_ = Dir::Right;
-			pos_.x += MOVE_SPEED;
-			if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
-			{
-				//当たってたら補正
-				pos_ -= offset_;
-			}
+			MovePosition(Dir::Right);
 		}
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
 		{
 			//左移動
-			dir_ = Dir::Left;
-			pos_.x -= MOVE_SPEED;
-			if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
-			{
-				//当たってたら補正
-				pos_ -= offset_;
-			}
+			MovePosition(Dir::Left);
 		}
 
 		if (controller_->ChaeckInputKey(KeyID::Attack))
@@ -297,7 +269,23 @@ void Player::Update(void)
 			//攻撃
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
 			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+
+			if (IsAttackHit())
+			{
+
+				ball_->SetAttackRef(refDir_);
+			}
+
+			animEnd_ = false;
+
+			if (animController_->SetAnimEnd(animEnd_) == true)
+			{
+				//キーを放したら
+				state_ = State::Idle;
+			}
+
 			state_ = State::Attack;
+
 		}
 
 
@@ -306,7 +294,7 @@ void Player::Update(void)
 	case State::MoveLeft:
 	{
 		//左移動
-		pos_.x -= MOVE_SPEED;
+		MovePosition(Dir::Left);
 
 		if (controller_->ChaeckInputKey(KeyID::Up))
 		{
@@ -315,13 +303,6 @@ void Player::Update(void)
 			jumpDeltaTime_ = 0.0;
 			state_ = State::JumpUp;
 		}
-
-		if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
-		{
-			//当たってたら補正
-			pos_ -= offset_;
-		}
-
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
@@ -341,7 +322,7 @@ void Player::Update(void)
 	case State::MoveRight:
 	{
 		//右移動
-		pos_.x += MOVE_SPEED;
+		MovePosition(Dir::Right);
 
 		if (controller_->ChaeckInputKey(KeyID::Up))
 		{
@@ -349,12 +330,6 @@ void Player::Update(void)
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
 			state_ = State::JumpUp;
-		}
-
-		if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
-		{
-			//当たってたら補正
-			pos_ -= offset_;
 		}
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
@@ -386,18 +361,53 @@ void Player::Update(void)
 
 	case State::Attack:
 
-		//if(IsAttackHit())
-		//{
+		//jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
+		//gravity_ += FALL_ACCEL;
 
-		//	ball_->SetAttackRef(refDir_);
-		//}
+		//yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
+		//pos_.y += yVel_;
 
-		//animEnd_ = false;
 
+		if (!isGround)
+		{
+			jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
+			gravity_ += FALL_ACCEL;
+
+			//yVel_ = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
+			yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
+			pos_.y += yVel_;
+			if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
+			{
+				//当たってたら補正
+				pos_ -= offset_;
+				state_ = State::Idle;
+			}
+
+		}
+
+		if (controller_->ChaeckLongInputKey(KeyID::Right))
+		{
+			MovePosition(Dir::Right);
+		}
+		if (controller_->ChaeckLongInputKey(KeyID::Left))
+		{
+			MovePosition(Dir::Left);
+		}
+
+		//アニメーションが終わったら
 		if (animController_->SetAnimEnd(animEnd_) == true)
 		{
-			//キーを放したら
-			state_ = State::Idle;
+			if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
+			{
+				//当たってたら補正
+				pos_ -= offset_;
+				state_ = State::Idle;
+			}
+			else
+			{
+				state_ = State::Fall;
+			}
+
 		}
 
 		break;
@@ -430,6 +440,14 @@ void Player::Update(void)
 		attackpos_ = { pos_.x + collSize_.x,pos_.y };
 	}
 
+	if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
+	{
+		isGround = true;
+	}
+	else
+	{
+		isGround = false;
+	}
 
 }
 
@@ -629,7 +647,7 @@ bool Player::IsBallHit()
 {
 	//矩形レイのセット
 	raycast_.setPlayerSquareRay(pos_, collSize_, movePos_);
-	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
+	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->collSize_);
 
 	//プレイヤーとボールの接触判定
 	if (raycast_.PlayerToBallChackColl(offset_))
@@ -644,7 +662,7 @@ bool Player::IsAttackHit()
 {
 	//矩形レイのセット
 	raycast_.setPlayerAttackRay(attackpos_, attacksize_,reverse_);
-	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->size_);
+	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->collSize_);
 
 	//攻撃とボールの接触判定
 	if (raycast_.AttackToBallCheckColl(refDir_))
@@ -653,6 +671,34 @@ bool Player::IsAttackHit()
 	}
 
 	return false;
+}
+
+void Player::MovePosition(Dir dir)
+{
+
+	if (dir == Dir::Right)
+	{
+		//右移動
+		dir_ = dir;
+		pos_.x += MOVE_SPEED;
+		if (IsStageHit(Line({ pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x ,pos_.y + collSize_.y / 2 })))
+		{
+			//当たってたら補正
+			pos_ -= offset_;
+		}
+	}
+	else if(dir == Dir::Left)
+	{
+		//左移動
+		dir_ = dir;
+		pos_.x -= MOVE_SPEED;
+		if (IsStageHit(Line({ {pos_.x + collSize_.x / 2,pos_.y + collSize_.y / 2},{pos_.x,pos_.y + collSize_.y / 2} })))
+		{
+			//当たってたら補正
+			pos_ -= offset_;
+		}
+	}
+
 }
 
 

@@ -77,6 +77,7 @@ private:
     //コントローラー
     std::unique_ptr<Controller> controller_;
 
+    //アニメーション
     std::unique_ptr<AnimController> animController_;
 
     //ボール
@@ -138,11 +139,6 @@ private:
     //判定
     Raycast raycast_;
 
-    //判定処理
-    bool IsStageHit(Line collRay);
-    bool IsBallHit();
-    bool IsAttackHit();
-
     bool isGround;
 
     //経過時間
@@ -163,6 +159,15 @@ private:
 
     //ボール座標
     Vector2 bpos_;
+
+
+    //判定処理
+    bool IsStageHit(Line collRay);
+    bool IsBallHit();
+    bool IsAttackHit();
+
+    //移動処理
+    void MovePosition(Dir dir);
 
 protected:
     //tmx

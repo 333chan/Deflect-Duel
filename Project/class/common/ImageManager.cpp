@@ -66,7 +66,7 @@ ImageManager::ImageManager()
 	GetID("stage","resource/image/stage/stage.png");
 
 	//ボール
-	GetID("ball","resource/image/ball/ball.png");
+	GetID("ball","resource/image/ball/ball2.png",Vector2Int(4, 1), Vector2Int(35, 35));
 
 	//プレイヤー1
 	//GetID("idle", "resource/image/character/sprite/idle2.png", Vector2Int(8, 1), Vector2Int(40, 38));
@@ -76,6 +76,7 @@ ImageManager::ImageManager()
 	GetID("knight_fall", "resource/image/character/sprite/knight/down.png", Vector2Int(3, 1), Vector2Int(98, 66));
 	GetID("knight_run", "resource/image/character/sprite/knight/run.png", Vector2Int(8, 1), Vector2Int(98, 66));
 	GetID("knight_attack", "resource/image/character/sprite/knight/attack.png", Vector2Int(17, 1), Vector2Int(98,66));
+	GetID("knight_crouch", "resource/image/character/sprite/knight/crouch.png", Vector2Int(6, 1), Vector2Int(98,66));
 
 	
 

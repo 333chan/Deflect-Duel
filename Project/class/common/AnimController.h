@@ -8,7 +8,9 @@ enum class Anim{
 	JumpUp,
 	Fall,
 	Attack,
+	Crouch,
 	Death,
+	Spin,
 	Max
 };
 
@@ -23,7 +25,7 @@ public:
 
 	void SetAnim(Anim animType);
 
-	bool SetAnimEnd(bool animEnd);
+	[[nodiscard]] bool SetAnimEnd(bool animEnd);
 
 private:
 

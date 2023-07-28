@@ -7,6 +7,9 @@
 class Player;
 enum class Dir;
 
+class AnimController;
+enum class Anim;
+
 class Ball :
     public Object
 {
@@ -44,13 +47,16 @@ public:
     Vector2 movePos_;
 
     //大きさ
-    Vector2 size_;
+    Vector2 collSize_;
+    Vector2 imageSize_;
 
     //攻撃ヒットフラグ
     bool attackHitFlg_;
 
     
 private:
+    std::unique_ptr<AnimController> animController_;
+
     //レイ
     void VelRay();
 
