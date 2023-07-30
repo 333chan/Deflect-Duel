@@ -8,6 +8,7 @@ enum class Anim{
 	JumpUp,
 	Fall,
 	Attack,
+	AirAttack,
 	Crouch,
 	Death,
 	Spin,

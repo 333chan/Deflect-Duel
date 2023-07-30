@@ -73,6 +73,7 @@ void SceneManager::Init(void)
 	//デルタタイム系の初期化
 	deltaTime_ = 0.0f;
 	tickCount_ = std::chrono::system_clock::now();
+	fpsController_ = std::make_unique<FpsController>();
 }
 
 void SceneManager::Run(void)
@@ -100,6 +101,8 @@ void SceneManager::Run(void)
 			}
 		}
 
+		fpsController_->Updeta();
+
 		//デバック開始
 		_dbgStartDraw();
 
@@ -108,6 +111,9 @@ void SceneManager::Run(void)
 
 		//描画
 		Draw();
+
+		fpsController_->Draw();
+		fpsController_->Wait();
 
 		ScreenFlip();
 	}

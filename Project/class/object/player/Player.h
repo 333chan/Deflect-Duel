@@ -22,7 +22,8 @@ enum class State
     MoveLeft,   //左移動
     MoveRight,  //右移動
     Crouching,  //しゃがみ
-    Attack,     //攻撃
+    Attack,     //地上攻撃
+    AirAttack,  //空中攻撃
     Death,     //死
     Max
 };
@@ -143,15 +144,6 @@ private:
 
     //経過時間
     double jumpDeltaTime_;
-
-    //無理やりプレイヤー画像切り替え
-    int playerImage_;
-    int playerImage2_;
-    int playerImage3_;
-    int playerImage4_;
-    int playerImage5_;
-    int playerImage6_;
-    int playerImage7_;
 
     //ボールの座標と大きさ
     Vector2 ballpos_;

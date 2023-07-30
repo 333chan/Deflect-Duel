@@ -36,6 +36,7 @@ SoundManager::SoundManager()
 	GetID("attackSe","resource/sound/attackhit.wav");
 	GetID("daethSe","resource/sound/daeth.wav");
 	GetID("ballSe","resource/sound/ballSe.mp3");
+	GetID("runSe","resource/sound/runSe.mp3");
 }
 
 SoundManager::~SoundManager()

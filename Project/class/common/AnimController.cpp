@@ -55,7 +55,16 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::Attack:
-		animCount_ += 1.0;
+		animCount_ += 0.5;
+		animEndflg_ = false;
+		if (animCount_ > 11)
+		{
+			animCount_ = 11;
+			animEndflg_ = true;
+		}
+		break;
+	case Anim::AirAttack:
+		animCount_ += 0.5;
 		animEndflg_ = false;
 		if (animCount_ > 15)
 		{
@@ -73,6 +82,7 @@ int AnimController::Update()
 		}
 		break;
 	case Anim::Death:
+
 		break;
 	case Anim::Spin:
 		animCount_ += 0.2;

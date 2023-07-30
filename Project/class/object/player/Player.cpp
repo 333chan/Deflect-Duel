@@ -79,7 +79,6 @@ void Player::Init()
 	attacksize_ = {48,96};
 
 	GetGraphSizeF(lpImageMng.GetID("knight_attack")[0],&imageSize_.x, &imageSize_.y);
-	//imageSize_ = {79-size_.x,96};
 
 	//ボール情報
 	ballpos_ = {0,0};
@@ -104,11 +103,6 @@ void Player::Init()
 	//経過時間
 	jumpDeltaTime_ = 0.0;
 
-	//プレイヤー画像(無理やり)
-	playerImage3_ = LoadGraph("resource/image/character/Player_Crouch.png", true);
-	playerImage6_ = LoadGraph("resource/image/character/player_attack.png", true);
-	playerImage7_ = LoadGraph("resource/image/character/player_death.png", true);
-
 	//tmxの読み込み
 	tmxObj_.LoadTmx("resource/tmx/Stage.tmx", false);
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
@@ -123,7 +117,7 @@ void Player::Init()
 
 void Player::Update(void)
 {
-	imagePos_ = { pos_.x + (imageSize_.x - collSize_.x)/2-23,pos_.y};
+	imagePos_ = { pos_.x + (imageSize_.x - collSize_.x) / 2 - 23,pos_.y };
 	
 	controller_->Update();
 
@@ -219,11 +213,6 @@ void Player::Update(void)
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
 			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
 
-			if (IsAttackHit())
-			{
-
-				ball_->SetAttackRef(refDir_);
-			}
 
 			animEnd_ = false;
 
@@ -233,7 +222,7 @@ void Player::Update(void)
 				state_ = State::Idle;
 			}
 
-			state_ = State::Attack;
+			state_ = State::AirAttack;
 		}
 
 	}
@@ -272,7 +261,6 @@ void Player::Update(void)
 
 			if (IsAttackHit())
 			{
-
 				ball_->SetAttackRef(refDir_);
 			}
 
@@ -284,7 +272,7 @@ void Player::Update(void)
 				state_ = State::Idle;
 			}
 
-			state_ = State::Attack;
+			state_ = State::AirAttack;
 
 		}
 
@@ -301,6 +289,7 @@ void Player::Update(void)
 			//ジャンプ
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
+			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 		}
 
@@ -310,7 +299,7 @@ void Player::Update(void)
 			state_ = State::Idle;
 		}
 
-		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			//攻撃
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
@@ -329,6 +318,7 @@ void Player::Update(void)
 			//ジャンプ
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
+			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 		}
 
@@ -338,9 +328,8 @@ void Player::Update(void)
 			state_ = State::Idle;
 		}
 
-		if (controller_->ChaeckLongInputKey(KeyID::Attack))
+		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
-
 			//攻撃
 			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
 			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
@@ -361,19 +350,28 @@ void Player::Update(void)
 
 	case State::Attack:
 
-		//jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
-		//gravity_ += FALL_ACCEL;
+		//アニメーションが終わったら
+		if (animController_->SetAnimEnd(animEnd_) == true)
+		{
+			state_ = State::Idle;
+		}
+		else
+		{
+			if (IsAttackHit())
+			{
+				ball_->SetAttackRef(refDir_);
+			}
+		}
 
-		//yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
-		//pos_.y += yVel_;
+		break;
 
+	case State::AirAttack:
 
 		if (!isGround)
 		{
 			jumpDeltaTime_ += lpSceneMng.GetDeltaTime();
 			gravity_ += FALL_ACCEL;
 
-			//yVel_ = -JUMP_POW + (2.0f * gravity_ * std::pow(jumpDeltaTime_, 2.0));
 			yVel_ = -JUMP_POW + (gravity_ * std::pow(jumpDeltaTime_, 2.0));
 			pos_.y += yVel_;
 			if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
@@ -409,6 +407,13 @@ void Player::Update(void)
 			}
 
 		}
+		else
+		{
+			if (IsAttackHit())
+			{
+				ball_->SetAttackRef(refDir_);
+			}
+		}
 
 		break;
 	case State::Death:
@@ -420,6 +425,7 @@ void Player::Update(void)
 		break;
 	}
 
+	//ボールとの判定
 	if (IsBallHit())
 	{
 		ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
@@ -440,8 +446,11 @@ void Player::Update(void)
 		attackpos_ = { pos_.x + collSize_.x,pos_.y };
 	}
 
+	//地面にいるか
 	if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
 	{
+		//当たってたら補正
+		pos_ -= offset_;
 		isGround = true;
 	}
 	else
@@ -491,16 +500,7 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_jumpUp")[animController_->Update()],
 				true, -1 * reverse_);
 		}
-		if (dir_ == Dir::AirAttackLeft)
-		{
-			DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x, pos_.y + collSize_.y, playerImage4_, true);
-			break;
-		}
-		else if(dir_ == Dir::AirAttackRight)
-		{
-			DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x, pos_.y + collSize_.y, playerImage4_, true);
-			break;
-		}
+
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//落下
@@ -545,8 +545,10 @@ void Player::Draw(void)
 	case State::Crouching:
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Crouching", true);
 		break;
+
 	case State::Attack://攻撃
 		animController_->SetAnim(Anim::Attack);
+
 		if (playertype_ == PlayerType::One)
 		{
 			DrawRotaGraph(
@@ -556,18 +558,34 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_attack")[animController_->Update()],
 				true, -1 * reverse_);
 		}
-
-		//if (dir_ == Dir::Left)
-		//{
-		//	DrawExtendGraph(pos_.x + collSize_.x, pos_.y, pos_.x-30, pos_.y + collSize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
-		//	break;
-		//}
-		//DrawExtendGraph(imagePos_.x, pos_.y, imagePos_.x + collSize_.x+imageSize_.x, pos_.y + collSize_.y, lpImageMng.GetID("knight_attack")[animController_->Update()], true);
-
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Attack", true);
 		break;
+
+	case State::AirAttack://空中攻撃
+		animController_->SetAnim(Anim::AirAttack);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_airAttack")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+
+		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "AirAttack", true);
+		break;
 	case State::Death://死
-		DrawExtendGraph(pos_.x, pos_.y, pos_.x + attacksize_.x+30, pos_.y + attacksize_.y, playerImage7_, true);
+		animController_->SetAnim(Anim::Death);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_death")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Death", true);
 		break;
@@ -675,6 +693,7 @@ bool Player::IsAttackHit()
 
 void Player::MovePosition(Dir dir)
 {
+
 
 	if (dir == Dir::Right)
 	{

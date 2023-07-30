@@ -2,9 +2,12 @@
 #include <DxLib.h>
 #include <chrono>
 #include"../common/Geometry.h"
+#include "../common/FpsController.h"
 #include"BaseScene.h"
 
 #define lpSceneMng SceneManager::GetInstance()
+
+class FpsController;
 
 class SceneManager
 {
@@ -44,6 +47,8 @@ private:
 
 	//ƒV[ƒ“î•ñ
 	UniqueScene scene_;
+
+	std::unique_ptr<FpsController> fpsController_;
 
 };
 

@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="class\common\AnimController.cpp" />
+    <ClCompile Include="class\common\FpsController.cpp" />
     <ClCompile Include="class\common\ImageManager.cpp" />
     <ClCompile Include="class\common\SoundManager.cpp" />
     <ClCompile Include="class\input\PadInput2.cpp" />
@@ -174,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="class\common\AnimController.h" />
+    <ClInclude Include="class\common\FpsController.h" />
     <ClInclude Include="resource\image\icon\icon.h" />
     <ClInclude Include="class\common\ImageManager.h" />
     <ClInclude Include="class\common\resource.h" />

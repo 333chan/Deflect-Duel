@@ -75,8 +75,10 @@ ImageManager::ImageManager()
 	GetID("knight_jumpUp", "resource/image/character/sprite/knight/jumpUp.png", Vector2Int(7, 1), Vector2Int(98,66));
 	GetID("knight_fall", "resource/image/character/sprite/knight/down.png", Vector2Int(3, 1), Vector2Int(98, 66));
 	GetID("knight_run", "resource/image/character/sprite/knight/run.png", Vector2Int(8, 1), Vector2Int(98, 66));
-	GetID("knight_attack", "resource/image/character/sprite/knight/attack.png", Vector2Int(17, 1), Vector2Int(98,66));
+	GetID("knight_airAttack", "resource/image/character/sprite/knight/airAttack.png", Vector2Int(17, 1), Vector2Int(98,66));
+	GetID("knight_attack", "resource/image/character/sprite/knight/nAttack.png", Vector2Int(12, 1), Vector2Int(98,66));
 	GetID("knight_crouch", "resource/image/character/sprite/knight/crouch.png", Vector2Int(6, 1), Vector2Int(98,66));
+	GetID("knight_death", "resource/image/character/sprite/knight/death.png", Vector2Int(1, 1), Vector2Int(98,66));
 
 	
 
