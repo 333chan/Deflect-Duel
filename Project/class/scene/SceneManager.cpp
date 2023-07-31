@@ -69,7 +69,7 @@ SceneManager::~SceneManager()
 void SceneManager::Init(void)
 {
 	//起動時シーン設定
-	scene_ = std::make_unique<VersusScene>();
+	scene_ = std::make_unique<TitelScene>();
 
 	//デルタタイム系の初期化
 	deltaTime_ = 0.0f;

@@ -740,8 +740,8 @@ void Player::Draw(void)
 	}
 
 	//操作説明
-	DrawString(50, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xfff00f, true);
-	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+	DrawString(50, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0x0000ff, true);
 	
 
 #ifdef _DEBUG	//デバック時のみ

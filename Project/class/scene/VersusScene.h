@@ -2,6 +2,9 @@
 #include "BaseScene.h"
 #include "../tmx/TmxObj.h"
 
+class AnimController;
+enum class Anim;
+
 class VersusScene :
     public BaseScene
 {
@@ -42,11 +45,14 @@ private:
     Vector2 p2windowEndPos_;
 
 
+
 protected:
     //tmx
     TmxObj tmxObj_;
     //コントローラー
     std::unique_ptr<Controller> controller_;
+    //アニメーション
+    std::unique_ptr<AnimController> animController_;
 
 };
 

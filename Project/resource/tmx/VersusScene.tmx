@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="25">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="25">
  <objectgroup id="4" name="bg">
   <object id="14" name="bgimage" x="0" y="0" width="1280" height="720"/>
  </objectgroup>
- <objectgroup id="11" name="p1window">
-  <object id="24" name="window" x="805.275" y="29.8497" width="449.797" height="673.038"/>
+ <objectgroup id="11" name="p2window">
+  <object id="24" name="window" x="735" y="16" width="528" height="686.888"/>
  </objectgroup>
- <objectgroup id="2" name="p2window">
-  <object id="1" name="window" x="39.303" y="39.4848" width="434.974" height="658.727"/>
+ <objectgroup id="2" name="p1window">
+  <object id="1" name="window" x="16" y="16" width="528" height="688"/>
  </objectgroup>
 </map>

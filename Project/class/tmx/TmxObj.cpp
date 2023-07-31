@@ -9,6 +9,7 @@ TmxObj::TmxObj()
 	version_["1.8.2"] = 1;
 	version_["1.8.4"] = 1;
 	version_["1.4.1"] = 1;
+	version_["1.10.1"] = 1;
 }
 
 TmxObj::~TmxObj()

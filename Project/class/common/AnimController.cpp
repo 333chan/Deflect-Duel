@@ -27,7 +27,7 @@ int AnimController::Update()
 		}
 		else
 		{
-			animCount_ += 0.10;
+			animCount_ += 0.085;
 		}
 		break;
 	case Anim::Run:

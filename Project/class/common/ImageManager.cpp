@@ -64,6 +64,10 @@ ImageManager::ImageManager()
 
 	//バーサス
 	GetID("vsBg", "resource/image/vsbg.png");
+	GetID("playerWindow", "resource/image/playerWindow.png");
+	GetID("vsPlayer1Logo", "resource/image/vsPlayer1.png");
+	GetID("vsPlayer2Logo", "resource/image/vsPlayer2.png");
+	GetID("conImage", "resource/image/controller.png");
 
 	//ステージ
 	GetID("stage","resource/image/stage/stage.png");

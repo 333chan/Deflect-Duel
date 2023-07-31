@@ -4,9 +4,9 @@
 #include"../common/ImageManager.h"
 #include "../input/KeyInput.h"
 #include "../input/PadInput.h"
-#include "GameScene.h"
 #include "TitelScene.h"
 #include "SelectScene.h"
+#include "VersusScene.h"
 
 SelectScene::SelectScene()
 {
@@ -119,8 +119,7 @@ UniqueScene SelectScene::UpdateScene(UniqueScene& scene)
 		ChangeVolumeSoundMem(255, lpSoundMng.GetID("decideSe"));
 		PlaySoundMem(lpSoundMng.GetID("decideSe"), DX_PLAYTYPE_BACK);
 
-		StopSoundMem(lpSoundMng.GetID("bgm"));
-		return std::make_unique<GameScene>();
+		return std::make_unique<VersusScene>();
 	}
 	if (controller_->ChaeckInputKey(KeyID::Cancel))
 	{
