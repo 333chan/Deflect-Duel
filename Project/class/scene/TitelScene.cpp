@@ -155,7 +155,7 @@ void TitelScene::DrawScreen(void)
 
 
 	DrawGraph(logoPos_.x, logoPos_.y, lpImageMng.GetID("titlelogo")[0], true);
-	DrawString(550,600 - 16, "PRESS B BUTTON", 0xffffff);
+	DrawString(550,600 - 16, "PRESS Player1 B BUTTON", 0xffffff);
 
 #ifdef _DEBUG
 	DrawFormatString(0, 0, 0xffffff, "TitleScene");

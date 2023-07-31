@@ -125,6 +125,7 @@ UniqueScene GameScene::UpdateScene(UniqueScene& scene)
 
 	if (controller_->ChaeckInputKey(KeyID::Transition))
 	{
+		StopSoundMem(lpSoundMng.GetID("gameBgm"));
 		auto pState = player_->GetState() == State::Death ? PlayerType::Two : PlayerType::One;
 		return std::make_unique<ResultScene>(pState);
 	}

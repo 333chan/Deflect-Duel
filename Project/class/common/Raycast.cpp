@@ -194,12 +194,35 @@ bool Raycast::BallToPlayerChackLine(Line playerLine, Line ballLine, Vector2& bou
 	bound = { 0.0f,0.0f };
 
 	//ボールとプレイヤー
+		//攻撃とボール
+	//if (playerSquareRay_[3] == playerLine)
+	//{
+	//	_dbgDrawFormatString(600, 0, 0xffffff, "左に返す", true);
+	//	return true;
+	//}
+	//if (playerSquareRay_[2] == ballLine)
+	//{
+	//	_dbgDrawFormatString(600, 0, 0xffffff, "右に返す", true);
+	//	return true;
+	//}
+	//if (playerSquareRay_[0] == playerLine)
+	//{
+	//	_dbgDrawFormatString(600, 0, 0xffffff, "上に返す", true);
+	//	return true;
+	//}
+	//if (playerSquareRay_[1] == playerLine)
+	//{
+	//	_dbgDrawFormatString(600, 0, 0xffffff, "下に返す", true);
+	//	return true;
+	//}
+
+
 	if (ballRay_[3] == ballLine)
 	{
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール左", true);
 		return true;
 	}
-	if (ballRay_[2] == ballLine)
+	if (ballRay_[2] == playerLine)
 	{
 		_dbgDrawFormatString(600, 0, 0xffffff, "ボール右", true);
 		return true;
@@ -346,10 +369,10 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 {
 	playerSquareRay_ =
 	{
-		{{pos.x+5 ,pos.y+10 },{pos.x-5 + size.x ,pos.y+10} },						//上
-		{{pos.x + 5 ,pos.y + size.y-5} ,{pos.x-5 + size.x,pos.y + size.y-5}},		//下
-		{{pos.x + 5 ,pos.y+10},{pos.x + 5,pos.y + size.y-5}},						//左
-		{{pos.x -5 + size.x,pos.y+10},{pos.x-5 + size.x,pos.y + size.y-5}},			//右
+		{{pos.x + 5 ,pos.y + 10 },{pos.x - 5 + size.x ,pos.y + 10} },						//上
+		{{pos.x + 5 ,pos.y + size.y - 5} ,{pos.x - 5 + size.x,pos.y + size.y - 5}},			//下
+		{{pos.x + 5 ,pos.y + 10},{pos.x + 5,pos.y + size.y - 5}},							//左
+		{{pos.x - 5 + size.x,pos.y + 10},{pos.x - 5 + size.x,pos.y + size.y - 5}},			//右
 	};
 
 }

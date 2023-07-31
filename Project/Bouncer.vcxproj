@@ -160,6 +160,7 @@
     <ClCompile Include="class\scene\GameScene.cpp" />
     <ClCompile Include="class\input\Controller.cpp" />
     <ClCompile Include="class\input\KeyInput.cpp" />
+    <ClCompile Include="class\scene\VersusScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="class\scene\SceneManager.cpp" />
     <ClCompile Include="class\scene\ResultScene.cpp" />
@@ -176,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="class\common\AnimController.h" />
     <ClInclude Include="class\common\FpsController.h" />
+    <ClInclude Include="class\scene\VersusScene.h" />
     <ClInclude Include="resource\image\icon\icon.h" />
     <ClInclude Include="class\common\ImageManager.h" />
     <ClInclude Include="class\common\resource.h" />

@@ -296,6 +296,27 @@ bool TmxObj::SetMap(void)
 					}
 				);
 			}
+
+			//バーサス
+			if (collName == "p1window")
+			{
+				p1windowList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
+			//バーサス
+			if (collName == "p2window")
+			{
+				p2windowList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
 			
 		}
 	}
@@ -383,6 +404,16 @@ CollList& TmxObj::GetSelectStageList(void)
 CollList& TmxObj::GetSelectLogoList(void)
 {
 	return logoImageList_;
+}
+
+CollList& TmxObj::Getp1windowList(void)
+{
+	return p1windowList_;
+}
+
+CollList& TmxObj::Getp2windowList(void)
+{
+	return p2windowList_;
 }
 
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)

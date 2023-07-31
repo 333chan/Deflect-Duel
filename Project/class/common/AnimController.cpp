@@ -74,11 +74,9 @@ int AnimController::Update()
 		break;
 	case Anim::Crouch:
 		animCount_ += 1.0;
-		animEndflg_ = false;
-		if (animCount_ > 15)
+		if (animCount_ > 5)
 		{
-			animCount_ = 15;
-			animEndflg_ = true;
+			animCount_ = 5;
 		}
 		break;
 	case Anim::Death:

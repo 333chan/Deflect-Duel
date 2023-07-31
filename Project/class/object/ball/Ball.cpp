@@ -5,6 +5,7 @@
 #include "../../common/AnimController.h"
 #include "../../tmx/TmxObj.h"
 #include "../../../_debug/_DebugDispOut.h"
+#include"../player/Player.h"
 #include "Ball.h"
 
 constexpr float FALL_SPEED = 1.0f;	// 落下速度
@@ -31,11 +32,11 @@ void Ball::Init()
 
 	animController_ = std::make_unique<AnimController>();
 
-	//座標
-	pos_ = {500,200};
-
 	//大きさ
-	collSize_ = {32,32 };
+	collSize_ = { 32,32 };
+
+	//座標
+	pos_ = { lpSceneMng.GetScreenSize().x / 2 - collSize_.x*2,lpSceneMng.GetScreenSize().y / 2 };
 
 	//補正値
 	offset_ = { 0,0 };
@@ -54,6 +55,11 @@ void Ball::Init()
 	attackHitFlg_ = false;
 
 	fastHitflg_ = false;
+
+	playerHitFlg = false;
+
+	p1ballOwn = false;
+	p2ballOwn = false;
 }
 
 void Ball::Update()
@@ -134,14 +140,38 @@ void Ball::Draw()
 	DrawBox(raycast_.ballRay_[0].p.x, raycast_.ballRay_[0].p.y, raycast_.ballRay_[3].end.x, raycast_.ballRay_[3].end.y, 0xffff00, false);
 #endif
 	animController_->SetAnim(Anim::Spin);
-	DrawRotaGraph2(
-		raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2, 
-		17, 24,
-		1.5, angle_, lpImageMng.GetID("ball")[animController_->Update()], true);
+
+	if (!playerHitFlg)
+	{
+		if (ballOwner_==PlayerType::One)
+		{
+			DrawRotaGraph2(
+				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
+				17, 24,
+				1.5, angle_, lpImageMng.GetID("p1ball")[animController_->Update()], true);
+		}
+		else if(ballOwner_ == PlayerType::Two)
+		{
+			DrawRotaGraph2(
+				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
+				17, 24,
+				1.5, angle_, lpImageMng.GetID("p2ball")[animController_->Update()], true);
+		}
+		else
+		{
+			DrawRotaGraph2(
+				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
+				17, 24,
+				1.5, angle_, lpImageMng.GetID("ball")[animController_->Update()], true);
+		}
+
+
+	}
+
 
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
-	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "ボールを相手に当てろ！");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "爆弾を相手に当てろ！");
 }
 
 void Ball::Release()
@@ -172,6 +202,21 @@ bool Ball::IsStageHit()
 	}
 
 	return false;
+}
+
+void Ball::SetPlayerHit(bool hit)
+{
+	playerHitFlg = hit;
+}
+
+void Ball::SetBallOwn(PlayerType playerType)
+{
+	ballOwner_ = playerType;
+}
+
+PlayerType Ball::GetBallOwn(void)
+{
+	return ballOwner_;
 }
 
 void Ball::VelRay()

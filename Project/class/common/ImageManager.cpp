@@ -62,11 +62,22 @@ ImageManager::ImageManager()
 	GetID("selectStage","resource/image/stage/selectStage.png");
 	GetID("selectStageNull","resource/image/stage/selectStageNull.png");
 
+	//バーサス
+	GetID("vsBg", "resource/image/vsbg.png");
+
 	//ステージ
 	GetID("stage","resource/image/stage/stage.png");
 
 	//ボール
-	GetID("ball","resource/image/ball/ball2.png",Vector2Int(4, 1), Vector2Int(35, 35));
+	GetID("ball", "resource/image/ball/ball2.png", Vector2Int(4, 1), Vector2Int(35, 35));
+	GetID("p1ball","resource/image/ball/p1ball.png",Vector2Int(4, 1), Vector2Int(35, 35));
+	GetID("p2ball","resource/image/ball/p2ball.png",Vector2Int(4, 1), Vector2Int(35, 35));
+
+	GetID("p1Logo","resource/image/character/1p.png",Vector2Int(1, 1), Vector2Int(88, 59));
+	GetID("p2Logo","resource/image/character/2p.png",Vector2Int(1, 1), Vector2Int(88, 59));
+
+	//爆発
+	GetID("explosion", "resource/image/explosion.png", Vector2Int(1, 1), Vector2Int(35, 35));
 
 	//プレイヤー1
 	//GetID("idle", "resource/image/character/sprite/idle2.png", Vector2Int(8, 1), Vector2Int(40, 38));
@@ -77,13 +88,20 @@ ImageManager::ImageManager()
 	GetID("knight_run", "resource/image/character/sprite/knight/run.png", Vector2Int(8, 1), Vector2Int(98, 66));
 	GetID("knight_airAttack", "resource/image/character/sprite/knight/airAttack.png", Vector2Int(17, 1), Vector2Int(98,66));
 	GetID("knight_attack", "resource/image/character/sprite/knight/nAttack.png", Vector2Int(12, 1), Vector2Int(98,66));
-	GetID("knight_crouch", "resource/image/character/sprite/knight/crouch.png", Vector2Int(6, 1), Vector2Int(98,66));
+	GetID("knight_crouch", "resource/image/character/sprite/knight/crouching.png", Vector2Int(6, 1), Vector2Int(98,66));
 	GetID("knight_death", "resource/image/character/sprite/knight/death.png", Vector2Int(1, 1), Vector2Int(98,66));
 
 	
 
 	//プレイヤー2
-	GetID("rogue_idle", "resource/image/character/sprite/rogue/idle.png", Vector2Int(8, 1), Vector2Int(40, 38));
+	GetID("rogue_idle", "resource/image/character/sprite/rogue/idle.png", Vector2Int(6, 1), Vector2Int(98, 66));
+	GetID("rogue_jumpUp", "resource/image/character/sprite/rogue/jumpUp.png", Vector2Int(7, 1), Vector2Int(98, 66));
+	GetID("rogue_fall", "resource/image/character/sprite/rogue/fall.png", Vector2Int(3, 1), Vector2Int(98, 66));
+	GetID("rogue_run", "resource/image/character/sprite/rogue/run.png", Vector2Int(8, 1), Vector2Int(98, 66));
+	GetID("rogue_airAttack", "resource/image/character/sprite/rogue/airAttack.png", Vector2Int(17, 1), Vector2Int(98, 66));
+	GetID("rogue_attack", "resource/image/character/sprite/rogue/attack.png", Vector2Int(12, 1), Vector2Int(98, 66));
+	GetID("rogue_crouch", "resource/image/character/sprite/rogue/crouching.png", Vector2Int(6, 1), Vector2Int(98, 66));
+	GetID("rogue_death", "resource/image/character/sprite/rogue/death.png", Vector2Int(1, 1), Vector2Int(98, 66));
 
 }
 

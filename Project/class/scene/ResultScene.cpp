@@ -64,8 +64,8 @@ void ResultScene::DrawScreen(void)
 	DrawGraph(0, 0, screenImage_,true);
 
 
-	DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, lpSceneMng.GetScreenSize().y / 2 + 51, lpSceneMng.GetScreenSize().x / 2 + 101, lpSceneMng.GetScreenSize().y / 2 - 81, 0xffffff, true);
-	DrawBox(lpSceneMng.GetScreenSize().x / 2-150, lpSceneMng.GetScreenSize().y / 2+50, lpSceneMng.GetScreenSize().x / 2 + 100, lpSceneMng.GetScreenSize().y / 2-80, 0x151515, true);
+	DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, lpSceneMng.GetScreenSize().y / 2 + 51, lpSceneMng.GetScreenSize().x / 2 + 111, lpSceneMng.GetScreenSize().y / 2 - 81, 0xffffff, true);
+	DrawBox(lpSceneMng.GetScreenSize().x / 2 - 150, lpSceneMng.GetScreenSize().y / 2 + 50, lpSceneMng.GetScreenSize().x / 2 + 110, lpSceneMng.GetScreenSize().y / 2 - 80, 0x151515, true);
 
 	if (playertype_ == PlayerType::One)
 	{

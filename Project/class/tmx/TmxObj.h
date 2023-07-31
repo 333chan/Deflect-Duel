@@ -48,8 +48,14 @@ public:
 	CollList& GetTitleLogoimageList(void);
 	CollList& GetTitleBgimageList(void);
 
+	//セレクト
 	CollList& GetSelectStageList(void);
 	CollList& GetSelectLogoList(void);
+
+	//バーサス
+	CollList& Getp1windowList(void);
+	CollList& Getp2windowList(void);
+
 
 private:
 	bool CheckTiledVersion(rapidxml::xml_node<>* node);
@@ -80,5 +86,9 @@ private:
 	//ステージセレクト
 	CollList stageImageList_;	//ステージ1画像
 	CollList logoImageList_;	//セレクトロゴ画像
+
+	//バーサス
+	CollList p1windowList_;	
+	CollList p2windowList_;	
 };
 

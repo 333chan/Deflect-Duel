@@ -63,16 +63,20 @@ void Player::Init()
 
 		//プレイヤーサイズ
 		collSize_ = { 64,96 };
-
 		DrawSize_ = { 18,66 };
 
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
 		//2P
-		pos_ = { 900,450 };
+		pos_ = { 1000,450 };
+
 		//プレイヤーサイズ
-		collSize_ = {80,96 };
+		collSize_ = { 64,96 };
+		DrawSize_ = { 18,66 };
+
+		//左初手
+		reverse_ = 1;
 	} 
 
 	//攻撃時のサイズ
@@ -113,6 +117,7 @@ void Player::Init()
 	animEnd_ = false;
 
 	isGround = false;
+
 }
 
 void Player::Update(void)
@@ -150,8 +155,8 @@ void Player::Update(void)
 		if (controller_->ChaeckLongInputKey(KeyID::Down))
 		{
 			//しゃがみ
-			//state_ = State::Crouching;
-			dir_ = Dir::Down;
+			state_ = State::Crouching;
+			//dir_ = Dir::Down;
 		}
 
 		if (controller_->ChaeckLongInputKey(KeyID::Left))
@@ -340,11 +345,13 @@ void Player::Update(void)
 
 	case State::Crouching:
 
+		pos_={pos_.x,pos_.y+ collSize_.y /2-20};
+
 		//しゃがみ
 		if (!controller_->ChaeckLongInputKey(KeyID::Down))
 		{
 			//キーを離したら
-			//state_ = State::Idel;
+			state_ = State::Idle;
 		}
 		break;
 
@@ -359,6 +366,7 @@ void Player::Update(void)
 		{
 			if (IsAttackHit())
 			{
+				ball_->SetBallOwn(playertype_);
 				ball_->SetAttackRef(refDir_);
 			}
 		}
@@ -411,6 +419,7 @@ void Player::Update(void)
 		{
 			if (IsAttackHit())
 			{
+				ball_->SetBallOwn(playertype_);
 				ball_->SetAttackRef(refDir_);
 			}
 		}
@@ -425,13 +434,37 @@ void Player::Update(void)
 		break;
 	}
 
-	//ボールとの判定
+
+
+
 	if (IsBallHit())
-	{
-		ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
-		PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
-		state_ = State::Death;
+	{	//ボールとの衝突判定
+
+		if (playertype_ == PlayerType::Two)
+		{
+			if (ball_->GetBallOwn() == PlayerType::One)
+			{
+				ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
+				PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
+				state_ = State::Death;
+			}
+
+		}
+
+		if (playertype_ == PlayerType::One)
+		{
+			if (ball_->GetBallOwn() == PlayerType::Two)
+			{
+				ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
+				PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
+				state_ = State::Death;
+			}
+
+		}
+
 	}
+
+
 
 	if (dir_ == Dir::Left)
 	{
@@ -458,6 +491,11 @@ void Player::Update(void)
 		isGround = false;
 	}
 
+	if (lpSceneMng.GetScreenSize().y < pos_.y)
+	{
+		pos_ = { pos_.x,450 };
+	}
+
 }
 
 void Player::Draw(void)
@@ -481,10 +519,12 @@ void Player::Draw(void)
 		}
 		if (playertype_ == PlayerType::Two)
 		{
-			DrawExtendGraph(
-				pos_.x, pos_.y,
-				pos_.x + collSize_.x, pos_.y + collSize_.y,
-				lpImageMng.GetID("rogue_idle")[animController_->Update()], true);
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 -(DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_idle")[animController_->Update()],
+				true, -1 * reverse_);
 		}
 		_dbgDrawFormatString(pos_.x, pos_.y-40, 0xffffff, "Idle", true);
 		break;
@@ -501,6 +541,16 @@ void Player::Draw(void)
 				true, -1 * reverse_);
 		}
 
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_jumpUp")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "JumpUp", true);
 		break;
 	case State::Fall:	//落下
@@ -512,6 +562,15 @@ void Player::Draw(void)
 				DRAW_EXRATE,
 				0,
 				lpImageMng.GetID("knight_fall")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_fall")[animController_->Update()],
 				true, -1 * reverse_);
 		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Fall", true);
@@ -527,6 +586,15 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_run")[animController_->Update()],
 				true, -1 * reverse_);
 		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_run")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Left", true);
 		break;
 	case State::MoveRight://右移動
@@ -540,9 +608,37 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_run")[animController_->Update()],
 				true, -1 * reverse_);
 		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_run")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Right", true);
 		break;
-	case State::Crouching:
+	case State::Crouching://しゃがみ
+		animController_->SetAnim(Anim::Crouch);
+		if (playertype_ == PlayerType::One)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET/4 * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("knight_crouch")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_crouch")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Crouching", true);
 		break;
 
@@ -556,6 +652,15 @@ void Player::Draw(void)
 				DRAW_EXRATE,
 				0,
 				lpImageMng.GetID("knight_attack")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - DRAW_OFFSET * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_attack")[animController_->Update()],
 				true, -1 * reverse_);
 		}
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Attack", true);
@@ -572,6 +677,15 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_airAttack")[animController_->Update()],
 				true, -1 * reverse_);
 		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 + DRAW_OFFSET/2 * reverse_, pos_.y + collSize_.y / 2- DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_airAttack")[animController_->Update()],
+				true, -1 * reverse_);
+		}
 
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "AirAttack", true);
 		break;
@@ -586,6 +700,23 @@ void Player::Draw(void)
 				lpImageMng.GetID("knight_death")[animController_->Update()],
 				true, -1 * reverse_);
 		}
+		if (playertype_ == PlayerType::Two)
+		{
+			DrawRotaGraph(
+				pos_.x + collSize_.x / 2 - (DRAW_OFFSET - 12) * reverse_, pos_.y + collSize_.y / 2 + DRAW_OFFSET,
+				DRAW_EXRATE,
+				0,
+				lpImageMng.GetID("rogue_death")[animController_->Update()],
+				true, -1 * reverse_);
+		}
+
+		DrawRotaGraph(
+			ball_ -> pos_.x + ball_->collSize_.x / 2, ball_->pos_.y + ball_->collSize_.y / 2,
+			DRAW_EXRATE,
+			0,
+			lpImageMng.GetID("explosion")[0],
+			true, -1 * reverse_);
+		ball_->SetPlayerHit(true);
 
 		_dbgDrawFormatString(pos_.x, pos_.y - 40, 0xffffff, "Death", true);
 		break;
@@ -598,15 +729,18 @@ void Player::Draw(void)
 	//プレイヤーの名前
 	if (playertype_ == PlayerType::One)
 	{
-		DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0xffff00, "1P", true);
+
+		DrawExtendGraph(pos_.x + collSize_.x / 2 - 10, pos_.y - 20, pos_.x + collSize_.x / 2 + 10, pos_.y-5,lpImageMng.GetID("p1Logo")[0], true);
+		//DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0xff0000, "1P", true);
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
-		DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0xff0000, "2P", true);
+		DrawExtendGraph(pos_.x + collSize_.x / 2 - 10, pos_.y - 20, pos_.x + collSize_.x / 2 + 10, pos_.y - 5, lpImageMng.GetID("p2Logo")[0], true);
+		//DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0x0000ff, "2P", true);
 	}
 
 	//操作説明
-	DrawString(50, 625, "Player1\n操作\nA/Dで左右移動\nWでジャンプ\nSPACEで攻撃", 0xfff00f, true);
+	DrawString(50, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xfff00f, true);
 	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
 	
 

@@ -4,11 +4,12 @@
 #include "../../common/Geometry.h"
 #include "../../tmx/TmxObj.h"
 
-class Player;
 enum class Dir;
 
 class AnimController;
 enum class Anim;
+
+enum class PlayerType;
 
 class Ball :
     public Object
@@ -53,9 +54,20 @@ public:
     //攻撃ヒットフラグ
     bool attackHitFlg_;
 
+    bool playerHitFlg;
+
+    bool OwnFlg;
+
+    void SetPlayerHit(bool hit);
+
+    void SetBallOwn(PlayerType playerType);
+    PlayerType GetBallOwn(void);
+
     
 private:
     std::unique_ptr<AnimController> animController_;
+
+    PlayerType ballOwner_;
 
     //レイ
     void VelRay();
@@ -95,7 +107,8 @@ private:
     Vector2 vecNom_;
     float vecLen_;
 
-
+    bool p1ballOwn;
+    bool p2ballOwn;
 
 
 };
