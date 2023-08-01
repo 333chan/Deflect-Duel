@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "BaseScene.h"
+#include "../tmx/TmxObj.h"
 #include "../common/Geometry.h"
 
 class Controller;
@@ -57,5 +58,15 @@ private:
 
     //ƒTƒEƒ“ƒh
     int gameBgm_;
+
+    Vector2 p1windowPos_;
+    Vector2 p1windowEndPos_;
+
+    Vector2 p2windowPos_;
+    Vector2 p2windowEndPos_;
+
+
+    //tmx
+    TmxObj tmxObj_;
 };
 

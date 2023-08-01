@@ -37,6 +37,22 @@ void GameScene::Init(void)
 		controller_ = std::make_unique<KeyInput>();
 	}
 
+	//tmxの読み込み
+	tmxObj_.LoadTmx("resource/tmx/gameScene.tmx", false);
+
+	//tmxのCollLiset取得
+	for (auto& coll : tmxObj_.Getp1HowtoList())
+	{
+		p1windowPos_ = coll.first;
+		p1windowEndPos_ = coll.first + coll.second;
+	}
+	for (auto& coll : tmxObj_.Getp2HowtoList())
+	{
+		p2windowPos_ = coll.first;
+		p2windowEndPos_ = coll.first + coll.second;
+	}
+
+
 	//インスタンスの生成
 	ball_ = std::make_shared<Ball>();	//ユニークだと所有権ごと渡してしまうため
 
@@ -58,7 +74,7 @@ void GameScene::Init(void)
 
 	stage_ = std::make_unique<Stage>();
 
-	PlaySoundMem(lpSoundMng.GetID("gameBgm"), DX_PLAYTYPE_BACK);
+	PlaySoundMem(lpSoundMng.GetID("gameBgm"), DX_PLAYTYPE_LOOP);
 	ChangeVolumeSoundMem(150, lpSoundMng.GetID("gameBgm"));
 	
 }
@@ -106,6 +122,12 @@ void GameScene::DrawScreen(void)
 
 	//ボール
 	ball_->Draw();
+
+	DrawExtendGraph(p1windowPos_.x, p1windowPos_.y, p1windowEndPos_.x, p1windowEndPos_.y, lpImageMng.GetID("window")[0],true);
+	DrawExtendGraph(p2windowPos_.x, p2windowPos_.y, p2windowEndPos_.x, p2windowEndPos_.y, lpImageMng.GetID("window")[0],true);
+
+	DrawString(50, 640, "PLAYER1 操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
+	DrawString(1100, 640, "   PLAYER 2操作\n 右/左で左右移動\n    Bでジャンプ\n        Xで攻撃", 0x0000ff, true);
 
 	//デバック用
 #ifdef _DEBUG

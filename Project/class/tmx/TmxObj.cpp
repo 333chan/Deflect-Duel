@@ -308,10 +308,29 @@ bool TmxObj::SetMap(void)
 					}
 				);
 			}
-			//バーサス
 			if (collName == "p2window")
 			{
 				p2windowList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
+
+			//ゲームシーン
+			if (collName == "p1Howto")
+			{
+				p1HowtoList_.push_back(
+					{
+						{ CollX,CollY},
+						{CollW,CollH}
+					}
+				);
+			}
+			if (collName == "p2Howto")
+			{
+				p2HowtoList_.push_back(
 					{
 						{ CollX,CollY},
 						{CollW,CollH}
@@ -415,6 +434,16 @@ CollList& TmxObj::Getp1windowList(void)
 CollList& TmxObj::Getp2windowList(void)
 {
 	return p2windowList_;
+}
+
+CollList& TmxObj::Getp1HowtoList(void)
+{
+	return p1HowtoList_;
+}
+
+CollList& TmxObj::Getp2HowtoList(void)
+{
+	return p2HowtoList_;
 }
 
 bool TmxObj::CheckTiledVersion(rapidxml::xml_node<>* node)

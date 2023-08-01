@@ -72,6 +72,10 @@ ImageManager::ImageManager()
 	//ステージ
 	GetID("stage","resource/image/stage/stage.png");
 
+	//UI
+	GetID("window","resource/image/window.png");
+	GetID("sWindow","resource/image/speedWindow.png");
+
 	//ボール
 	GetID("ball", "resource/image/ball/ball2.png", Vector2Int(4, 1), Vector2Int(35, 35));
 	GetID("p1ball","resource/image/ball/p1ball.png",Vector2Int(4, 1), Vector2Int(35, 35));

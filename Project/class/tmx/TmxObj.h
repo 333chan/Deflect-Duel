@@ -56,6 +56,10 @@ public:
 	CollList& Getp1windowList(void);
 	CollList& Getp2windowList(void);
 
+	//ゲームシーン
+	CollList& Getp1HowtoList(void);
+	CollList& Getp2HowtoList(void);
+
 
 private:
 	bool CheckTiledVersion(rapidxml::xml_node<>* node);
@@ -89,6 +93,11 @@ private:
 
 	//バーサス
 	CollList p1windowList_;	
-	CollList p2windowList_;	
+	CollList p2windowList_;
+
+	//ゲームシーン
+	CollList p1HowtoList_;
+	CollList p2HowtoList_;
+
 };
 

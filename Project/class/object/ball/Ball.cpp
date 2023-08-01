@@ -169,9 +169,15 @@ void Ball::Draw()
 	}
 
 
+	//DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, 640, lpSceneMng.GetScreenSize().x / 2 + 111, 711, 0xffffff, true);
+
+	//DrawBox(lpSceneMng.GetScreenSize().x / 2 - 150, 641, lpSceneMng.GetScreenSize().x / 2 + 110, 710, 0x151515, true);
+	DrawExtendGraph(lpSceneMng.GetScreenSize().x / 2 - 151, 640, lpSceneMng.GetScreenSize().x / 2 + 111, 711, lpImageMng.GetID("sWindow")[0], true);
+
+
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 50, 650, 0xffffff, "SPEED");
-	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 100, 680, 0xfffffff, "%f:%f", speed_.x, speed_.y);
-	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 110, 10, 0xfffffff, "”š’e‚ğ‘Šè‚É“–‚Ä‚ëI");
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 100, 670, 0xfffffff, "%f:%f", speed_.x, speed_.y);
+	DrawFormatString(lpSceneMng.GetScreenSize().x / 2 - 120, 688, 0xfffffff, "I”š’e‚ğ‘Šè‚É“–‚Ä‚ëI");
 }
 
 void Ball::Release()

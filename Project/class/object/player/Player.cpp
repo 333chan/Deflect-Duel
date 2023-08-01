@@ -65,18 +65,19 @@ void Player::Init()
 		collSize_ = { 64,96 };
 		DrawSize_ = { 18,66 };
 
+		reverse_ = 0;
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
 		//2P
-		pos_ = { 1000,450 };
+		pos_ = { 1100,450 };
 
 		//プレイヤーサイズ
 		collSize_ = { 64,96 };
 		DrawSize_ = { 18,66 };
 
 		//左初手
-		reverse_ = 1;
+		reverse_ = -1;
 	} 
 
 	//攻撃時のサイズ
@@ -112,7 +113,6 @@ void Player::Init()
 	movePos_ = { MOVE_SPEED , MOVE_SPEED };
 
 
-	reverse_ = 0;
 
 	animEnd_ = false;
 
@@ -739,9 +739,7 @@ void Player::Draw(void)
 		//DrawFormatString(pos_.x + collSize_.x / 2-10, pos_.y - 20, 0x0000ff, "2P", true);
 	}
 
-	//操作説明
-	DrawString(50, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
-	DrawString(1100, 625, "Player2\n操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0x0000ff, true);
+
 	
 
 #ifdef _DEBUG	//デバック時のみ
