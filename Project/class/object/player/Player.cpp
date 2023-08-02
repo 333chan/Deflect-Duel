@@ -148,6 +148,7 @@ void Player::Update(void)
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
 
+
 			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 			break;
@@ -163,17 +164,22 @@ void Player::Update(void)
 		{
 			//左
 			state_ = State::MoveLeft;
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("walkSe"));
+			PlaySoundMem(lpSoundMng.GetID("walkSe"), DX_PLAYTYPE_LOOP);
 		}
 		else if (controller_->ChaeckLongInputKey(KeyID::Right))
 		{
 			//右
 			state_ = State::MoveRight;
+			ChangeVolumeSoundMem(150, lpSoundMng.GetID("walkSe"));
+			PlaySoundMem(lpSoundMng.GetID("walkSe"), DX_PLAYTYPE_LOOP);
 		}
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
-			//攻撃
-			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
-			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+			////攻撃
+			lpSoundMng.ResetCount("attackSe");
+			lpSoundMng.PlaySoundOneTime("attackSe");  
+
 			state_ = State::Attack;
 		}
 
@@ -214,18 +220,15 @@ void Player::Update(void)
 
  		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
-			//攻撃
-			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
-			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+			////攻撃
+			if (playertype_ == PlayerType::One)
+			{
+			}
 
+			lpSoundMng.ResetCount("airAttackSe");
+			lpSoundMng.PlaySoundOneTime("airAttackSe");
 
 			animEnd_ = false;
-
-			if (animController_->SetAnimEnd(animEnd_) == true)
-			{
-				//キーを放したら
-				state_ = State::Idle;
-			}
 
 			state_ = State::AirAttack;
 		}
@@ -260,9 +263,9 @@ void Player::Update(void)
 
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
-			//攻撃
-			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
-			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+			////攻撃
+			lpSoundMng.ResetCount("airAttackSe");
+			lpSoundMng.PlaySoundOneTime("airAttackSe");
 
 			if (IsAttackHit())
 			{
@@ -270,12 +273,6 @@ void Player::Update(void)
 			}
 
 			animEnd_ = false;
-
-			if (animController_->SetAnimEnd(animEnd_) == true)
-			{
-				//キーを放したら
-				state_ = State::Idle;
-			}
 
 			state_ = State::AirAttack;
 
@@ -294,27 +291,33 @@ void Player::Update(void)
 			//ジャンプ
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
 			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 		}
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Left))
 		{
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
 			//キーを放したらIdel
 			state_ = State::Idle;
 		}
 
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
-			//攻撃
-			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
-			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
+
+			////攻撃
+			lpSoundMng.ResetCount("attackSe");
+			lpSoundMng.PlaySoundOneTime("attackSe");
+			
 			state_ = State::Attack;
 		}
 	}
 		break;
 	case State::MoveRight:
 	{
+
 		//右移動
 		MovePosition(Dir::Right);
 
@@ -323,12 +326,14 @@ void Player::Update(void)
 			//ジャンプ
 			gravity_ = 0;
 			jumpDeltaTime_ = 0.0;
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
 			PlaySoundMem(lpSoundMng.GetID("jumpSe"), DX_PLAYTYPE_BACK);
 			state_ = State::JumpUp;
 		}
 
 		if (!controller_->ChaeckLongInputKey(KeyID::Right))
 		{
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
 			//キーを放したらIdel
 			state_ = State::Idle;
 		}
@@ -336,8 +341,11 @@ void Player::Update(void)
 		if (controller_->ChaeckInputKey(KeyID::Attack))
 		{
 			//攻撃
-			ChangeVolumeSoundMem(150, lpSoundMng.GetID("attackSe"));
-			PlaySoundMem(lpSoundMng.GetID("attackSe"), DX_PLAYTYPE_BACK);
+			StopSoundMem(lpSoundMng.GetID("walkSe"));
+
+			lpSoundMng.ResetCount("attackSe");
+			lpSoundMng.PlaySoundOneTime("attackSe");
+
 			state_ = State::Attack;
 		}
 	}
@@ -357,6 +365,9 @@ void Player::Update(void)
 
 	case State::Attack:
 
+
+
+
 		//アニメーションが終わったら
 		if (animController_->SetAnimEnd(animEnd_) == true)
 		{
@@ -368,6 +379,11 @@ void Player::Update(void)
 			{
 				ball_->SetBallOwn(playertype_);
 				ball_->SetAttackRef(refDir_);
+
+
+				lpSoundMng.ResetCount("attackHitSe");
+				ChangeVolumeSoundMem(200, lpSoundMng.GetID("attackHitSe"));
+				lpSoundMng.PlaySoundOneTime("attackHitSe");
 			}
 		}
 
@@ -384,6 +400,9 @@ void Player::Update(void)
 			pos_.y += yVel_;
 			if (IsStageHit(Line({ pos_.x + collSize_.x / 2, pos_.y + collSize_.y / 2 }, { pos_.x + collSize_.x / 2,pos_.y + collSize_.y })))
 			{
+				//アニメーションが終了したら
+				StopSoundMem(lpSoundMng.GetID("airAttackSe"));
+
 				//当たってたら補正
 				pos_ -= offset_;
 				state_ = State::Idle;
@@ -419,8 +438,14 @@ void Player::Update(void)
 		{
 			if (IsAttackHit())
 			{
+
+				lpSoundMng.ResetCount("attackHitSe");
+				ChangeVolumeSoundMem(200, lpSoundMng.GetID("attackHitSe"));
+				lpSoundMng.PlaySoundOneTime("attackHitSe");
+
 				ball_->SetBallOwn(playertype_);
 				ball_->SetAttackRef(refDir_);
+				ball_->fastHitflg_ = true;
 			}
 		}
 
@@ -439,31 +464,33 @@ void Player::Update(void)
 
 	if (IsBallHit())
 	{	//ボールとの衝突判定
-
-		if (playertype_ == PlayerType::Two)
+		if (ball_->fastHitflg_ == true)
 		{
-			if (ball_->GetBallOwn() == PlayerType::One)
+			if (playertype_ == PlayerType::Two)
 			{
-				ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
-				PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
-				state_ = State::Death;
+				if (ball_->GetBallOwn() == PlayerType::One)
+				{
+					ChangeVolumeSoundMem(250, lpSoundMng.GetID("daethSe"));
+					PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
+					state_ = State::Death;
+				}
+
 			}
 
-		}
-
-		if (playertype_ == PlayerType::One)
-		{
-			if (ball_->GetBallOwn() == PlayerType::Two)
+			if (playertype_ == PlayerType::One)
 			{
-				ChangeVolumeSoundMem(180, lpSoundMng.GetID("daethSe"));
-				PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
-				state_ = State::Death;
+				if (ball_->GetBallOwn() == PlayerType::Two)
+				{
+					ChangeVolumeSoundMem(250, lpSoundMng.GetID("daethSe"));
+					PlaySoundMem(lpSoundMng.GetID("daethSe"), DX_PLAYTYPE_BACK);
+					state_ = State::Death;
+				}
+
 			}
 
-		}
 
+		}
 	}
-
 
 
 	if (dir_ == Dir::Left)
@@ -815,7 +842,7 @@ bool Player::IsAttackHit()
 	raycast_.setBallRay(ball_->pos_+ ball_->movePos_, ball_->collSize_);
 
 	//攻撃とボールの接触判定
-	if (raycast_.AttackToBallCheckColl(refDir_))
+	if (raycast_.AttackToBallCheckColl(refDir_,reverse_))
 	{
     		return true;
 	}

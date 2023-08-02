@@ -3,6 +3,8 @@
 #include "../object/ball/Ball.h"
 #include"../../_debug/_DebugDispOut.h"
 
+std::random_device random;
+std::mt19937 gen(random());
 
 bool Raycast::StageToPlayerCheckColl(Collision stagepos, Vector2& offset)
 {
@@ -84,7 +86,7 @@ bool Raycast::StageToBallCheckColl(Collision stagepos, Vector2& offset, Vector2&
 	return false;
 }
 
-bool Raycast::AttackToBallCheckColl(Vector2& refDir)
+bool Raycast::AttackToBallCheckColl(Vector2& refDir, int& reverse)
 {
 
 	for (const auto& rpa : playerAttackRay_)
@@ -95,7 +97,7 @@ bool Raycast::AttackToBallCheckColl(Vector2& refDir)
 		for (const auto& rb : ballRay_)
 		{
 			//攻撃とボール
-			if (AttackToBallChackLine(rpa, rb, refDir))
+			if (AttackToBallChackLine(rpa, rb, refDir,reverse))
 			{
 				//Hitしたら
 				_dbgDrawFormatString(1000, 100, 0xfffffff, "攻撃がボールにHit");
@@ -284,7 +286,7 @@ bool Raycast::BallToStageChackLine(Line ballLine, Line stageLine, Vector2& offse
 	return true;
 }
 
-bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& refDir)
+bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& refDir, int& reverse)
 {
 	ChackLine(playerLine, ballLine);
 
@@ -304,29 +306,29 @@ bool Raycast::AttackToBallChackLine(Line playerLine, Line ballLine, Vector2& ref
 	//攻撃とボール
 	if (playerAttackRay_[3] == playerLine)
 	{
-		refDir.y = -1;//上
-		refDir.x = 1;//左
+		refDir.y = random(-1,1);//上
+		refDir.x = 1* -reverse;//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "左に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[2] == playerLine)
 	{
-		refDir.y = 1;//下
-		refDir.x = -1;//右
+		refDir.y = random(-1, 1);//上
+		refDir.x = -1 * -reverse;//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "右に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[0] == playerLine)
 	{
 		refDir.y = -1;//上
-		refDir.x = 1;//左
+		refDir.x = 1 * reverse;//左
 		_dbgDrawFormatString(600, 0, 0xffffff, "上に返す", true);
 		return true;
 	}
 	if (playerAttackRay_[1] == playerLine)
 	{
 		refDir.y = 1;//下
-		refDir.x = -1;//右
+		refDir.x = 1 * reverse;//右
 		_dbgDrawFormatString(600, 0, 0xffffff, "下に返す", true);
 		return true;
 	}
@@ -343,7 +345,11 @@ void Raycast::setStageRay(Collision stagepos)
 	};
 }
 
-
+int Raycast::random(int low, int high)
+{
+	std::uniform_int_distribution<> dist(low,high);
+	return dist(gen);
+}
 
 void Raycast::setBallRay(Vector2 pos, Vector2 size)
 {
@@ -377,14 +383,14 @@ void Raycast::setPlayerSquareRay(Vector2 pos, Vector2 size,Vector2 movePos)
 
 }
 
-void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size,int reversal)
+void Raycast::setPlayerAttackRay(Vector2 pos, Vector2 size,int reverse)
 {
 	playerAttackRay_ =
 	{
-		{{pos.x,pos.y - 10 },{pos.x + size.x* reversal,pos.y - 10 } },						//上
-		{{pos.x,pos.y - 10 + size.y } ,{pos.x + size.x * reversal,pos.y + size.y - 10}},	//下
+		{{pos.x,pos.y - 10 },{pos.x + size.x* reverse,pos.y - 10 } },						//上
+		{{pos.x,pos.y - 10 + size.y } ,{pos.x + size.x * reverse,pos.y + size.y - 10}},	//下
 		{{pos.x ,pos.y - 10  },{pos.x,pos.y + size.y - 10 }},						//左
-		{{pos.x+ size.x * reversal ,pos.y - 10 },{pos.x + size.x * reversal,pos.y + size.y - 10 }},	//右
+		{{pos.x+ size.x * reverse ,pos.y - 10 },{pos.x + size.x * reverse,pos.y + size.y - 10 }},	//右
 	};
 }
 

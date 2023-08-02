@@ -88,7 +88,6 @@ UniqueScene GameScene::Update(UniqueScene scene)
 	if (player_->GetState()== State::Death|| player2_->GetState() == State::Death)
 	{
 		auto pState = player_->GetState() == State::Death ? PlayerType ::Two : PlayerType::One;
-
 		StopSoundMem(lpSoundMng.GetID("gameBgm"));
 		return std::make_unique<ResultScene>(pState);
 	}
@@ -103,6 +102,8 @@ UniqueScene GameScene::Update(UniqueScene scene)
 
 	//ƒ{[ƒ‹
 	ball_->Update();
+
+
 
 	DrawScreen();
 	return UpdateScene(scene);

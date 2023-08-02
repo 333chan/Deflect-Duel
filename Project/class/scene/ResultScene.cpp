@@ -46,7 +46,9 @@ void ResultScene::Init(void)
 	//æ“¾‚µ‚½‰æ‘œ‚ğ•`‰æ
 	GetDrawScreenGraph(0, 0, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y, screenImage_, true);
 
-	ChangeVolumeSoundMem(200, lpSoundMng.GetID("winSe"));
+	StopSoundMem(lpSoundMng.GetID("walkSe"));
+
+	ChangeVolumeSoundMem(230, lpSoundMng.GetID("winSe"));
 	PlaySoundMem(lpSoundMng.GetID("winSe"), DX_PLAYTYPE_BACK);
 }
 
@@ -70,12 +72,12 @@ void ResultScene::DrawScreen(void)
 	if (playertype_ == PlayerType::One)
 	{
 		//1P‚ªŸ‚Á‚½‚ç
-		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xffff00);
+		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "1P WIN", 0xff0000);
 	}
 	else if (playertype_ == PlayerType::Two)
 	{
 		//2P‚ªŸ‚Á‚½‚ç
-		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0xff0000);
+		DrawString(lpSceneMng.GetScreenSize().x / 2 - 50, 300, "2P WIN", 0x0000ff);
 	}
 
 	//Äí

@@ -21,7 +21,19 @@ public:
 	const int& GetID(std::string key, std::string path);
 	const int& GetID(std::string key);
 
+	//一度のみ再生
+	void PlaySoundOneTime(std::string name);
+	//再生カウントリセット
+	void ResetCount(std::string name);
+
+	//すべての音声ストップ
+	void AllStopSound();
+
+
 private:
+
+	std::unordered_map< std:: string, int>count_;
+
 protected:
 
 

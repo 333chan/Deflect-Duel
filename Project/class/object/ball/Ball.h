@@ -57,6 +57,7 @@ public:
     bool playerHitFlg;
 
     bool OwnFlg;
+    bool fastHitflg_;
 
     void SetPlayerHit(bool hit);
 
@@ -97,7 +98,7 @@ private:
     Vector2 speed_;
     Vector2 maxSpeed_;
 
-    bool fastHitflg_;
+
 
     //”»’è
     Raycast raycast_;

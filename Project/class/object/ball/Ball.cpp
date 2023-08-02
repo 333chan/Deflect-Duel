@@ -13,7 +13,7 @@ constexpr float FALL_ACCEL = 0.1f;	// 重力加速度
 
 constexpr float MAX_SPIN_SPEED = 20.0f;	//最高回転速度
 
-const Vector2 MAX_SPEED = {30,30};	//最高速度
+const Vector2 MAX_SPEED = {35,35};	//最高速度
 
 Ball::Ball()
 {
@@ -45,7 +45,7 @@ void Ball::Init()
 	refDir_ = { 0.0f,0.0f };
 
 	movePos_ = { refPow_ * refDir_ };
-	speed_ = { 5,5 };
+	speed_ = { 0,0 };
 
 	vecLen_ = 0.0f;
 
@@ -60,6 +60,8 @@ void Ball::Init()
 
 	p1ballOwn = false;
 	p2ballOwn = false;
+
+	ballOwner_ == PlayerType::Max;
 }
 
 void Ball::Update()
@@ -123,6 +125,8 @@ void Ball::Update()
 
 	angle_ += spinSpead_;
 
+
+
 }
 
 void Ball::Draw()
@@ -143,35 +147,29 @@ void Ball::Draw()
 
 	if (!playerHitFlg)
 	{
-		if (ballOwner_==PlayerType::One)
-		{
-			DrawRotaGraph2(
-				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
-				17, 24,
-				1.5, angle_, lpImageMng.GetID("p1ball")[animController_->Update()], true);
-		}
-		else if(ballOwner_ == PlayerType::Two)
-		{
-			DrawRotaGraph2(
-				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
-				17, 24,
-				1.5, angle_, lpImageMng.GetID("p2ball")[animController_->Update()], true);
-		}
-		else
+		if (!fastHitflg_)
 		{
 			DrawRotaGraph2(
 				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
 				17, 24,
 				1.5, angle_, lpImageMng.GetID("ball")[animController_->Update()], true);
 		}
-
+		else if (fastHitflg_&&ballOwner_==PlayerType::One)
+		{
+			DrawRotaGraph2(
+				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
+				17, 24,
+				1.5, angle_, lpImageMng.GetID("p1ball")[animController_->Update()], true);
+		}
+		else if(fastHitflg_ && ballOwner_ == PlayerType::Two)
+		{
+			DrawRotaGraph2(
+				raycast_.ballRay_[0].p.x + collSize_.x / 2, raycast_.ballRay_[0].p.y + collSize_.y / 2,
+				17, 24,
+				1.5, angle_, lpImageMng.GetID("p2ball")[animController_->Update()], true);
+		}
 
 	}
-
-
-	//DrawBox(lpSceneMng.GetScreenSize().x / 2 - 151, 640, lpSceneMng.GetScreenSize().x / 2 + 111, 711, 0xffffff, true);
-
-	//DrawBox(lpSceneMng.GetScreenSize().x / 2 - 150, 641, lpSceneMng.GetScreenSize().x / 2 + 110, 710, 0x151515, true);
 	DrawExtendGraph(lpSceneMng.GetScreenSize().x / 2 - 151, 640, lpSceneMng.GetScreenSize().x / 2 + 111, 711, lpImageMng.GetID("sWindow")[0], true);
 
 
