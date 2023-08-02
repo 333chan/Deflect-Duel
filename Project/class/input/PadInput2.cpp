@@ -15,7 +15,7 @@ PadInput2::PadInput2()
 		{KeyID::Transition,	PAD_INPUT_5},
 		{KeyID::Stage1,		KEY_INPUT_1},
 		{KeyID::Rematch,	KEY_INPUT_2},
-		{KeyID::ReturnSelect, KEY_INPUT_5},
+		{KeyID::ReturnSelect, KEY_INPUT_4},
 		{KeyID::Max , DX_INPUT_PAD1}
 	};
 	for (auto data : inputTable_)

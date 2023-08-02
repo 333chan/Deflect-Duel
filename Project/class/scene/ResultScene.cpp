@@ -86,7 +86,7 @@ void ResultScene::DrawScreen(void)
 
 	//タイトルに戻る
 	DrawFormatString(lpSceneMng.GetScreenSize().x / 2-120,
-		lpSceneMng.GetScreenSize().y / 2+20,0xffffff,"A:ステージセレクトに戻る");
+		lpSceneMng.GetScreenSize().y / 2+20,0xffffff,"Y:ステージセレクトに戻る");
 }
 
 void ResultScene::Release(void)
