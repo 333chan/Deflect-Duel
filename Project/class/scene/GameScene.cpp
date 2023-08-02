@@ -127,8 +127,8 @@ void GameScene::DrawScreen(void)
 	DrawExtendGraph(p1windowPos_.x, p1windowPos_.y, p1windowEndPos_.x, p1windowEndPos_.y, lpImageMng.GetID("window")[0],true);
 	DrawExtendGraph(p2windowPos_.x, p2windowPos_.y, p2windowEndPos_.x, p2windowEndPos_.y, lpImageMng.GetID("window")[0],true);
 
-	DrawString(50, 640, "PLAYER1 操作\n右/左で左右移動\nBでジャンプ\nXで攻撃", 0xff0000, true);
-	DrawString(1100, 640, "   PLAYER 2操作\n 右/左で左右移動\n    Bでジャンプ\n        Xで攻撃", 0x0000ff, true);
+	DrawString(50, 640, "PLAYER1 操作\n右/左で左右移動\nAでジャンプ\nXで攻撃", 0xff0000, true);
+	DrawString(1100, 640, "   PLAYER 2操作\n 右/左で左右移動\n    Aでジャンプ\n        Xで攻撃", 0x0000ff, true);
 
 	//デバック用
 #ifdef _DEBUG
