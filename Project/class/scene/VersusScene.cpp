@@ -79,10 +79,12 @@ void VersusScene::DrawScreen(void)
 	DrawFormatString(0, 0, 0xffffff, "VersusScene");
 #endif
 
-	DrawExtendGraph(0, 0, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y, lpImageMng.GetID("vsBg")[0], true);
-
 	animController_->SetAnim(Anim::Idle);
 
+	//背景
+	DrawExtendGraph(0, 0, lpSceneMng.GetScreenSize().x, lpSceneMng.GetScreenSize().y, lpImageMng.GetID("vsBg")[0], true);
+
+	//1Pプレイヤー
 	DrawExtendGraph(p1windowPos_.x, p1windowPos_.y, p1windowEndPos_.x, p1windowEndPos_.y, lpImageMng.GetID("playerWindow")[0], true);
 	DrawExtendGraph(p1windowPos_.x+50, p1windowPos_.y+90, p1windowEndPos_.x-50, p1windowEndPos_.y-555, lpImageMng.GetID("vsPlayer1Logo")[0], true);
 
@@ -93,9 +95,10 @@ void VersusScene::DrawScreen(void)
 		lpImageMng.GetID("knight_idle")[animController_->Update()],
 		true,-1);
 
+	//コントローラー
 	DrawRotaGraph(
 		p1windowPos_.x + 300, p1windowPos_.y + 450,
-		2.00f,
+		2.50f,
 		0,
 		lpImageMng.GetID("conImage")[0],
 		true, -1);
@@ -104,22 +107,28 @@ void VersusScene::DrawScreen(void)
 
 	DrawExtendGraph(p2windowPos_.x, p2windowPos_.y, p2windowEndPos_.x, p2windowEndPos_.y, lpImageMng.GetID("playerWindow")[0], true);
 	DrawExtendGraph(p2windowPos_.x + 50, p2windowPos_.y + 90, p2windowEndPos_.x - 50, p2windowEndPos_.y - 555, lpImageMng.GetID("vsPlayer2Logo")[0], true);
+
 	DrawRotaGraph(
 		p2windowPos_.x + 264, p2windowPos_.y + 250,
 		3.00f,
 		0,
 		lpImageMng.GetID("rogue_idle")[animController_->Update()],
 	    true, 1);
+
+	//コントローラー
 	DrawRotaGraph(
 		p2windowPos_.x + 300, p2windowPos_.y + 450,
-		2.00f,
+		2.50f,
 		0,
 		lpImageMng.GetID("conImage")[0],
 		true, -1);
 
 
+	DrawExtendGraph(
+		lpSceneMng.GetScreenSize().x / 2 - 80, lpSceneMng.GetScreenSize().y / 2 + 80,
+		lpSceneMng.GetScreenSize().x / 2 + 80, lpSceneMng.GetScreenSize().y / 2 + 150,
+		lpImageMng.GetID("window")[0], true);
 	DrawFormatString(lpSceneMng.GetScreenSize().x/2-60, lpSceneMng.GetScreenSize().y / 2+100,0xffffff,"PRESS B BUTTON\n Start Battle");
-
 }
 
 void VersusScene::Release(void)
