@@ -57,24 +57,34 @@ void SoundManager::AllStopSound()
 SoundManager::SoundManager()
 {
 	//サウンド読み込み
-	GetID("gameBgm", "resource/sound/gamebgm.mp3");
-	GetID("bgm", "resource/sound/titlebgm.mp3");
+	//bgm
+	//ゲーム中
+	GetID("gameBgm", "resource/sound/gamebgm.mp3");	
+	//タイトル
+	GetID("bgm", "resource/sound/titlebgm.mp3");	
 
-	GetID("decideSe", "resource/sound/decide.mp3");
-	GetID("winSe", "resource/sound/win.mp3");
-	GetID("jumpSe","resource/sound/jump.mp3");
+	//勝利ジングル
+	GetID("winSe", "resource/sound/winSe.mp3");
 
+	//SE
+	//決定
+	GetID("decideSe", "resource/sound/decideSe.mp3");
+	//ジャンプ
+	GetID("jumpSe","resource/sound/jumpSe.mp3");		
+	//攻撃
 	GetID("attackSe", "resource/sound/attackSe.mp3");
-
+	//空中攻撃
 	GetID("airAttackSe", "resource/sound/airAttackSe.mp3");
-
-	GetID("attackHitSe","resource/sound/attackHitSe.wav");
-
-	GetID("walkSe", "resource/sound/walkSe.wav");
-
-	GetID("daethSe","resource/sound/daeth.wav");
+	//攻撃ヒット時
+	GetID("attackHitSe","resource/sound/attackHitSe.mp3");
+	//移動
+	GetID("walkSe", "resource/sound/walkSe.mp3");
+	//死亡
+	GetID("daethSe","resource/sound/daethSe.mp3");
+	//ボール壁反射
 	GetID("ballSe","resource/sound/ballSe.mp3");
-	GetID("runSe","resource/sound/runSe.mp3");
+
+	//GetID("runSe","resource/sound/runSe.mp3");
 }
 
 SoundManager::~SoundManager()

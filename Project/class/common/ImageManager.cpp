@@ -50,46 +50,46 @@ const std::vector<int>& ImageManager::GetID(std::string key, std::string path, V
 ImageManager::ImageManager()
 {
 	//タイトル
-	GetID("titlelogo", "resource/image/titlelogo.png");
-	GetID("titleBg","resource/image/stage/titleBg.png");
-	GetID("backBills", "resource/image/stage/backBills.png");
-	GetID("middleBills", "resource/image/stage/middleBills.png");
-	GetID("road", "resource/image/stage/road.png");
+	GetID("titlelogo", "resource/image/logo/titlelogo.png");
+	GetID("titleBg","resource/image/bg/titleBg.png");
+	GetID("backBills", "resource/image/bg/backBills.png");
+	GetID("middleBills", "resource/image/bg/middleBills.png");
+	GetID("road", "resource/image/bg/road.png");
 
 	//セレクト
-	GetID("selectBg","resource/image/stage/selectBg.png");
-	GetID("selectLogo","resource/image/stage/selectLogo.png");
+	GetID("selectBg","resource/image/bg/selectBg.png");
+	GetID("selectLogo","resource/image/logo/selectLogo.png");
 	GetID("selectStage","resource/image/stage/selectStage.png");
 	GetID("selectStageNull","resource/image/stage/selectStageNull.png");
 
 	//バーサス
-	GetID("vsBg", "resource/image/vsbg.png");
-	GetID("playerWindow", "resource/image/playerWindow.png");
-	GetID("vsPlayer1Logo", "resource/image/vsPlayer1.png");
-	GetID("vsPlayer2Logo", "resource/image/vsPlayer2.png");
-	GetID("conImage", "resource/image/controller.png");
+	GetID("vsBg", "resource/image/bg/vsbg.png");
+	GetID("playerWindow", "resource/image/ui/playerWindow.png");
+	GetID("vsPlayer1Logo", "resource/image/ui/vsPlayer1.png");
+	GetID("vsPlayer2Logo", "resource/image/ui/vsPlayer2.png");
+	GetID("conImage", "resource/image/ui/controller.png");
 
 	//ステージ
 	GetID("stage","resource/image/stage/stage.png");
 
-	//UI
-	GetID("window","resource/image/window.png");
-	GetID("sWindow","resource/image/speedWindow.png");
+	//UIウィンドウ
+	GetID("window","resource/image/ui/window.png");
+	GetID("sWindow","resource/image/ui/speedWindow.png");
 
 	//ボール
 	GetID("ball", "resource/image/ball/ball2.png", Vector2Int(4, 1), Vector2Int(35, 35));
 	GetID("p1ball","resource/image/ball/p1ball.png",Vector2Int(4, 1), Vector2Int(35, 35));
 	GetID("p2ball","resource/image/ball/p2ball.png",Vector2Int(4, 1), Vector2Int(35, 35));
 
+	//1P:2p
 	GetID("p1Logo","resource/image/character/1p.png",Vector2Int(1, 1), Vector2Int(88, 59));
 	GetID("p2Logo","resource/image/character/2p.png",Vector2Int(1, 1), Vector2Int(88, 59));
 
-	//爆発
-	GetID("explosion", "resource/image/explosion.png", Vector2Int(1, 1), Vector2Int(35, 35));
+	//爆発エフェクト
+	GetID("explosion", "resource/image/effect/explosion.png", Vector2Int(1, 1), Vector2Int(35, 35));
 
 	//プレイヤー1
 	//GetID("idle", "resource/image/character/sprite/idle2.png", Vector2Int(8, 1), Vector2Int(40, 38));
-
 	GetID("knight_idle", "resource/image/character/sprite/knight/idle.png", Vector2Int(6, 1), Vector2Int(98, 66));
 	GetID("knight_jumpUp", "resource/image/character/sprite/knight/jumpUp.png", Vector2Int(7, 1), Vector2Int(98,66));
 	GetID("knight_fall", "resource/image/character/sprite/knight/down.png", Vector2Int(3, 1), Vector2Int(98, 66));
@@ -98,8 +98,6 @@ ImageManager::ImageManager()
 	GetID("knight_attack", "resource/image/character/sprite/knight/nAttack.png", Vector2Int(12, 1), Vector2Int(98,66));
 	GetID("knight_crouch", "resource/image/character/sprite/knight/crouching.png", Vector2Int(6, 1), Vector2Int(98,66));
 	GetID("knight_death", "resource/image/character/sprite/knight/death.png", Vector2Int(1, 1), Vector2Int(98,66));
-
-	
 
 	//プレイヤー2
 	GetID("rogue_idle", "resource/image/character/sprite/rogue/idle.png", Vector2Int(6, 1), Vector2Int(98, 66));
