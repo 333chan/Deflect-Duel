@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="13">
+ <objectgroup id="4" name="stageimage">
+  <object id="12" name="stageimage" x="-48" y="0" width="1328" height="736"/>
+ </objectgroup>
+ <objectgroup id="2" name="stage">
+  <object id="1" name="stage" x="48" y="32" width="1232" height="592"/>
+ </objectgroup>
+</map>

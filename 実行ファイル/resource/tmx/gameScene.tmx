@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="25">
+ <objectgroup id="11" name="p2Howto">
+  <object id="24" name="window" x="1081.56" y="629.727" width="163.67" height="86"/>
+ </objectgroup>
+ <objectgroup id="2" name="p1Howto">
+  <object id="1" name="window" x="35.3333" y="631" width="163.667" height="86"/>
+ </objectgroup>
+</map>
