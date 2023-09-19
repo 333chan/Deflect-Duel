@@ -18,20 +18,8 @@ constexpr float DRAW_EXRATE = 2.25f;//拡大率
 
 Player::Player(ControllerType type, PlayerType pType, std::shared_ptr<Ball>& ball)
 {
-	//コントローラーの生成
-	if (type == ControllerType::Pad1)
-	{
-		controller_ = std::make_unique<PadInput>();
-	}
-	else if(type == ControllerType::Pad2)
-	{
-		
-		controller_ = std::make_unique<PadInput2>();
-	}
-	else if (type == ControllerType::Key)
-	{
-		controller_ = std::make_unique<KeyInput>();
-	}
+
+	controller_ = SetControllerType(type);
 
 
 	//プレイヤーの種類情報
@@ -877,6 +865,34 @@ void Player::MovePosition(Dir dir)
 		}
 	}
 
+}
+
+std::unique_ptr<Controller> Player::SetControllerType(ControllerType type)
+{
+	//コントローラーの生成
+	if (type == ControllerType::Pad1)
+	{
+		return std::make_unique<PadInput>(type);
+	}
+	else if (type == ControllerType::Pad2)
+	{
+		return std::make_unique<PadInput>(type);
+	}
+
+	else if (type == ControllerType::Pad3)
+	{
+		return std::make_unique<PadInput>(type);
+	}
+	else if (type == ControllerType::Pad4)
+	{
+		return std::make_unique<PadInput>(type);
+	}
+	else if (type == ControllerType::Key)
+	{
+		return std::make_unique<KeyInput>();
+	}
+
+	return nullptr;
 }
 
 

@@ -45,6 +45,8 @@ enum class PlayerType
 {
     One,    //1P
     Two,    //2P
+    Three,  //3P
+    Four,   //4P
     Max
 
 };
@@ -160,6 +162,8 @@ private:
 
     //ˆÚ“®ˆ—
     void MovePosition(Dir dir);
+
+    std::unique_ptr<Controller> SetControllerType(ControllerType type);
 
 protected:
     //tmx

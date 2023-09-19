@@ -60,6 +60,8 @@ void GameScene::Init(void)
 	{
 		player_ = std::make_unique<Player>(ControllerType::Pad1, PlayerType::One, ball_);
 		player2_ = std::make_unique<Player>(ControllerType::Pad2, PlayerType::Two, ball_);
+		player3_ = std::make_unique<Player>(ControllerType::Pad3, PlayerType::One, ball_);
+		player4_ = std::make_unique<Player>(ControllerType::Pad4, PlayerType::Two , ball_);
 	}
 	else if (GetJoypadNum() == 1)
 	{
@@ -99,6 +101,7 @@ UniqueScene GameScene::Update(UniqueScene scene)
 
 	player_->Update();
 	player2_->Update();
+	player3_->Update();
 
 	//ボール
 	ball_->Update();
@@ -120,6 +123,7 @@ void GameScene::DrawScreen(void)
 	//プレイヤー
 	player_->Draw();
 	player2_->Draw();
+	player3_->Draw();
 
 	//ボール
 	ball_->Draw();

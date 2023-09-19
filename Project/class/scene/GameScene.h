@@ -43,6 +43,8 @@ private:
     //プレイヤー情報
     std::unique_ptr<Player> player_;    //P1
     std::unique_ptr<Player> player2_;   //P2
+    std::unique_ptr<Player> player3_;   //P2
+    std::unique_ptr<Player> player4_;   //P2
 
     //コントローラー情報
     std::unique_ptr<Controller> controller_;

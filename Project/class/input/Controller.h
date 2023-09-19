@@ -8,6 +8,8 @@ enum  class ControllerType
 	Key,
 	Pad1,
 	Pad2,
+	Pad3,
+	Pad4,
 	Max
 };
 
