@@ -148,12 +148,6 @@ void TitelScene::DrawScreen(void)
 		DrawExtendGraphF(sPos2.x, sPos2.y, ePos2.x, ePos2.y, bg.hadle, true);	//“ñ–‡–Ú
 	}
 
-	if (controllerFlg = true)
-	{
-
-	}
-
-
 	DrawGraph(logoPos_.x, logoPos_.y, lpImageMng.GetID("titlelogo")[0], true);
 	DrawString(550,600 - 16, "PRESS Player1 B BUTTON", 0xffffff);
 
